@@ -36,12 +36,14 @@ function Card({ cam }: { cam: JpsCamera }) {
 
 export function JpsCameraWall() {
   const { data, loading, error } = useJpsCameras();
-  const [place, setPlace] = useState('all');
+  const [district, setDistrict] = useState('all');
   const [shown, setShown] = useState(PAGE);
 
-  // Locations are the JPS camera names, A to Z; the wall uses the same order.
-  const cameras = useMemo(() => [...(data?.cameras ?? [])].sort((a, b) => a.name.localeCompare(b.name, 'en', { numeric: true, sensitivity: 'base' })), [data]);
-  const visible = cameras.filter((c) => place === 'all' || String(c.id) === place);
+  // Same districts as the JPS Selangor site; the wall runs district by district, then camera name A to Z.
+  const cmp = (a: string, b: string) => a.localeCompare(b, 'en', { numeric: true, sensitivity: 'base' });
+  const cameras = useMemo(() => [...(data?.cameras ?? [])].sort((a, b) => cmp(a.district, b.district) || cmp(a.name, b.name)), [data]);
+  const districts = useMemo(() => Array.from(new Set(cameras.map((c) => c.district))), [cameras]);
+  const visible = cameras.filter((c) => district === 'all' || c.district === district);
   const counts = { online: 0, stale: 0, offline: 0 };
   for (const c of visible) counts[c.status] += 1;
 
@@ -52,18 +54,18 @@ export function JpsCameraWall() {
           <Camera className="h-5 w-5 text-[#1677FF]" aria-hidden="true" /> Selangor river cameras
         </h1>
         <select
-          aria-label="Location"
-          value={place}
+          aria-label="District"
+          value={district}
           onChange={(e) => {
-            setPlace(e.target.value);
+            setDistrict(e.target.value);
             setShown(PAGE);
           }}
           className="min-h-11 max-w-full rounded-xl border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800"
         >
-          <option value="all">All locations ({cameras.length})</option>
-          {cameras.map((c) => (
-            <option key={c.id} value={String(c.id)}>
-              {c.name}
+          <option value="all">All districts ({cameras.length})</option>
+          {districts.map((d) => (
+            <option key={d} value={d}>
+              {d} ({cameras.filter((c) => c.district === d).length})
             </option>
           ))}
         </select>
