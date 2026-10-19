@@ -2,7 +2,7 @@ import os
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routes import telemetry, twin, sos, shelters, predict, reports, alerts, ai_check
+from app.routes import telemetry, twin, sos, shelters, predict, reports, alerts, ai_check, jps
 from app.vision import router as vision_router, vision_lifespan
 
 @asynccontextmanager
@@ -34,6 +34,7 @@ app.include_router(predict.router)
 app.include_router(reports.router)
 app.include_router(alerts.router)
 app.include_router(ai_check.router)
+app.include_router(jps.router)
 app.include_router(vision_router)
 
 @app.get("/healthz")

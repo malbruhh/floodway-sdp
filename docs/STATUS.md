@@ -9,6 +9,7 @@ Updated 2026-10-19. Sime Darby Property University Hackathon: proposal 23 Oct, p
 | Feature | State |
 |---|---|
 | Live Vision: camera frame to level (NORMAL / ADVISORY / WARNING / DANGER), trend, alerts, websocket | Works, on 5 AI-generated sample cameras |
+| JPS Selangor camera wall (`/jps`) and map dots: real public snapshots, status and age, image only | Works (built 2026-10-19; 80 cameras shown, 77 online when checked). Needs the backend running; no AI level |
 | Add your own camera (URL or photo), calibration wizard | Works; reads flat synthetic water only, not photos of real water |
 | In-app, browser and Telegram alerts; family SOS and check-in | Works (Telegram needs a bot token, else `NOT_SENT`) |
 | Evacuation map and turn-by-turn | Works; 8 demo shelters, 16 hand-placed flood areas, stored OpenStreetMap routes |
@@ -33,7 +34,7 @@ The JPS Selangor public API (`infobanjirjps.selangor.gov.my/JPSAPI/api/`) is **r
 
 ## Fix before the 23 Oct proposal (in order)
 
-1. JPS camera layer: `jps_client` (cache + image proxy), camera wall and map markers, honest "image only" label.
+1. ~~JPS camera layer~~ done: `backend/app/services/jps_client.py` (cache, image proxy, host lock), `/api/v1/jps/*`, `/jps` page, map dots. Map dots were fetched but not seen on screen: zoom the Map out to Selangor and check.
 2. Hand-calibrate 3 to 5 JPS cameras with a dry reference frame so at least a few show a real AI level.
 3. Township layer: one JSON file of boundary, cameras, shelters and flood areas, with a selector.
 4. Estate-manager page (alerts and open reports for one township) and a resilience dashboard (events, lead time, alerts sent), plus a "loss avoided" estimate that shows its formula and is labelled illustrative.
