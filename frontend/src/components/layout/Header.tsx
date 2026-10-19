@@ -6,7 +6,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { ORIGINS } from '../../data/klDemo';
 import { IoTHeaderPopover } from '../dashboard/IoTHeaderPopover';
 
-export function Header() {
+export function Header({ showLocation = true }: { showLocation?: boolean }) {
   const { selectedLocation, setSelectedLocation } = useApp();
   const { user } = useAuth();
   const [showLocationMenu, setShowLocationMenu] = useState(false);
@@ -23,6 +23,7 @@ export function Header() {
           <FloodWayLogo className="h-8 w-10" />
         </div>
 
+        {showLocation && (
         <div className="relative min-w-0 flex-1 sm:flex-none">
           <button
             onClick={() => setShowLocationMenu(!showLocationMenu)}
@@ -57,6 +58,7 @@ export function Header() {
             </div>
           )}
         </div>
+        )}
 
         {/* Live operational badge */}
         <div className="hidden lg:flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-xs font-semibold text-emerald-700">

@@ -36,43 +36,39 @@ function Card({ cam }: { cam: JpsCamera }) {
 
 export function JpsCameraWall() {
   const { data, loading, error } = useJpsCameras();
-  const [district, setDistrict] = useState('all');
+  const [place, setPlace] = useState('all');
   const [shown, setShown] = useState(PAGE);
 
-  const cameras = data?.cameras ?? [];
-  const districts = useMemo(() => Array.from(new Set(cameras.map((c) => c.district))).sort(), [cameras]);
-  const visible = cameras.filter((c) => district === 'all' || c.district === district);
+  // Locations are the JPS camera names, A to Z; the wall uses the same order.
+  const cameras = useMemo(() => [...(data?.cameras ?? [])].sort((a, b) => a.name.localeCompare(b.name, 'en', { numeric: true, sensitivity: 'base' })), [data]);
+  const visible = cameras.filter((c) => place === 'all' || String(c.id) === place);
   const counts = { online: 0, stale: 0, offline: 0 };
   for (const c of visible) counts[c.status] += 1;
 
   return (
     <section className="mx-auto w-full max-w-7xl px-4 py-5 md:px-6 lg:px-8" aria-labelledby="jps-title">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h1 id="jps-title" className="flex items-center gap-2 font-heading text-xl font-extrabold text-slate-900">
-            <Camera className="h-5 w-5 text-[#1677FF]" aria-hidden="true" /> Selangor river cameras
-          </h1>
-          <p className="mt-1 max-w-2xl text-sm text-slate-600">{JPS_LABEL} Photos refresh about every 1 to 2 minutes; this page checks every 2 minutes.</p>
-        </div>
-        <label className="text-xs font-semibold text-slate-700">
-          District
-          <select
-            value={district}
-            onChange={(e) => {
-              setDistrict(e.target.value);
-              setShown(PAGE);
-            }}
-            className="ml-2 min-h-11 rounded-xl border border-slate-300 bg-white px-3 text-sm"
-          >
-            <option value="all">All districts ({cameras.length})</option>
-            {districts.map((d) => (
-              <option key={d} value={d}>
-                {d}
-              </option>
-            ))}
-          </select>
-        </label>
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+        <h1 id="jps-title" className="flex items-center gap-2 font-heading text-xl font-extrabold text-slate-900">
+          <Camera className="h-5 w-5 text-[#1677FF]" aria-hidden="true" /> Selangor river cameras
+        </h1>
+        <select
+          aria-label="Location"
+          value={place}
+          onChange={(e) => {
+            setPlace(e.target.value);
+            setShown(PAGE);
+          }}
+          className="min-h-11 max-w-full rounded-xl border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800"
+        >
+          <option value="all">All locations ({cameras.length})</option>
+          {cameras.map((c) => (
+            <option key={c.id} value={String(c.id)}>
+              {c.name}
+            </option>
+          ))}
+        </select>
       </div>
+      <p className="mt-1 max-w-2xl text-sm text-slate-600">{JPS_LABEL} Photos refresh about every 1 to 2 minutes; this page checks every 2 minutes.</p>
 
       {data && (
         <p className="mt-3 text-xs text-slate-600">
