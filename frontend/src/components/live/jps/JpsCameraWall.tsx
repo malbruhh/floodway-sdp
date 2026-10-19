@@ -53,22 +53,24 @@ export function JpsCameraWall() {
         <h1 id="jps-title" className="flex items-center gap-2 font-heading text-xl font-extrabold text-slate-900">
           <Camera className="h-5 w-5 text-[#1677FF]" aria-hidden="true" /> Selangor river cameras
         </h1>
-        <select
-          aria-label="District"
-          value={district}
-          onChange={(e) => {
-            setDistrict(e.target.value);
-            setShown(PAGE);
-          }}
-          className="min-h-11 max-w-full rounded-xl border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800"
-        >
-          <option value="all">All districts ({cameras.length})</option>
-          {districts.map((d) => (
-            <option key={d} value={d}>
-              {d} ({cameras.filter((c) => c.district === d).length})
-            </option>
-          ))}
-        </select>
+        <label className="text-xs font-semibold text-slate-700">
+          District
+          <select
+            value={district}
+            onChange={(e) => {
+              setDistrict(e.target.value);
+              setShown(PAGE);
+            }}
+            className="ml-2 min-h-11 rounded-xl border border-slate-300 bg-white px-3 text-sm"
+          >
+            <option value="all">All districts ({cameras.length})</option>
+            {districts.map((d) => (
+              <option key={d} value={d}>
+                {d} ({cameras.filter((c) => c.district === d).length})
+              </option>
+            ))}
+          </select>
+        </label>
       </div>
       <p className="mt-1 max-w-2xl text-sm text-slate-600">{JPS_LABEL} Photos refresh about every 1 to 2 minutes; this page checks every 2 minutes.</p>
 
