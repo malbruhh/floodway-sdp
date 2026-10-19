@@ -45,4 +45,4 @@ ffmpeg -y -i out/floodway-live-vision.mp4 -i out/score.wav -map 0:v -map 1:a -c:
 
 Sources: `src/shell.html` (styles and stage), `src/scenes.html` (the seven scenes), `src/film.js` (timing, easing, setup),
 `src/film-scenes.js` (per-scene choreography and playback). Images are read at build time from
-`frontend/public/media/live/klang-r*.webp` and `docs/product/preliminary-round/poster/assets/`.
+`frontend/public/media/live/klang-r*.webp`.

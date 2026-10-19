@@ -9,6 +9,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { dispatchArrivalCheckin, type TelegramResult } from '../../services/telegramService';
 import { InPageActionDock } from './InPageActionDock';
 import { VisionHazardLayer } from './VisionHazardLayer';
+import { JpsCameraLayer } from './JpsCameraLayer';
 import { MapLegend } from './MapLegend';
 import { FloodProneLayer, SCENARIO_COLOR, floodedZones, type Scenario } from './FloodProneLayer';
 import { BottomSheet, type Snap } from './BottomSheet';
@@ -212,6 +213,7 @@ export function ShelterMapView() {
         <MapContainer center={KL_CENTER} zoom={12} scrollWheelZoom preferCanvas className="z-0 h-full w-full">
           <TileLayer attribution={BASEMAP_ATTRIBUTION} url={BASEMAP_URL} maxZoom={BASEMAP_MAX_ZOOM} />
           <VisionHazardLayer />
+          <JpsCameraLayer />
           <FloodProneLayer scenario={scenario} />
           <FitRoute line={route?.line ?? null} bottomPad={desktop ? 0 : sheetH} enabled={!sim.active} />
           <FollowCar pos={car} active={sim.active} />

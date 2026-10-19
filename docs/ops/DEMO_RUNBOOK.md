@@ -21,7 +21,7 @@ Say this plainly. A judge who asks "is that real?" must get a straight answer.
 | **Simulated** | Shelters, flood-prone areas, citizen reports | Demo data (the 16 flood-prone areas are hand-placed around known low spots, not a DBKL/JPS map; the 8 relief centres are not an official register). The two starter reports and their photos are examples, not incidents at the places named. |
 | **Real data, simulated drive** | Evacuation route (Map) | Road geometry and turn steps come from OpenStreetMap through the public OSRM server, computed in advance and stored. The route chosen avoids the flood areas it can; the car on screen is a sped-up simulation, not a tracked position. No live traffic. |
 | **Approximate** | Evacuation route (Home) | A straight line bent around camera flood zones. Not road-aware. The UI says "approximate". |
-| **Not built / not claimed** | Any public JPS or DBKL camera feed | No confirmed public API. Never say the cameras are government feeds. |
+| **Real, if wired** | JPS Selangor public camera snapshots | Real images from an unofficial public API (see `docs/STATUS.md`). Label them "JPS Selangor public snapshot". AI level only on hand-calibrated cameras. The five sample cameras are still not real or government feeds. |
 | **Not built / not claimed** | Verification by an agency, certification, any external cloud AI service | Nothing verifies reports. No external cloud service is called by this demo. |
 | **Not built / not claimed** | Real IoT sensors in the demo | The code can read a USB sensor, but the demo shows simulated values. |
 

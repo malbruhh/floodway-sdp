@@ -4,17 +4,18 @@ FloodWay: AI flood early warning for Malaysia. Live Vision reads river and drain
 
 ## The loop (every task, every agent)
 
-0. **Read `docs/ai/SDP_ALIGNMENT_SUMMARY.md` first** (feature list, known bugs, SDP alignment plan).
-1. **Read `docs/ai/PROGRESS.md`.** It holds the status board, the file map, the guard rails and the open items. Do not start from the old docs.
+1. **Read `docs/STATUS.md` first.** It holds what works, what is simulated, the JPS feed plan and the open fixes.
 2. Do the task. Touch only the files it needs. Reuse before you write (stdlib, then installed packages, then new code). Delete dead code you pass.
 3. Verify: `powershell -File scripts/check.ps1` (frontend tsc + vitest + build, backend pytest). Report the real output.
-4. **Before you stop, update `docs/ai/PROGRESS.md`:** change the status rows you moved, add one line to the Change log (date, what, files, check result), and fix the File map if you added, moved or deleted a file or folder. Long write-ups go in `docs/ai/CHANGELOG.md`.
+4. **Before you stop, update `docs/STATUS.md`:** move what you finished or changed. Keep it to one page.
 
 ## Honesty rules (the project's credibility)
 
 - The five sample cameras and their frames are **AI-generated sample imagery**, labelled SAMPLE or PLAYBACK. Never call them real, live or government feeds.
+- JPS Selangor camera images are real public snapshots. Label them "JPS Selangor public snapshot", show the age of the last frame, and give an AI water level only to cameras calibrated with a dry reference frame.
+- JPS Selangor camera images are real public snapshots. Label them "JPS Selangor public snapshot", show the age of the last frame, and give an AI water level only to cameras that are calibrated with a dry reference frame.
 - The demo forecast is a **rule-based formula**, not a trained model. No external cloud service is called by the demo. Do not state accuracy numbers that the repo cannot reproduce. Pitch-deck benchmark figures keep their own source line (Sen1Floods11 validation split, 100 simulated Klang Valley scenarios).
-- Never add agency names or logos (JPS, DBKL, JKM, JKR, Bomba, MET) to generated media.
+- Never add agency names or logos (JPS, DBKL, JKM, JKR, Bomba, MET) to generated media. Naming JPS as the source of its real snapshots is fine. Naming JPS as the source of its real snapshots is fine.
 
 ## Guard rails (do not break)
 
@@ -25,4 +26,4 @@ FloodWay: AI flood early warning for Malaysia. Live Vision reads river and drain
 
 ## Conventions
 
-TypeScript strict, React 19 function components, Tailwind 4, named exports, `@/` alias. Python 3 with type hints. Details: `docs/architecture/CODING_CONVENTIONS.md`. Windows: backend venv is `backend\.venv\Scripts\python.exe`.
+TypeScript strict, React 19 function components, Tailwind 4, named exports, `@/` alias. Python 3 with type hints. Windows: backend venv is `backend\.venv\Scripts\python.exe`.
