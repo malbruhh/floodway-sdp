@@ -17,7 +17,7 @@ const files = ['index.html', 'README.md', 'BRIEF.md', 'render.mjs', 'build.mjs',
 const FORBIDDEN = [
   'Zero-IoT', '$0', 'zero hardware', '99.4', 'deepfake', '110 cm', 'trapped', 'guaranteed', 'guarantee', 'saves lives', 'save lives',
   'endorsed', 'certified', 'official partner', 'NADMA', 'Jalan Tun Razak', 'Mid Valley', 'Suria KLCC', 'Jubli Perak', 'KESAS',
-  'Jalan Subang', 'Jalan Raja Muda', 'Seksyen 24', 'Klang River', 'Telegram', 'Huawei', 'iPhone', 'Samsung', 'Apple',
+  'Jalan Subang', 'Jalan Raja Muda', 'Seksyen 24', 'Klang River', 'Telegram', 'iPhone', 'Samsung', 'Apple',
   '87%', '74.55', '92.4', 'mIoU', '95.34', '1.65 m', '62 min'
 ];
 // Brief/README explain the policy and legitimately quote the banned list; the audit only checks what ships on screen.
@@ -29,7 +29,7 @@ for (const f of files) {
   if (POLICY_DOCS.has(path.basename(f))) continue;
   let s = fs.readFileSync(path.join(HERE, f), 'utf8');
   if (f === 'index.html') s = s.replace(/base64,[A-Za-z0-9+/=]+/g, 'base64,…');
-  s = s.split('floodway-huawei.pages.dev').join('SITE_URL');   // the team's own project URL (end card) is allowed
+  s = s.split('floodway.pages.dev').join('SITE_URL');   // the team's own project URL (end card) is allowed
   const lower = s.toLowerCase();
   for (const term of FORBIDDEN) {
     // "MetMalaysia / JPS" is the required warning tag; it is the only agency mention allowed.

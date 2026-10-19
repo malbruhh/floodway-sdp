@@ -12,13 +12,10 @@ Read this before you change anything. Update it before you stop (rules in `/AGEN
 | Map and evacuation | Done | KL only: 8 demo relief centres, 16 flood-prone areas, stored OSM routes (`node frontend/scripts/build_kl_routes.mjs` to rebuild) |
 | Sample media | Done 2026-10-12 | 60 photographic frames (5 cameras x 12-rung ladder); the page shows the rung matching the reading. Read by `ReferenceDiffAnalyzer` against each camera's dry frame; `check_ladder` PASS (4 cameras 12 of 12, drain 11 of 12). Details and limits: `backend/app/vision/sample_media/README.md` |
 | Feed overlays | Done | Photo shows clean by default (lines and waterline); the Zone and Water toggles remain |
-| Poster (advisor edits) + PowerPoint | Done 2026-10-12 | Dr Azliza's edits: UiTM, 7 Dekad UiTM and Huawei logos in the header; the prototype footer removed (benchmark source moved into the Proof card); a Huawei technology block (ModelArts, OBS, ECS, SMN) in the centre Solution card. Editable one-slide `poster/FloodWay_Poster_1920x1080.pptx` (174 native shapes, text and pictures) built by `node scripts/poster-to-pptx.mjs`; checked by rendering in PowerPoint. Needs Outfit and Inter fonts (installed per-user on this laptop; Canva has both) |
-| Preliminary round pack | Done 2026-10-12 | `docs/product/preliminary-round/`: `MEETING_SUMMARY.pdf` (and `.md`), `PITCH_SCRIPT.md` (three speakers, about 4:30), `poster/FloodWay_Poster_1920x1080.png` (one slide: Problem, Solution, Impact; QR to the live demo), `transcript/` |
 | Motion film | Done 2026-10-12 | `booth/floodway-live-film/`: 45 s, 1920x1080, 30 fps. `out/floodway-live-vision-sound.mp4` (with procedural score) and the silent master. Hook, gap, Live Vision (real ladder frames, number and level in sync), safe route, phone alert, impact, brand + QR. Rebuild steps in its README |
 | Sample photos on the public page | Done 2026-10-12 | With no backend running, the Live page now shows each sample camera's photo for its water level (`lib/vision/samplePhoto.ts`), instead of the old drawn scene. Pushed to GitHub `live-ui-upgrade` (`295482a`) and deployed to Cloudflare Pages production with no backend address. Checked on the public `/live`: Klang shows the new frame at 61%. |
-| Live demo on Cloudflare | **Live 2026-10-12 (laptop-hosted)** | `powershell -File scripts/public-demo.ps1` starts a read-only public backend on this laptop (port 8090, no Telegram, own data folder, write token in `%LOCALAPPDATA%\floodway-public\write-token.txt`), opens a Cloudflare quick tunnel, rebuilds the frontend with that address and deploys it to `floodway-huawei.pages.dev`. Verified: /live shows "Live 5/6 online" with the new frames. The laptop must stay on; every restart gives a new tunnel address, so re-run the script (`-Stop` to stop). Earlier note, kept for history: | `https://floodway-huawei.pages.dev` serves a 2-week-old build with no backend (it calls `localhost:8080`). Newer `main` builds on Cloudflare fail. Ready: `backend/Dockerfile` + `.dockerignore`, `CORS_ORIGINS` env, production frontend build (secrets blanked, verified out of the bundle). Needs: a hosting account, then the backend URL. The QR on the poster points here |
+| Live demo on Cloudflare | **Live 2026-10-12 (laptop-hosted)** | `powershell -File scripts/public-demo.ps1` starts a read-only public backend on this laptop (port 8090, no Telegram, own data folder, write token in `%LOCALAPPDATA%\floodway-public\write-token.txt`), opens a Cloudflare quick tunnel, rebuilds the frontend with that address and deploys it to `floodway.pages.dev`. Verified: /live shows "Live 5/6 online" with the new frames. The laptop must stay on; every restart gives a new tunnel address, so re-run the script (`-Stop` to stop). Earlier note, kept for history: | `https://floodway.pages.dev` serves a 2-week-old build with no backend (it calls `localhost:8080`). Newer `main` builds on Cloudflare fail. Ready: `backend/Dockerfile` + `.dockerignore`, `CORS_ORIGINS` env, production frontend build (secrets blanked, verified out of the bundle). Needs: a hosting account, then the backend URL. The QR on the poster points here |
 | Forecast | Rule-based | `backend/app/services/forecaster.py` is a formula and says so. `models/ml_pipeline` holds a synthetic-data GRU that nothing loads |
-| Huawei Cloud | Designed, not called | ModelArts package prepared in `models/ml_pipeline/modelarts_pkg`; nothing deployed |
 | Other pages' touch targets | Open | Home, map, reports, profile still have targets under 44 px on phones |
 
 ## Open work, in order
@@ -41,12 +38,12 @@ backend/tests/                  pytest
 frontend/src/pages, components/ React pages; components/live/ is Live Vision; components/brand/ is the logo
 frontend/public/media/live/     webp copies of the sample frames, klang-rise.mp4
 frontend/scripts/               layout-check.mjs, map-fps.mjs, build_kl_routes.mjs
-models/ml_pipeline/             GRU forecaster code, notebooks nb1-nb4, trained weights (synthetic), ModelArts package
+models/ml_pipeline/             GRU forecaster code, notebooks nb1-nb4, trained weights (synthetic)
 models/legacy_ann/              first Keras ANN on the Malaysia rainfall CSV (datasets/)
-scripts/                        check.ps1, public-demo.ps1, public_backend.py, render-poster.mjs, make_og_image.py, generate_image.py
+scripts/                        check.ps1, public-demo.ps1, public_backend.py, make_og_image.py, generate_image.py
 docs/ai/                        this file, CHANGELOG.md (detail)
 docs/architecture/              system spec, API, DB, IoT, tech stack, conventions (some FYP-era: verify before trusting)
-docs/product/                   preliminary-round/ (poster, pitch script, meeting summary, transcript), pitch deck PDFs
+docs/product/                   pitch deck PDFs
 docs/ops/                       DEMO_RUNBOOK.md (what is real, simulated, not built; demo script; failure table)
 docs/plans/                     active plans only
 docs/reference/                 competition rules and forms, 3D house reference
@@ -62,15 +59,12 @@ docs/_to-delete/                quarantine, safe to remove
 - Backend: `cd backend; .venv\Scripts\python.exe run.py` (port 8080) · tests: `.venv\Scripts\python.exe -m pytest -q`
 - Frontend: `cd frontend; npm run dev` (5173) · `npm run check` · `npm run layout-check`
 - Media scripts (from `backend/`): `python -m app.vision.sample_media.check_ladder | check_frames | check_realism | export_ladder | make_loop`
-- Poster: `node scripts/capture-poster-shots.mjs` then `node scripts/render-poster.mjs phone|landscape`, then `node scripts/poster-to-pptx.mjs` for the editable PowerPoint (first time: `cd scripts/pptx-tool && npm install`) (needs Chrome and the dev servers; fonts load once from Google Fonts)
 
-## Poster
 
-`docs/product/preliminary-round/poster/poster.html` is 1080 px wide and about 9100 px tall (a phone scroll poster); the render is `FloodWay_Poster_Phone.png`. A 1920 x 1080 landscape version (`poster-landscape.html` to `FloodWay_Poster_1920x1080.png`) shares the same assets and content, trimmed to fit. Content comes from the pitch deck (`docs/product/pitch/FloodWay Five42 Slide Deck.pdf`) with the 3D twin replaced by Live Vision; the footer says which parts are designed, not built. Refresh after the media fix: start both dev servers, then `node scripts/capture-poster-shots.mjs` (writes `assets/{home,live,map}-phone.jpg`) and `node scripts/render-poster.mjs`.
 
 ## Honesty ledger (one glance)
 
-Real: camera pipeline, user cameras and photo upload, alerts, restart recovery, OSM road routes. Simulated: sample cameras and frames, rainfall and river numbers, forecast, shelters, flood-prone areas, reports. Not built or not claimed: government camera feeds, agency verification, any Huawei Cloud call, field-validated accuracy. Full table: `docs/ops/DEMO_RUNBOOK.md` section 1.
+Real: camera pipeline, user cameras and photo upload, alerts, restart recovery, OSM road routes. Simulated: sample cameras and frames, rainfall and river numbers, forecast, shelters, flood-prone areas, reports. Not built or not claimed: government camera feeds, agency verification, any external cloud AI call, field-validated accuracy. Full table: `docs/ops/DEMO_RUNBOOK.md` section 1.
 
 ## Change log (newest first; one line each)
 

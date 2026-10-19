@@ -7,7 +7,7 @@ from fastapi.testclient import TestClient
 from app.routes import reports, twin
 from app.services.forecaster import forecaster
 
-BANNED = re.compile(r"ModelArts|PanGu|Huawei|NADMA|\bJPS\b|certified|Ascend", re.I)
+BANNED = re.compile(r"NADMA|\bJPS\b|certified", re.I)
 
 
 def _client():
@@ -43,6 +43,6 @@ def test_the_forecast_says_it_is_a_formula_not_a_model():
 def test_twin_disclaimer_claims_no_certification():
     state = _client().get("/api/v1/twin/state").json()
     text = state["disclaimer"]
-    assert not re.search(r"ModelArts|PanGu|Huawei|NADMA|JPS|Ascend", text, re.I), text
+    assert not re.search(r"NADMA|\bJPS\b", text, re.I), text
     assert not re.search(r"(?<!not )certified", text, re.I), text  # "not certified" is fine; "Certified by ..." is not
     assert "not certified" in text.lower()

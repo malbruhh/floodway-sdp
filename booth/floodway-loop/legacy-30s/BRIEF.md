@@ -20,7 +20,7 @@ A 30-second loop for a booth TV and social. Primary audience: ordinary Malaysian
 
 ## The hero phone
 - A generic modern smartphone drawn in SVG/CSS: rounded bezel, pill cutout, no logo. Logical screen 390x844 scaled into the device.
-- The screens are the REAL FloodWay UI recreated in code. First locate the FloodWay app source in this repo (digital twin, shelter map, SOS / Family Ping) and mirror its real layout, labels, colours and copy. For fidelity checks, use Playwright to capture reference screenshots of https://floodway-huawei.pages.dev/ at 390x844 into booth/floodway-loop/ref/ (dev-time only, never embedded). If a screen or feature is not in the repo, still build it in the app's real visual style, but list it under FEATURES NOT FOUND IN REPO.
+- The screens are the REAL FloodWay UI recreated in code. First locate the FloodWay app source in this repo (digital twin, shelter map, SOS / Family Ping) and mirror its real layout, labels, colours and copy. For fidelity checks, use Playwright to capture reference screenshots of https://floodway.pages.dev/ at 390x844 into booth/floodway-loop/ref/ (dev-time only, never embedded). If a screen or feature is not in the repo, still build it in the app's real visual style, but list it under FEATURES NOT FOUND IN REPO.
 - Phone choreography: rises with a slight 3D tilt (S2), pushes in (S3), eases back (S4), zooms to the button (S5), slides left (S6), re-centres large (S7).
 
 ## The people

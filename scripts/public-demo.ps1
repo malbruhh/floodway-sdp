@@ -3,7 +3,7 @@
 #         powershell -File scripts/public-demo.ps1 -Stop    stop the public backend and the tunnel
 # The laptop must stay on and online. Each start gives a new tunnel address, so the frontend is rebuilt and redeployed.
 # Runtime files (logs, process ids, the write token) live in %LOCALAPPDATA%\floodway-public, outside the repo.
-param([switch]$Stop, [int]$Port = 8090, [string]$Project = 'floodway-huawei')
+param([switch]$Stop, [int]$Port = 8090, [string]$Project = 'floodway')
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
 $state = Join-Path $env:LOCALAPPDATA 'floodway-public'

@@ -1,6 +1,0 @@
-{
-  "name": "floodway-pptx-tool",
-  "private": true,
-  "description": "Converts the HTML poster into an editable PowerPoint (scripts/poster-to-pptx.mjs).",
-  "dependencies": { "pptxgenjs": "4.0.1" }
-}

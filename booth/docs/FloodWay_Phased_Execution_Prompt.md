@@ -144,7 +144,7 @@ The FloodWay smartphone is the main product hero.
 
 Use one consistent premium generic smartphone throughout the film.
 
-No Apple, Samsung, Huawei or other third-party branding.
+No Apple, Samsung or other third-party branding.
 
 The phone should have:
 

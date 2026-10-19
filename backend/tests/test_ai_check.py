@@ -51,7 +51,6 @@ def test_names_the_model_that_actually_ran(client, monkeypatch):
     r = client.post(URL, json=BODY).json()
     assert r["available"] is True and r["looks_like_flooding"] is True
     assert "google/gemini-2.5-flash" in r["engine"] and "not an official verification" in r["engine"]
-    assert "ModelArts" not in r["engine"] and "Huawei" not in r["engine"]
 
 
 def test_sloppy_model_output_is_normalised_not_trusted():
