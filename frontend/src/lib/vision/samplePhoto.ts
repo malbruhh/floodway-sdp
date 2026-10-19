@@ -1,4 +1,4 @@
-// The sample cameras' AI-generated photos (docs/plans/GEMINI_LIVE_MEDIA_V2.md): 12 rungs per camera, r000 to r110, where
+// The sample cameras' AI-generated photos: 12 rungs per camera, r000 to r110, where
 // the number is the water height as a share of bank height times 100. Used when the server is unreachable, so the page
 // shows the same picture the reading would have described.
 const PREFIX: Record<string, string> = {

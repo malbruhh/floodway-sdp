@@ -19,7 +19,7 @@ Shelters + flood-prone areas + OpenStreetMap routes                           ->
 * **Alerts and SOS:** in-app and browser alerts; Telegram family SOS and arrival check-in (needs a bot token, otherwise `NOT_SENT`).
 * **Forecast:** a rule-based 2-hour estimate, labelled "not a trained model".
 
-See [docs/ai/FEATURES_STATUS.md](docs/ai/FEATURES_STATUS.md) for every feature, its status and the data behind it, and [docs/ops/DEMO_RUNBOOK.md](docs/ops/DEMO_RUNBOOK.md) for what is real and what is simulated.
+See [docs/STATUS.md](docs/STATUS.md) for what works, what is simulated and the open fixes, and [docs/ops/DEMO_RUNBOOK.md](docs/ops/DEMO_RUNBOOK.md) for what is real and what is simulated.
 
 ## Repository structure
 

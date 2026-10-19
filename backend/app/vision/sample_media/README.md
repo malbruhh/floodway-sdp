@@ -2,7 +2,7 @@
 
 > **AI-generated sample imagery. Not real camera footage.**
 
-Five sample cameras, each with **12 photographs of one fixed view** that differ only in water height (the "ladder"), so the picture on `/live` matches the number beside it. Made with an image-generation tool on 2026-10-12 (plan: `docs/plans/GEMINI_LIVE_MEDIA_V2.md`). The 1280x720 masters are not in git (105 MB); the files below are.
+Five sample cameras, each with **12 photographs of one fixed view** that differ only in water height (the "ladder"), so the picture on `/live` matches the number beside it. Made with an image-generation tool on 2026-10-12. The 1280x720 masters are not in git (105 MB); the files below are.
 
 ## Honesty
 
