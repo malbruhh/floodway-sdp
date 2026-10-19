@@ -28,7 +28,7 @@ describe('report status model', () => {
   it('wording never claims an agency verified anything', () => {
     for (const s of ['OFFICIAL_VERIFIED', 'AI_VERIFIED', 'VERIFIED', 'UNDER_REVIEW'] as const) {
       const text = Object.values(reportStatusInfo(s)).join(' ');
-      expect(text).not.toMatch(/NADMA|JPS|gazett|Huawei/i);
+      expect(text).not.toMatch(/NADMA|JPS|gazett/i);
       expect(text).not.toMatch(/\bofficial\b/i);
     }
   });

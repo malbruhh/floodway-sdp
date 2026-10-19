@@ -52,7 +52,7 @@ def get_reports():
 @router.post("")
 def submit_report(r: NewReport):
     # Nothing verifies a submission here: it is stored as UNDER_REVIEW and says so. (It used to be auto-marked
-    # VERIFIED with a made-up 'Huawei ModelArts CV (97.2% confidence)' for any depth over 10 cm.)
+    # VERIFIED with a made-up 'AI vision (97.2% confidence)' for any depth over 10 cm.)
     rep_id = f"rep-{int(time.time())}"
     verified_status = "UNDER_REVIEW"
     new_entry = {

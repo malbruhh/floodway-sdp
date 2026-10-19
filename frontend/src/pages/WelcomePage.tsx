@@ -31,7 +31,7 @@ export function WelcomePage() {
           <span className="font-heading font-extrabold text-xl tracking-tight text-white block">
             FloodWay
           </span>
-          <span className="text-xs text-slate-400 font-medium">Huawei ICT Competition 2026</span>
+          <span className="text-xs text-slate-400 font-medium">Sime Darby Property University Hackathon 2026</span>
         </div>
       </div>
 
@@ -39,7 +39,7 @@ export function WelcomePage() {
       <div className="max-w-xl mx-auto my-auto w-full text-center py-10">
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-950/80 border border-blue-500/40 text-xs font-bold text-blue-400 mb-6 shadow-md">
           <Cpu className="w-3.5 h-3.5 text-[#1677FF]" />
-          <span>Prototype for the Huawei ICT Competition 2026</span>
+          <span>Prototype for the Sime Darby Property University Hackathon 2026</span>
         </div>
 
         <h1 className="font-heading font-black text-3xl sm:text-4xl md:text-5xl text-white tracking-tight leading-tight">
@@ -78,7 +78,7 @@ export function WelcomePage() {
             />
             <input
               type="email"
-              placeholder="Email (e.g. evaluator@huawei.com)"
+              placeholder="Email (e.g. evaluator@example.com)"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-3 rounded-xl bg-slate-900/90 border border-slate-700 text-white placeholder-slate-500 text-xs focus:outline-none focus:border-[#1677FF]"
@@ -96,7 +96,7 @@ export function WelcomePage() {
       {/* Footer: what is real and what is simulated */}
       <div className="mx-auto w-full max-w-xl space-y-3 pb-4">
         <AboutDemo tone="dark" />
-        <p className="text-center text-xs text-slate-400">© 2026 FloodWay Team · Designed for Huawei Cloud; this demo runs on simulated data and calls no Huawei service.</p>
+        <p className="text-center text-xs text-slate-400">© 2026 FloodWay Team · This demo runs on simulated data and calls no external cloud service.</p>
       </div>
     </div>
   );

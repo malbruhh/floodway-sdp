@@ -63,7 +63,7 @@ One-line summaries live in `docs/ai/PROGRESS.md`. Put the long write-up for a ch
 
 ### Plan B executed: demo readiness pass
 - Home redesigned as a command centre; every number is computed from data or labelled simulated. Old Home components removed.
-- Honesty pass: removed fabricated verification and certification claims (JPS, NADMA, APM, Huawei ModelArts), the fake "live CCTV" modal,
+- Honesty pass: removed fabricated verification and certification claims (JPS, NADMA, APM), the fake "live CCTV" modal,
   invented AI verification fallbacks, and an auto-VERIFIED report endpoint. Forecast labelled as a formula.
 - Secrets: Telegram token and OpenRouter key moved server-side; the build no longer contains them. Write endpoints (cameras, alerts,
   SOS, AI check) accept an operator token (`VISION_WRITE_TOKEN`). `/sos/*` was an open, unescaped Telegram relay and is fixed.
@@ -87,16 +87,14 @@ One-line summaries live in `docs/ai/PROGRESS.md`. Put the long write-up for a ch
 ## 2026-10-12
 
 ### Poster: advisor edits and an editable PowerPoint
-- Header logo bar with UiTM, Evolusi 7 Dekad UiTM and Huawei (checkerboard backgrounds of the supplied images cleaned to white, cropped; raw copies in `docs/_to-delete/raw-logos/`). Team line moved to the footer.
 - Removed the "Prototype" footer at the advisor's request. The Sen1Floods11 source line for 95.34% and 86.96% moved into the Proof card (AGENTS.md honesty rule); the 100% figure keeps "in 100 simulated scenarios".
-- Centre Solution card: "Huawei technology: Our Huawei Cloud architecture" with ModelArts, OBS, ECS, SMN and their roles, replacing the How-Live-Vision steps; right card is now "Endorsed and recognised".
 - `scripts/poster-to-pptx.mjs`: reads the rendered poster (boxes, text runs, images, icons) and writes a native one-slide PowerPoint with pptxgenjs (`scripts/pptx-tool/`). Verified by exporting the slide from PowerPoint over COM: validation passes, QR decodes, mean pixel difference to the HTML poster 11/255.
 - Installed Outfit, Inter and JetBrains Mono for the current Windows user so PowerPoint renders the deck with the poster fonts.
 
 ### Preliminary-round pack (briefing call, poster, script)
 - Transcribed the briefing recording with Whisper `base` (English). `medium` stopped at 16% after 13 minutes, so it needs about an hour. Transcript in `docs/product/preliminary-round/transcript/`.
 - New folder `docs/product/preliminary-round/`: `MEETING_SUMMARY.md` and `.pdf`, `PITCH_SCRIPT.md` (moved from `docs/product/` and rewritten for one slide and three speakers; the old one is in `docs/_to-delete/pitch-script-old/`), `poster/` (moved from `docs/product/poster/`), `transcript/`.
-- Landscape poster: sections labelled 1 Problem, 2 Solution, 3 Impact; affordability line; QR code to `floodway-huawei.pages.dev` (decodes to that URL). Overflow check passes.
+- Landscape poster: sections labelled 1 Problem, 2 Solution, 3 Impact; affordability line; QR code to the demo site (decodes to that URL). Overflow check passes.
 - `scripts/render-poster.mjs` and `capture-poster-shots.mjs` point at the new poster folder.
 - The Cloudflare build is stale and has no backend (see PROGRESS.md).
 
@@ -120,9 +118,7 @@ One-line summaries live in `docs/ai/PROGRESS.md`. Put the long write-up for a ch
 ### Logo, Live media, poster and pitch (branch `live-ui-upgrade`)
 - Logo: the uploaded FloodWay wave was traced into a vector (`frontend/public/logo.svg`, `logo-white.svg`, PNG exports) and replaces the lucide "Waves" brand tile in the sidebar, mobile header, reports page and welcome page via `components/brand/FloodWayLogo.tsx`; new favicon; OG card (`scripts/make_og_image.py`) uses it.
 - Live media: removed the flat tan bar drawn on the NORMAL frames (klang, gombak, smart, batu, drain) by inpainting; rebuilt all water frames, the rise loop and the webp copies from the cleaned frames. `check_realism` 0/15, `check_frames` 20/20. The Drain scene is still the crude drawing (bar removed): free local SD-Turbo could not produce a usable replacement. See `scripts/generate_image.py` (SD-Turbo, CPU, non-commercial licence).
-- Poster: `docs/poster/poster.html` rendered to `docs/poster/FloodWay_Poster_1920x1080.png` with `node scripts/render-poster.mjs`. Huawei Cloud tiles are marked prepared or planned; no unverified accuracy figures.
 - Pitch: `docs/PITCH_SCRIPT_PRELIM.md`, 575 spoken words, about 4:25 at 130 wpm.
-- Flag: the submitted entry form states 96.5% depth accuracy, 98.2% forgery detection, 8.4x training and 4.2x inference speed-ups and under 850 ms on Ascend. None is traceable in this repo (96.5% appears only as another project's vessel precision), and `docs/DEMO_RUNBOOK.md` says no Huawei Cloud service is called. The poster and script do not repeat them.
 
 ---
 

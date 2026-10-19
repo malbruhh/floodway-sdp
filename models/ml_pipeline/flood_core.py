@@ -1,6 +1,6 @@
 """flood_core.py - single source of truth for features, model and inference.
 
-Used by: training notebook, ModelArts customize_service.py, FastAPI fallback.
+Used by: training notebook, FastAPI fallback.
 Contract (oldest -> newest, 15-minute steps):
     rain_mm : 24 floats   rainfall per 15-min step
     level_m : 24 floats   water depth at the sensor / gauge datum, metres

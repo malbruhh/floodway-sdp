@@ -457,7 +457,6 @@ print(np.percentile(std[y0:y1, 150:480], [50, 90, 95]))
 - [ ] **Step 2:** Update the comment in `frontend/src/lib/vision/demoMedia.ts:2` to point at `docs/plans/GEMINI_LIVE_MEDIA_V2.md`.
 - [ ] **Step 3:** Run `powershell -File scripts/check.ps1`. Expected: `All checks passed.`
 - [ ] **Step 4:** Add the results (check numbers, branch, date) to `docs/ai/PROGRESS.md` under "Done", and move this plan's row in "Open work" to done.
-- [ ] **Step 5:** Re-render the poster so its Live Vision screenshot shows the new frames: `node scripts/render-poster.mjs` (after re-capturing screenshots per `docs/ai/PROGRESS.md`, "Poster").
 
 ---
 

@@ -91,7 +91,7 @@ const html = `<!doctype html>
    CONFIG — Claims policy and booth parameters
    ===================================================================== */
 const CONFIG = {
-  SITE_URL: 'floodway-huawei.pages.dev',
+  SITE_URL: 'floodway.pages.dev',
   CHAIN: [
     'Rain and water data',
     'Forecast service',

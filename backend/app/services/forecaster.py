@@ -1,15 +1,10 @@
 import os
 import math
 import numpy as np
-import httpx
-from app.config import HUAWEI_MODELARTS_ENDPOINT, HUAWEI_MODELARTS_APP_KEY
 
 class Forecaster:
     def __init__(self):
-        self.endpoint = HUAWEI_MODELARTS_ENDPOINT
-        self.key = HUAWEI_MODELARTS_APP_KEY
-        # Honest label: this class evaluates a hand-written hydrologic formula (below). It is not a trained GRU, and it only
-        # calls a ModelArts endpoint if one is configured and implemented, which it is not.
+        # Honest label: this class evaluates a hand-written hydrologic formula (below). It is not a trained GRU.
         self.source = "Rule-based hydrologic estimate (not a trained model)"
 
     async def predict_horizon(self, current_level_m: float, rainfall_rate_mm: float) -> dict:

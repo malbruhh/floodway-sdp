@@ -4,7 +4,7 @@
    ===================================================================== */
 const TL = /*__TIMELINE__*/null;
 const CONFIG = {
-  SITE_URL: 'floodway-huawei.pages.dev',
+  SITE_URL: 'floodway.pages.dev',
   CHAIN: ['RAIN + WATER DATA', 'FORECAST SERVICE', 'YOUR ROUTE + ALERTS']
   // Claims policy (BRIEF.md): no performance metrics are shown. The only numbers on screen are the twin's
   // 0.00-0.30 m gauge and the app's shelter card "~7 min · 1.2 km". audit-claims.mjs enforces this.

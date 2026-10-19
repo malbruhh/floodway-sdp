@@ -65,7 +65,7 @@ d.rounded_rectangle((x, 466, x + 470, 548), radius=14, fill=(40, 30, 6), outline
 note = font("segoeuib.ttf", 22)
 d.text((x + 18, 480), "Sample imagery. Simulated data.", font=note, fill=(253, 224, 71))
 d.text((x + 18, 512), "Not real camera footage.", font=font("segoeui.ttf", 22), fill=(253, 224, 71))
-d.text((x, 575), "Prototype for the Huawei ICT Competition 2026", font=font("segoeui.ttf", 22), fill=MUTED)
+d.text((x, 575), "Prototype for the Sime Darby Property University Hackathon 2026", font=font("segoeui.ttf", 22), fill=MUTED)
 
 OUT.parent.mkdir(parents=True, exist_ok=True)
 quality = 88

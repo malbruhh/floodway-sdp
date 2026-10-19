@@ -1,7 +1,7 @@
 import html
 import httpx
 import logging
-from app.config import TELEGRAM_BOT_TOKEN, TELEGRAM_DEFAULT_CHAT_ID, HUAWEI_SMN_TOPIC_URN
+from app.config import TELEGRAM_BOT_TOKEN, TELEGRAM_DEFAULT_CHAT_ID
 
 logger = logging.getLogger("FloodWayNotifier")
 
@@ -9,7 +9,6 @@ class Notifier:
     def __init__(self):
         self.tg_token = TELEGRAM_BOT_TOKEN
         self.tg_chat_id = TELEGRAM_DEFAULT_CHAT_ID
-        self.smn_urn = HUAWEI_SMN_TOPIC_URN
 
     async def send_telegram(self, text: str, chat_id: str | None = None) -> bool:
         target = chat_id or self.tg_chat_id

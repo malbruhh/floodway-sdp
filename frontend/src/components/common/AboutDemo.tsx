@@ -27,7 +27,7 @@ export function AboutDemo({ tone = 'light', className = '' }: Props) {
           Every sample camera is labelled SAMPLE and the loop is labelled PLAYBACK.
         </li>
         <li>Sensor counts, river levels, rainfall and the forecast are simulated examples. The forecast is a simple formula, not a trained model.</li>
-        <li>Reports are examples or unverified citizen submissions. No agency or Huawei service verifies, certifies or supplies any data shown.</li>
+        <li>Reports are examples or unverified citizen submissions. No agency or cloud service verifies, certifies or supplies any data shown.</li>
         <li>Routes are approximate straight-line detours, not road-aware navigation.</li>
         <li>Map data &copy; OpenStreetMap contributors.</li>
       </ul>

@@ -6,10 +6,10 @@ What is here, what it does, and what the app really uses. Checked 2026-10-12 by 
 
 | Folder | What it is | Used by the app? |
 |---|---|---|
-| `ml_pipeline/` | Water-level forecaster: `flood_core.py` (GRU, features, `FloodPredictor`), notebooks `nb1_data.py` to `nb4_terrain.py`, trained weights in `model_out/`, a ModelArts serving package in `modelarts_pkg/`, `terrain.json` | **No.** Nothing in `backend/` imports it |
+| `ml_pipeline/` | Water-level forecaster: `flood_core.py` (GRU, features, `FloodPredictor`), notebooks `nb1_data.py` to `nb4_terrain.py`, trained weights in `model_out/`, `terrain.json` | **No.** Nothing in `backend/` imports it |
 | `legacy_ann/` | First model: a Keras ANN (`flood_detector.h5`, 8 KB `.tflite`) on the monthly rainfall CSV in `datasets/` | No. Kept as history |
 
-Two byte-identical copies of the weights and the ModelArts package used to sit beside `ml_pipeline/` (`pytorch_gru/`, `modelarts_pkg/`). They are in `docs/_to-delete/models-duplicates/`.
+Byte-identical copies of the weights used to sit beside `ml_pipeline/` (`pytorch_gru/`). They are in `docs/_to-delete/models-duplicates/`.
 
 ## The GRU forecaster (`ml_pipeline/flood_core.py`)
 
@@ -38,5 +38,5 @@ A scale mismatch to resolve before wiring: `nb2_train.py` uses `DANGER_M = 0.30`
 
 1. Add `FloodPredictor` to `forecaster.py` behind a `try`, with the formula as fallback and the label switched to "GRU, synthetic weights" while the weights are synthetic. Test both paths.
 2. Get real gauge and rainfall data (JPS export or the ESP32 log), run `nb1` and `nb2`, publish measured onset recall.
-3. Deploy `modelarts_pkg/` to Huawei ModelArts so "designed for Huawei Cloud" can become "calls Huawei Cloud".
+3. Host the forecaster inside the backend (or any inference endpoint) once it is trained on real data.
 4. Retire `legacy_ann/` once nobody needs it. Its 62.7% accuracy on 825 district-year rows (2000 to 2010) cannot say anything about flash floods.
