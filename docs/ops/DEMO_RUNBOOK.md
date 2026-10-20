@@ -97,8 +97,8 @@ notifications allowed for the site; a screen recording of the full five-minute p
    upfront that the water overlay is synthetic.
 2. **The analyser is validated only on those synthetic scenes.** Do not claim real-world accuracy.
 3. **`/studio` (3D)** logs a `THREE.Clock` deprecation from inside a library. Harmless; not fixable in app code.
-4. **IoT ingest** (`/api/v1/telemetry/ingest`) accepts readings without a signature when none is sent, and the default device
-   secrets are in `backend/app/config.py`. Not changed here. Do not expose it publicly.
+4. **IoT ingest** (`/api/v1/telemetry/ingest`) now rejects unsigned readings (401) for devices with a secret. The default device
+   secrets are still in `backend/app/config.py`. Do not expose it publicly.
 5. **Report photos** are example photographs that do not show the places named. Replace them before any public showing.
 6. **Routes are stored, not live.** Only the 7 start points and 8 relief centres have road routes; there is no traffic. Alternatives come from OSRM and some pairs have only one.
 
