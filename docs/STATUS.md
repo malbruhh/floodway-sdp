@@ -38,7 +38,7 @@ The JPS Selangor public API (`infobanjirjps.selangor.gov.my/JPSAPI/api/`) is **r
 2. Hand-calibrate 3 to 5 JPS cameras with a dry reference frame so at least a few show a real AI level.
 3. Township layer: one JSON file of boundary, cameras, shelters and flood areas, with a selector.
 4. Estate-manager page (alerts and open reports for one township) and a resilience dashboard (events, lead time, alerts sent), plus a "loss avoided" estimate that shows its formula and is labelled illustrative.
-5. Cheap fixes a judge could trip on: require the signature on `/ingest`, range-check `/predict`, fix the Home forecast card that contradicts itself, return 404 for an unknown shelter.
+5. ~~Cheap fixes~~ done 2026-10-21: `/ingest` needs the HMAC signature, `/predict` range-checked, unknown shelter returns 404, Home forecast card no longer says "no sensor is reporting" about a seeded value.
 6. Proposal write-up and a short screen recording of the demo path.
 
 After 23 Oct if time: Bahasa Malaysia toggle, alert feedback, touch targets under 44 px, hosting, GRU wiring, learned water segmenter.

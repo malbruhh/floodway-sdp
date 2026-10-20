@@ -33,8 +33,8 @@ def ingest_sensor_reading(p: IngestPayload):
     if not dev:
         raise HTTPException(404, f"Unknown device {p.device_id}")
 
-    # Optional signature check if secret is set and provided
-    if dev.get("secret") and p.sig:
+    # A device with a secret must sign every reading.
+    if dev.get("secret"):
         expected_msg = f"{p.device_id}.{p.ts}.{p.distance_cm:.1f}".encode()
         good_sig = hmac.new(dev["secret"].encode(), expected_msg, hashlib.sha256).hexdigest()
         if not hmac.compare_digest(good_sig, p.sig):

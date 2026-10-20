@@ -65,7 +65,7 @@ function Chart({ data }: { data: ForecastResponse }) {
         {toDanger !== null
           ? <>In this simulation the level reaches <b className="tabular-nums">{DANGER_M.toFixed(2)} m</b> in about <b className="tabular-nums">{toDanger} min</b>.</>
           : <>In this simulation the level stays below <b className="tabular-nums">{DANGER_M.toFixed(2)} m</b> for the next 2 hours.</>}{' '}
-        Starting level <span className={num}>{data.water_level_m.toFixed(2)} m</span> is a simulated default; no sensor is reporting.
+        Starting level <span className={num}>{data.water_level_m.toFixed(2)} m</span> is a seeded demo value, not a live sensor reading.
       </p>
       <svg viewBox={`0 0 ${W} ${H}`} width={W} height={H} className="mt-3 block w-full" role="img" aria-label={`Forecast of river level for the next two hours. Middle estimate rises from ${f.p50[0].toFixed(2)} to ${f.p50[f.p50.length - 1].toFixed(2)} metres. Simulated.`}>
         {[WARNING_M, DANGER_M].map((v, i) => (

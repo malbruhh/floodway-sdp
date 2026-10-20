@@ -1,16 +1,5 @@
-# FloodWay: team summary
-
-For the team, 2026-10-20. Sime Darby Property University Hackathon 2026, "Township of Tomorrow". The submission is a **proposal with a presentation slide deck and a video**; the prototype only has to be convincing, not finished.
-
-**One line:** FloodWay turns public river cameras into a township flood early-warning and evacuation tool: see the water, warn people early, route them to safety.
-
-## 1. What we submit
-
-| Item | Due | Notes |
-|---|---|---|
-| Proposal (slides + video) | 23 Oct 2026 | Judged by experts; top 10 announced 28 Oct |
-| Final submission | 11 Nov 2026 | Working demo of how it would run in a township |
-| Pitch day (top 10) | 14 Nov 2026 | Covers the mechanism (how it works, who benefits) and the enabler (technology, township scale) |
+# FloodWay
+## 1. What should be submitted
 
 Judging weights: Impact and sustainability 25%, Innovation 20%, Feasibility 20%, Strategic fit 15%, Commercial value 10%, Team, evidence and pitch 10%. (Check dates on the [official page](https://www.simedarbyproperty.com/universityhackathon/); one news source gives different ones.)
 
@@ -28,24 +17,24 @@ Judging weights: Impact and sustainability 25%, Innovation 20%, Feasibility 20%,
 
 Status: **Already** = works in the code today. **Needs refinement** = exists but simulated, incomplete or buggy. **Proposed** = not built; the roadmap we show before a real deployment.
 
-| # | Feature | Status | SDP fit |
-|---|---|---|---|
-| 1 | JPS Selangor camera wall (80 cameras, by district) and map dots, real public snapshots, image only | Already | People: safety. Real data |
-| 2 | Live Vision: camera frame to level (NORMAL / ADVISORY / WARNING / DANGER), trend, alerts | Already on 5 AI-generated sample cameras. Needs refinement for JPS photos (dry reference frame and hand calibration per camera) | Planet: climate resilience |
-| 3 | Alerts: in-app, browser, Telegram; family SOS and arrival check-in | Already (Telegram needs a bot token) | People: safety |
-| 4 | Evacuation map and turn-by-turn, route bends around flood zones | Already. Needs refinement: 8 demo shelters, 16 hand-placed flood areas, one hardcoded street name | People: safety, mobility |
-| 5 | Citizen flood reports with optional AI photo check | Already. Needs refinement: write protection, moderation | People: community |
-| 6 | Home dashboard (risk, forecast, river trend, capacity) | Needs refinement: numbers are simulated | People: digital living |
-| 7 | 2-hour forecast | Needs refinement: a formula, labelled "not a trained model" | Planet: climate resilience |
-| 8 | ESP32 sensor ingest and CSV export | Needs refinement: require the signature | Planet: water |
-| 9 | Real rainfall and river inputs (JPS stations, Open-Meteo, MetMalaysia warnings) | Proposed | Evidence, feasibility |
-| 10 | Calibrated AI water level on a pilot of 3 to 5 JPS cameras, cross-checked with the nearest JPS river station | Proposed | Innovation |
-| 11 | Township layer: one SDP township (boundary, cameras, shelters, flood areas) with a selector | Proposed | Strategic fit, township scale |
-| 12 | Estate-manager page and building or basement risk panel (for example 110 cm electrical shut-off) | Proposed | People: safety and security |
-| 13 | Resilience dashboard: events detected, warning lead time, alerts sent, reports resolved; CSV or PDF export; "loss avoided" estimate with a visible formula, labelled illustrative | Proposed | Impact, commercial value |
-| 14 | Bahasa Malaysia, alert subscription by township, "was this alert useful?", report status, touch-target fixes | Proposed | People: accessibility and inclusion |
-| 15 | Learned water segmentation for any camera | Proposed (needs labelled frames) | Innovation |
-| 16 | Hosting, persistence, hardened write routes | Proposed | Feasibility |
+| #   | Feature                                                                                                                                                                           | Status                                                                                                                          | SDP fit                             |
+| --- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| 1   | JPS Selangor camera wall (80 cameras, by district) and map dots, real public snapshots, image only                                                                                | Already                                                                                                                         | People: safety. Real data           |
+| 2   | Live Vision: camera frame to level (NORMAL / ADVISORY / WARNING / DANGER), trend, alerts                                                                                          | Already on 5 AI-generated sample cameras. Needs refinement for JPS photos (dry reference frame and hand calibration per camera) | Planet: climate resilience          |
+| 3   | Alerts: in-app, browser, Telegram; family SOS and arrival check-in                                                                                                                | Already (Telegram needs a bot token)                                                                                            | People: safety                      |
+| 4   | Evacuation map and turn-by-turn, route bends around flood zones                                                                                                                   | Already. Needs refinement: 8 demo shelters, 16 hand-placed flood areas, one hardcoded street name                               | People: safety, mobility            |
+| 5   | Citizen flood reports with optional AI photo check                                                                                                                                | Already. Needs refinement: write protection, moderation                                                                         | People: community                   |
+| 6   | Home dashboard (risk, forecast, river trend, capacity)                                                                                                                            | Needs refinement: numbers are simulated                                                                                         | People: digital living              |
+| 7   | 2-hour forecast                                                                                                                                                                   | Needs refinement: a formula, labelled "not a trained model"                                                                     | Planet: climate resilience          |
+| 8   | ESP32 sensor ingest and CSV export                                                                                                                                                | Needs refinement: require the signature                                                                                         | Planet: water                       |
+| 9   | Real rainfall and river inputs (JPS stations, Open-Meteo, MetMalaysia warnings)                                                                                                   | Proposed                                                                                                                        | Evidence, feasibility               |
+| 10  | Calibrated AI water level on a pilot of 3 to 5 JPS cameras, cross-checked with the nearest JPS river station                                                                      | Proposed                                                                                                                        | Innovation                          |
+| 11  | Township layer: one SDP township (boundary, cameras, shelters, flood areas) with a selector                                                                                       | Proposed                                                                                                                        | Strategic fit, township scale       |
+| 12  | Estate-manager page and building or basement risk panel (for example 110 cm electrical shut-off)                                                                                  | Proposed                                                                                                                        | People: safety and security         |
+| 13  | Resilience dashboard: events detected, warning lead time, alerts sent, reports resolved; CSV or PDF export; "loss avoided" estimate with a visible formula, labelled illustrative | Proposed                                                                                                                        | Impact, commercial value            |
+| 14  | Bahasa Malaysia, alert subscription by township, "was this alert useful?", report status, touch-target fixes                                                                      | Proposed                                                                                                                        | People: accessibility and inclusion |
+| 15  | Learned water segmentation for any camera                                                                                                                                         | Proposed (needs labelled frames)                                                                                                | Innovation                          |
+| 16  | Hosting, persistence, hardened write routes                                                                                                                                       | Proposed                                                                                                                        | Feasibility                         |
 
 ## 3. Public data we use or plan to use
 
@@ -58,7 +47,7 @@ Status: **Already** = works in the code today. **Needs refinement** = exists but
 | Open-Meteo | Hourly rain and forecast for a point | Checked reachable; not used yet |
 | OpenStreetMap | Map tiles, road routes (computed in advance) | Used |
 
-Rules we follow: read-only requests, one cached backend call instead of one per visitor, refresh no faster than every 60 to 120 seconds, clear attribution on screen, no credentials, no reuse of keys found on JPS pages. JPS publishes no terms for this API, so we ask permission before any real deployment.
+	Rules we follow: read-only requests, one cached backend call instead of one per visitor, refresh no faster than every 60 to 120 seconds, clear attribution on screen, no credentials, no reuse of keys found on JPS pages. JPS publishes no terms for this API, so we ask permission before any real deployment.
 
 ## 4. What to say, and what not to say
 
