@@ -1,41 +1,12 @@
 import { Shelter, CitizenReport, ForecastData } from '../types';
 import { mapReport, mapShelter } from '../lib/mappers';
 import { API_BASE } from './vision/config';
+import { authHeaders } from './auth';
 import klShelters from '../data/kl_shelters.json';
 
 // One backend address for everything: VITE_API_BASE, or http://localhost:8080 in development. (This used to be a
 // hard-coded localhost:8080, so a deployment that set VITE_API_BASE reached the wrong server for shelters and reports.)
 const BACKEND_URL = `${API_BASE}/api/v1`;
-
-export async function fetchTwinState(deviceId = 'fw-node-01') {
-  try {
-    const res = await fetch(`${BACKEND_URL}/twin/state?device_id=${deviceId}`, { signal: AbortSignal.timeout(3000) });
-    if (res.ok) return await res.json();
-  } catch (e) {
-    // Graceful fallback to calibrated default
-  }
-  return {
-    device_id: deviceId,
-    station_name: 'Kampung Baru Station (Klang River)',
-    water_level_m: 1.20,
-    water_depth_cm: 120.0,
-    rainfall_rate_mm_hr: 95.0,
-    phase: 'DANGER',
-    is_stale: false,
-    forecast: {
-      source: 'Rule-based hydrologic estimate (not a trained model)',
-      horizons_min: [0, 15, 30, 45, 60, 90, 120],
-      p10: [1.20, 1.25, 1.34, 1.45, 1.55, 1.68, 1.75],
-      p50: [1.20, 1.31, 1.48, 1.58, 1.65, 1.82, 1.91],
-      p90: [1.20, 1.38, 1.59, 1.72, 1.81, 2.05, 2.18],
-      peak_level_m: 1.91,
-      time_to_peak_min: 120,
-      time_to_danger_min: 45,
-      confidence_score: 0.88,
-      method: 'Hand-written hydrologic formula on simulated input. Not a trained or validated model.'
-    }
-  };
-}
 
 export async function fetchShelters(): Promise<Shelter[]> {
   try {
@@ -48,6 +19,31 @@ export async function fetchShelters(): Promise<Shelter[]> {
 
   // Offline fallback: the same Kuala Lumpur demo list the backend serves (a test keeps the two identical).
   return (klShelters as Record<string, unknown>[]).map((r) => mapShelter(r));
+}
+
+/** Saves a citizen report on the server. Returns null when the server did not accept it (the report then lives on this device only). */
+export async function submitReport(r: CitizenReport): Promise<CitizenReport | null> {
+  try {
+    const res = await fetch(`${BACKEND_URL}/reports`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...authHeaders() },
+      body: JSON.stringify({
+        title: r.title.slice(0, 120),
+        location: r.location.slice(0, 120),
+        lat: r.lat,
+        lon: r.lon,
+        water_depth_cm: r.waterDepthCm,
+        author: r.author.slice(0, 60),
+        description: (r.description ?? '').slice(0, 500),
+        status: r.status === 'AI_VERIFIED' ? 'AI_VERIFIED' : 'UNDER_REVIEW',
+      }),
+      signal: AbortSignal.timeout(5000),
+    });
+    if (!res.ok) return null;
+    return mapReport((await res.json()).report);
+  } catch {
+    return null;
+  }
 }
 
 export async function fetchReports(): Promise<CitizenReport[]> {
@@ -90,7 +86,7 @@ export interface ForecastResponse {
 }
 
 /**
- * The backend's forecast, or null when it cannot be had. Unlike fetchTwinState there is deliberately no built-in
+ * The backend's forecast, or null when it cannot be had. There is deliberately no built-in
  * fallback: the Home screen shows an error state instead of numbers the server never produced.
  */
 export async function fetchForecast(): Promise<ForecastResponse | null> {

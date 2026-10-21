@@ -6,7 +6,6 @@ load_dotenv()
 
 HOST = os.getenv("HOST", "0.0.0.0")
 PORT = int(os.getenv("PORT", "8080"))
-DEV_AUTH = os.getenv("DEV_AUTH", "1") == "1"
 
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
 TELEGRAM_DEFAULT_CHAT_ID = os.getenv("TELEGRAM_DEFAULT_CHAT_ID", "")
@@ -40,11 +39,5 @@ try:
 except Exception:
     DEVICES = DEFAULT_DEVICES
 
-try:
-    FAMILY = json.loads(os.getenv("FAMILY", "{}"))
-except Exception:
-    FAMILY = {"default": ["+60123456789"]}
-
 STALE_AFTER_SECONDS = 600
 MAX_SKEW_SECONDS = 120
-SOS_MIN_GAP_SECONDS = 30

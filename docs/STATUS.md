@@ -1,6 +1,6 @@
 # FloodWay: status (read this first)
 
-Updated 2026-10-19. Sime Darby Property University Hackathon: proposal 23 Oct, prototype and final submission 11 Nov, pitch day 14 Nov. A working prototype is enough; it does not need to be a finished system.
+Updated 2026-10-21. Sime Darby Property University Hackathon: proposal, prototype, slides and video are all submitted 23 Oct (slides and video are done); pitch day 14 Nov. The submitted prototype is what judges see: changes after 23 Oct are for the pitch demo only, so do not break the demo path.
 
 **What it is:** a flood early-warning and evacuation prototype for the Klang Valley. Cameras give a water level, the app alerts residents and routes them to shelter around flooded roads. FastAPI backend (in-memory and file state) and a React 19 / Vite / Tailwind 4 frontend.
 
@@ -32,21 +32,31 @@ The JPS Selangor public API (`infobanjirjps.selangor.gov.my/JPSAPI/api/`) is **r
 | Stale and bad data | n/a | Show age of last frame; drop cameras with `isEnabled` false or lat/lon 0,0 |
 | Permission | n/a | Undocumented API, no stated terms: attribute "JPS Selangor public snapshots", poll no faster than every 60 to 120 s, say in the proposal that access is unofficial |
 
-## Fix before the 23 Oct proposal (in order)
+## Before the 23 Oct submission, then for the 14 Nov pitch (ranked by the judging weights)
 
-1. ~~JPS camera layer~~ done: `backend/app/services/jps_client.py` (cache, image proxy, host lock), `/api/v1/jps/*`, `/jps` page, map dots. Map dots were fetched but not seen on screen: zoom the Map out to Selangor and check.
-2. Hand-calibrate 3 to 5 JPS cameras with a dry reference frame so at least a few show a real AI level.
-3. Township layer: one JSON file of boundary, cameras, shelters and flood areas, with a selector.
-4. Estate-manager page (alerts and open reports for one township) and a resilience dashboard (events, lead time, alerts sent), plus a "loss avoided" estimate that shows its formula and is labelled illustrative.
-5. ~~Cheap fixes~~ done 2026-10-21: `/ingest` needs the HMAC signature, `/predict` range-checked, unknown shelter returns 404, Home forecast card no longer says "no sensor is reporting" about a seeded value.
-6. Proposal write-up and a short screen recording of the demo path.
+Weights: Impact and sustainability 25%, Innovation 20%, Feasibility 20%, Strategic fit 15%, Commercial value 10%, Team, evidence and pitch 10%. Each item shows what it scores. Slides and video are done. Only what is built and working in the prototype by 23 Oct can be claimed in them; anything after that is pitch-day extra.
 
-After 23 Oct if time: Bahasa Malaysia toggle, alert feedback, touch targets under 44 px, hosting, GRU wiring, learned water segmenter.
+1. ~~Proposal write-up, slides and demo video~~ done (impact case, honesty lines, demo recording). Re-check the slides against the prototype before submitting: every claim must match what the app does.
+2. **Resilience dashboard and "loss avoided" estimate** (impact 25%, commercial 10%). Events caught, lead time, alerts sent, households routed to shelter, CSV export for ESG reporting. The estimate shows its formula and is labelled illustrative. No figure without a stated method.
+3. **Hand-calibrate 3 to 5 JPS cameras** with a dry reference frame (innovation 20%, feasibility 20%). The only item that turns the demo from generated images into a real reading on a real river. Only counts toward the 23 Oct submission if it works in the prototype by then; otherwise it is a pitch-day demo item.
+4. **Township layer** (strategic fit 15%). One JSON file of boundary, cameras, shelters and flood areas, with a selector. This is the unit SDP would deploy to, and it feeds item 5.
+5. **Estate-manager page and building or basement risk panel** (strategic fit 15%, commercial 10%). Alerts and open reports for one township; the person who would pay for it.
+6. **Real rainfall inputs** (feasibility 20%): Open-Meteo and MetMalaysia warnings into the forecast, still labelled a formula.
+
+Done:
+- ~~JPS camera layer~~: `backend/app/services/jps_client.py` (cache, image proxy, host lock), `/api/v1/jps/*`, `/jps` page, map dots. Map dots were fetched but not seen on screen: zoom the Map out to Selangor and check.
+- ~~Fix 1~~ test run is real: `backend/.venv` is Python 3.12, `asyncio_mode` line removed from pytest.ini (no async tests), check.ps1 green.
+- ~~Fix 2~~ per-device sensor thresholds, `/ingest` rejects stale (400) and replayed (409) readings, PhaseMachine steps down one level at a time, forecaster takes the device danger line. Seed reading is now 0.80 m.
+- ~~Fix 3~~ all-clear event (`kind: "all_clear"`) when a camera steps from WARNING/DANGER to below WARNING: sent to Telegram without cooldown, shown green in Recent alerts and the toast.
+- ~~Fix 4~~ citizen reports save to `POST /api/v1/reports` (write token, rate limit, field limits, client may only claim UNDER_REVIEW or AI_VERIFIED, no photo stored server-side); the browser falls back to device-only with a visible note.
+- ~~Fix 5~~ dead code removed: AppContext `waterLevelM`/`floodPhase`, `fetchTwinState`, backend `/sos` routes and notifier SOS/check-in templates (and their test), unused config values.
+- ~~Fix 6~~ Map flood scenario follows the highest camera level (`scenarioFromLevel`); manual Normal/Warning/Danger still overrides, an Auto button returns; camera level changes no longer reset a drive in progress.
+- ~~Cheap fixes~~ (2026-10-21): `/ingest` needs the HMAC signature, `/predict` range-checked, unknown shelter returns 404, Home forecast card no longer says "no sensor is reporting" about a seeded value.
+
+After submission, if time: Bahasa Malaysia toggle, alert feedback, touch targets under 44 px, hosting, GRU wiring, learned water segmenter.
 
 ## Known problems
 
-- `backend/.venv` is Python 3.9 and cannot run the app (`float | None`). Use Python 3.12.
-- `POST /reports` has no write token; a photo-less report gets a stock image.
 - Navigation hardcodes "Jalan Raja Muda"; the Home route is a straight-line detour, the Map route is road-based.
 - Leaked OpenRouter key and Telegram bot token are still not rotated.
 - `models/ml_pipeline` (GRU, synthetic data) and `models/legacy_ann` are not used by the app.
@@ -55,5 +65,5 @@ After 23 Oct if time: Bahasa Malaysia toggle, alert feedback, touch targets unde
 
 - Backend: `cd backend; python run.py` (Python 3.12, port 8080). Env template: `backend/.env.example`. Never read `backend/.env` into chat.
 - Frontend: `cd frontend; npm install; npm run dev` (port 5173).
-- All checks: `powershell -File scripts/check.ps1`. Last run: backend 130 passed, frontend 123 passed.
+- All checks: `powershell -File scripts/check.ps1`. Last run (2026-10-21, `backend/.venv` rebuilt on Python 3.12): backend 140 passed, frontend check passes.
 - Demo script and "what is real" table: `docs/ops/DEMO_RUNBOOK.md`.

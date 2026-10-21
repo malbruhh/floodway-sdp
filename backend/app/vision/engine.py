@@ -261,11 +261,16 @@ class VisionEngine:
             rec.readings.append(reading)
 
             alert = None
-            if changed and rank(level) > rank(previous) and rank(level) >= rank(Level.WARNING):
+            escalated = changed and rank(level) > rank(previous) and rank(level) >= rank(Level.WARNING)
+            # The tracker steps down one level at a time, so this fires once, on WARNING -> ADVISORY.
+            all_clear = changed and rank(previous) >= rank(Level.WARNING) and rank(level) < rank(Level.WARNING)
+            if escalated or all_clear:
                 alert = AlertEvent(
                     id=f"alt-{uuid.uuid4().hex[:8]}", camera_id=rec.id, camera_name=rec.name, level=level,
                     water_ratio=reading.water_ratio, timestamp=reading.timestamp,
-                    message=f"{rec.name} reached {level.value} ({round(reading.water_ratio * 100)}% of bank height)",
+                    kind="all_clear" if all_clear else "alert",
+                    message=(f"{rec.name} is back below the warning line ({level.value})" if all_clear
+                             else f"{rec.name} reached {level.value} ({round(reading.water_ratio * 100)}% of bank height)"),
                 )
                 self.alerts.appendleft(alert)
             return reading, alert

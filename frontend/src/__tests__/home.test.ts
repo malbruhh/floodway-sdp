@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { cameraCounts, districtRisk, freshness, heroSentence, highestRisk, newestReadingAt, overallLevel } from '../lib/home';
+import { cameraCounts, districtRisk, freshness, heroSentence, highestRisk, newestReadingAt, overallLevel, scenarioFromLevel } from '../lib/home';
 import type { Camera, Level, Reading } from '../types/vision';
 
 const CAL = { roi: [[0.2, 0.3], [0.8, 0.3], [0.8, 0.9], [0.2, 0.9]] as [number, number][], lines: { normal: 0.78, warning: 0.6, danger: 0.35 } };
@@ -85,5 +85,15 @@ describe('nearestOpenShelter', async () => {
     nearestOpenShelter(list);
     expect(list.map((x) => x.id)).toEqual(['a', 'b']);
     expect(nearestOpenShelter([])).toBeUndefined();
+  });
+});
+
+describe('scenarioFromLevel', () => {
+  it('maps camera levels to the map scenario', () => {
+    expect(scenarioFromLevel('DANGER')).toBe('danger');
+    expect(scenarioFromLevel('WARNING')).toBe('warning');
+    expect(scenarioFromLevel('ADVISORY')).toBe('normal');
+    expect(scenarioFromLevel('NORMAL')).toBe('normal');
+    expect(scenarioFromLevel(null)).toBe('normal');
   });
 });

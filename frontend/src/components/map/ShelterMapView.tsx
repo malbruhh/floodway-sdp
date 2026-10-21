@@ -22,6 +22,8 @@ import { ORIGINS, originForLocation } from '../../data/klDemo';
 import { formatCapacity, formatMin } from '../../lib/format';
 import type { TravelMode } from '../../lib/mappers';
 import { etaMin, lineLengthM, pointAtDistance, rankRoutes, stepAt, toRoadRoute, type LatLon, type RoadRoute, type ScoredRoute, type Zone } from '../../lib/routing';
+import { allSampleCameras, overallLevel, scenarioFromLevel } from '../../lib/home';
+import { useVisionStore } from '../../hooks/vision/useVisionStore';
 import { useVisionHazards } from '../../hooks/vision/useVisionHazards';
 import { useDriveSim } from '../../hooks/useDriveSim';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
@@ -62,7 +64,11 @@ export function ShelterMapView() {
   const desktop = useMediaQuery('(min-width: 768px)');
   const origin = originForLocation(selectedLocation);
   const [selectedId, setSelectedId] = useState('shelter-01');
-  const [scenario, setScenario] = useState<Scenario>('warning');
+  // The flood areas follow the cameras unless the user picks a scenario by hand.
+  const { cameras } = useVisionStore();
+  const auto = scenarioFromLevel(overallLevel(cameras));
+  const [override, setOverride] = useState<Scenario | null>(null);
+  const scenario = override ?? auto;
   const [filter, setFilter] = useState<ShelterFilter>('all');
   const [mode, setMode] = useState<TravelMode>('car');
   const [chosen, setChosen] = useState(0);
@@ -100,7 +106,6 @@ export function ShelterMapView() {
   const best = useMemo(() => Object.fromEntries(shelters.map((s) => [s.id, rankedFor(s.id)[0] ?? null])), [shelters, rankedFor]);
 
   // A different centre, start point or scenario starts again from the suggested route.
-  useEffect(() => setChosen(0), [selectedId, origin.id, scenario]);
   const route: ScoredRoute | null = alternatives[Math.min(chosen, alternatives.length - 1)] ?? null;
 
   // Simulated drive along the chosen road route.
@@ -118,6 +123,9 @@ export function ShelterMapView() {
       .catch(() => setArrival((a) => (a ? { ...a, telegram: { success: false } } : a)));
   }, [route, selected, setFamilySafetyStatus, user?.name]);
   const sim = useDriveSim(DRIVE_MS, onArrive);
+  // A camera level change must not reset the route in the middle of a simulated drive.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { if (!sim.active) setChosen(0); }, [selectedId, origin.id, scenario]);
 
   const travelled = route ? sim.progress * route.distanceM : 0;
   const car = useMemo(() => (route && sim.active ? pointAtDistance(route.line, sim.progress * lineLen).pos : null), [route, sim.active, sim.progress, lineLen]);
@@ -143,8 +151,11 @@ export function ShelterMapView() {
       scenario={scenario}
       onScenario={(s) => {
         sim.stop();
-        setScenario(s);
+        setOverride(s);
       }}
+      auto={override === null}
+      onAuto={() => setOverride(null)}
+      autoNote={allSampleCameras(cameras) ? 'Flood areas follow the highest camera level (sample cameras)' : 'Flood areas follow the highest camera level'}
       floodedCount={floodedZones(scenario).length}
       cameraZoneCount={cameraHazards.length}
       shelters={shelters}

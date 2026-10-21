@@ -118,3 +118,4 @@ class AlertEvent(BaseModel):
     water_ratio: float
     timestamp: str
     message: str
+    kind: Literal["alert", "all_clear"] = "alert"

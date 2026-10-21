@@ -9,32 +9,42 @@ Judging weights: Impact and sustainability 25%, Innovation 20%, Feasibility 20%,
 3. Read: camera frame to water level against calibrated lines (Live Vision demo, labelled sample).
 4. Warn: alert to phone and family check-in on Telegram.
 5. Evacuate: route to shelter that avoids flooded roads.
-6. Township view (proposed): one SDP township, building and basement risks, estate-manager page.
-7. Impact (proposed): resilience dashboard for ESG reporting.
+6. Impact (proposed): resilience dashboard for ESG reporting, loss-avoided estimate with its formula.
+7. Township view (proposed): one SDP township, building and basement risks, estate-manager page.
 8. Roadmap and ask: pilot with SDP on a few cameras, then scale.
 
 ## 2. Features and status
 
 Status: **Already** = works in the code today. **Needs refinement** = exists but simulated, incomplete or buggy. **Proposed** = not built; the roadmap we show before a real deployment.
 
-| #   | Feature                                                                                                                                                                           | Status                                                                                                                          | SDP fit                             |
-| --- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
-| 1   | JPS Selangor camera wall (80 cameras, by district) and map dots, real public snapshots, image only                                                                                | Already                                                                                                                         | People: safety. Real data           |
-| 2   | Live Vision: camera frame to level (NORMAL / ADVISORY / WARNING / DANGER), trend, alerts                                                                                          | Already on 5 AI-generated sample cameras. Needs refinement for JPS photos (dry reference frame and hand calibration per camera) | Planet: climate resilience          |
-| 3   | Alerts: in-app, browser, Telegram; family SOS and arrival check-in                                                                                                                | Already (Telegram needs a bot token)                                                                                            | People: safety                      |
-| 4   | Evacuation map and turn-by-turn, route bends around flood zones                                                                                                                   | Already. Needs refinement: 8 demo shelters, 16 hand-placed flood areas, one hardcoded street name                               | People: safety, mobility            |
-| 5   | Citizen flood reports with optional AI photo check                                                                                                                                | Already. Needs refinement: write protection, moderation                                                                         | People: community                   |
-| 6   | Home dashboard (risk, forecast, river trend, capacity)                                                                                                                            | Needs refinement: numbers are simulated                                                                                         | People: digital living              |
-| 7   | 2-hour forecast                                                                                                                                                                   | Needs refinement: a formula, labelled "not a trained model"                                                                     | Planet: climate resilience          |
-| 8   | ESP32 sensor ingest and CSV export                                                                                                                                                | Needs refinement: require the signature                                                                                         | Planet: water                       |
-| 9   | Real rainfall and river inputs (JPS stations, Open-Meteo, MetMalaysia warnings)                                                                                                   | Proposed                                                                                                                        | Evidence, feasibility               |
-| 10  | Calibrated AI water level on a pilot of 3 to 5 JPS cameras, cross-checked with the nearest JPS river station                                                                      | Proposed                                                                                                                        | Innovation                          |
-| 11  | Township layer: one SDP township (boundary, cameras, shelters, flood areas) with a selector                                                                                       | Proposed                                                                                                                        | Strategic fit, township scale       |
-| 12  | Estate-manager page and building or basement risk panel (for example 110 cm electrical shut-off)                                                                                  | Proposed                                                                                                                        | People: safety and security         |
-| 13  | Resilience dashboard: events detected, warning lead time, alerts sent, reports resolved; CSV or PDF export; "loss avoided" estimate with a visible formula, labelled illustrative | Proposed                                                                                                                        | Impact, commercial value            |
-| 14  | Bahasa Malaysia, alert subscription by township, "was this alert useful?", report status, touch-target fixes                                                                      | Proposed                                                                                                                        | People: accessibility and inclusion |
-| 15  | Learned water segmentation for any camera                                                                                                                                         | Proposed (needs labelled frames)                                                                                                | Innovation                          |
-| 16  | Hosting, persistence, hardened write routes                                                                                                                                       | Proposed                                                                                                                        | Feasibility                         |
+**Build priority** follows the judging weights above. Rank 1 is first. "Scores" names the criterion the item mainly earns.
+
+### Proposed, in build order
+
+| Rank | Feature | Scores | SDP fit |
+|---|---|---|---|
+| 1 | **Done.** Proposal, slides and demo video (impact case, sourced numbers only), submitted with the prototype on 23 Oct | Impact 25%, evidence and pitch 10% | All |
+| 2 | Resilience dashboard: events detected, warning lead time, alerts sent, households routed to shelter, reports resolved; CSV or PDF export; "loss avoided" estimate with a visible formula, labelled illustrative | Impact 25%, commercial 10% | ESG reporting |
+| 3 | Calibrated AI water level on a pilot of 3 to 5 JPS cameras, cross-checked with the nearest JPS river station | Innovation 20%, feasibility 20% | Real data, proof it works |
+| 4 | Township layer: one SDP township (boundary, cameras, shelters, flood areas) with a selector | Strategic fit 15% | Township scale |
+| 5 | Estate-manager page and building or basement risk panel (for example 110 cm electrical shut-off) | Strategic fit 15%, commercial 10% | People: safety and security |
+| 6 | Real rainfall and river inputs (JPS stations, Open-Meteo, MetMalaysia warnings) | Feasibility 20% | Evidence |
+| 7 | Bahasa Malaysia, alert subscription by township, "was this alert useful?", report status, touch-target fixes | Impact 25% (reach) | People: accessibility and inclusion |
+| 8 | Hosting, persistence, hardened write routes | Feasibility 20% | Deployability |
+| 9 | Learned water segmentation for any camera (needs labelled frames) | Innovation 20% | Scale |
+
+### Already built or needing refinement
+
+| Feature | Status | SDP fit |
+|---|---|---|
+| JPS Selangor camera wall (80 cameras, by district) and map dots, real public snapshots, image only | Already | People: safety. Real data |
+| Live Vision: camera frame to level (NORMAL / ADVISORY / WARNING / DANGER), trend, alerts | Already on 5 AI-generated sample cameras. Needs refinement for JPS photos (rank 3) | Planet: climate resilience |
+| Alerts: in-app, browser, Telegram; family SOS and arrival check-in | Already (Telegram needs a bot token) | People: safety |
+| Evacuation map and turn-by-turn, route bends around flood zones | Already. Needs refinement: 8 demo shelters, 16 hand-placed flood areas, one hardcoded street name | People: safety, mobility |
+| Citizen flood reports with optional AI photo check | Already. Needs refinement: write protection, moderation | People: community |
+| Home dashboard (risk, forecast, river trend, capacity) | Needs refinement: numbers are simulated | People: digital living |
+| 2-hour forecast | Needs refinement: a formula, labelled "not a trained model" | Planet: climate resilience |
+| ESP32 sensor ingest and CSV export | Already; ingest requires the signature (2026-10-21). Default device secret is still in `config.py` | Planet: water |
 
 ## 3. Public data we use or plan to use
 
@@ -59,7 +69,6 @@ Status: **Already** = works in the code today. **Needs refinement** = exists but
 
 - The JPS API is unofficial and can change or disappear without notice.
 - Reading water level from real photos is unproven: night infrared frames, lighting and moving plants break the simple method. We pilot a few cameras and label the result an estimate.
-- `backend/.venv` is Python 3.9 and cannot run the backend; use Python 3.12.
 - The OpenRouter key and Telegram bot token were once exposed and must be rotated.
 
 ## 6. Where things are

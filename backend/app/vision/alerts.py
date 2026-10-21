@@ -1,4 +1,4 @@
-"""Alert fan-out. The engine creates an AlertEvent when a camera escalates to WARNING or DANGER;
+"""Alert fan-out. The engine creates an AlertEvent when a camera escalates to WARNING or DANGER (or drops back below WARNING: an all-clear);
 the dispatcher decides whether to send it (cooldown) and pushes it to every channel."""
 from __future__ import annotations
 
@@ -40,6 +40,10 @@ class TelegramChannel:
     async def send(self, event: AlertEvent) -> None:
         icon = "DANGER" if event.level == Level.DANGER else "WARNING"
         text = (
+            f"<b>FloodWay ALL CLEAR</b>\n"
+            f"{html.escape(event.camera_name)}\n"
+            "Water is back below the warning line. Stay alert for official instructions."
+        ) if event.kind == "all_clear" else (
             f"<b>FloodWay {icon}</b>\n"
             f"{html.escape(event.camera_name)}\n"
             f"Water at {round(event.water_ratio * 100)}% of bank height.\n"
@@ -57,6 +61,8 @@ class AlertDispatcher:
         self._last: dict[str, tuple[Level, float]] = {}
 
     def should_send(self, event: AlertEvent, now: float | None = None) -> bool:
+        if event.kind == "all_clear":  # closing an alert is never rate limited
+            return True
         now = time.time() if now is None else now
         last = self._last.get(event.camera_id)
         if last is None:
@@ -69,7 +75,10 @@ class AlertDispatcher:
     async def dispatch(self, event: AlertEvent) -> bool:
         if not self.should_send(event):
             return False
-        self._last[event.camera_id] = (event.level, time.time())
+        if event.kind == "all_clear":
+            self._last.pop(event.camera_id, None)  # the next WARNING is a new event
+        else:
+            self._last[event.camera_id] = (event.level, time.time())
         for channel in self.channels:
             try:
                 await channel.send(event)

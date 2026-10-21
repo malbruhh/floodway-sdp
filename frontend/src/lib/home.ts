@@ -1,4 +1,5 @@
 // Pure logic behind the Home screen, kept out of the components so it can be tested.
+import type { Scenario } from '../components/map/FloodProneLayer';
 import type { Camera, Level } from '../types/vision';
 import { haversineKm, PLACES } from './vision/geo';
 import type { Place } from './vision/geo';
@@ -20,6 +21,11 @@ export function highestRisk(cameras: Camera[]): Camera | null {
 /** The overall level shown in the hero: the highest level among reporting cameras. */
 export function overallLevel(cameras: Camera[]): Level | null {
   return highestRisk(cameras)?.reading?.level ?? null;
+}
+
+/** The map's flood scenario that matches the cameras' overall level. */
+export function scenarioFromLevel(level: Level | null): Scenario {
+  return level === 'DANGER' ? 'danger' : level === 'WARNING' ? 'warning' : 'normal';
 }
 
 /** Newest reading time across cameras (ms since epoch), or null. */

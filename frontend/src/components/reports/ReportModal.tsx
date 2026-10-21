@@ -16,8 +16,9 @@ import {
 import { useApp } from '../../contexts/AppContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { analyzeFloodImage } from '../../services/geminiVisionService';
+import { submitReport } from '../../services/api';
 import { dispatchFloodIncidentReportAlert } from '../../services/telegramService';
-import { AiVerificationResult } from '../../types';
+import { AiVerificationResult, CitizenReport } from '../../types';
 
 interface Props {
   isOpen: boolean;
@@ -37,6 +38,8 @@ export function ReportModal({ isOpen, onClose }: Props) {
   const [isDragging, setIsDragging] = useState(false);
 
   const [analyzing, setAnalyzing] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [saveNote, setSaveNote] = useState<string | null>(null);
   const [aiResult, setAiResult] = useState<AiVerificationResult | null>(null);
 
   if (!isOpen) return null;
@@ -83,7 +86,7 @@ export function ReportModal({ isOpen, onClose }: Props) {
     setAnalyzing(false);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Only claim what actually happened: a report is AI-assessed only if the check ran and judged it flooding.
@@ -91,7 +94,8 @@ export function ReportModal({ isOpen, onClose }: Props) {
 
     const authorName = user?.name || 'Citizen Responder';
 
-    addReport({
+    setSubmitting(true);
+    const local: CitizenReport = {
       id: `rep-${Date.now()}`,
       title: title || 'Water Rising Rapidly on Roadside',
       location,
@@ -106,7 +110,11 @@ export function ReportModal({ isOpen, onClose }: Props) {
       imageUrl: selectedImage,
       description: `Reported flood incident. Depth reported by the user: ${depthCm} cm.${aiAssessed ? ' A visual AI assessment judged the photo to show flooding.' : ' No AI check was completed.'}`,
       aiVerification: aiResult ?? undefined,
-    });
+    };
+    // Keep the reporter's own photo on screen; the server copy has none.
+    const saved = await submitReport(local);
+    addReport(saved ? { ...saved, imageUrl: selectedImage, aiVerification: local.aiVerification } : local);
+    setSubmitting(false);
 
     // Immediately broadcast ground-truth flood incident alert to community via Telegram Bot
     dispatchFloodIncidentReportAlert({
@@ -117,6 +125,11 @@ export function ReportModal({ isOpen, onClose }: Props) {
       hasPhotoEvidence: !!selectedImage,
     });
 
+    if (!saved) {
+      setSaveNote('Saved on this device only: the server did not accept it.');
+      setTimeout(onClose, 2500);
+      return;
+    }
     onClose();
   };
 
@@ -434,6 +447,8 @@ export function ReportModal({ isOpen, onClose }: Props) {
             </span>
           </div>
 
+          {saveNote && <p role="status" className="text-xs font-semibold text-amber-700">{saveNote}</p>}
+
           {/* Form Actions */}
           <div className="pt-2 flex items-center justify-end gap-2 border-t border-slate-100">
             <button
@@ -445,6 +460,7 @@ export function ReportModal({ isOpen, onClose }: Props) {
             </button>
             <button
               type="submit"
+              disabled={submitting}
               className="px-5 py-2.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-extrabold flex items-center gap-1.5 shadow-md shadow-blue-500/25 cursor-pointer"
             >
               <Send className="w-3.5 h-3.5" />

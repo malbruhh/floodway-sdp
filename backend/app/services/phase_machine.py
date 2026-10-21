@@ -3,6 +3,8 @@ class PhaseMachine:
     Deterministic 4-phase flood escalation machine.
     Never auto-downgrades prematurely while water or forecast remains elevated.
     """
+    STEP_DOWN = {"DANGER": "WARNING", "WARNING": "ADVISORY", "ADVISORY": "NORMAL"}
+
     def __init__(self, warn_level: float = 1.20, danger_level: float = 1.50):
         self.phase = "NORMAL"
         self.warn_level = warn_level
@@ -24,13 +26,15 @@ class PhaseMachine:
             if self.phase != "DANGER":
                 self.phase = "WARNING"
             self.consecutive_safe = 0
-        elif effective_level >= (self.warn_level * 0.75):
-            if self.phase not in ["DANGER", "WARNING"]:
-                self.phase = "ADVISORY"
-            self.consecutive_safe += 1
         else:
-            self.consecutive_safe += 1
-            if self.consecutive_safe >= 3:
-                self.phase = "NORMAL"
+            # Below the warning line: step down one level after 3 calm readings in a row.
+            in_band = effective_level >= (self.warn_level * 0.75)
+            if in_band and self.phase == "NORMAL":
+                self.phase = "ADVISORY"
+            if self.phase != "NORMAL" and not (in_band and self.phase == "ADVISORY"):
+                self.consecutive_safe += 1
+                if self.consecutive_safe >= 3:
+                    self.phase = self.STEP_DOWN[self.phase]
+                    self.consecutive_safe = 0
 
         return self.phase

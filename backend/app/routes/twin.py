@@ -30,8 +30,9 @@ async def get_twin_state(
     last_ts, level_m = (rs[-1] if rs else (now, 1.20))
     is_stale = (now - last_ts) > STALE_AFTER_SECONDS
 
-    forecast = await forecaster.predict_horizon(level_m, rainfall_rate_mm)
-    phase = machines[device_id].phase
+    forecast = await forecaster.predict_horizon(level_m, rainfall_rate_mm, dev.get("danger_threshold_m", 1.50))
+    machine = machines.get(device_id)
+    phase = machine.phase if machine else "NORMAL"
 
     # Find nearest shelter
     nearest = min(
