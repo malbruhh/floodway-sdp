@@ -1,22 +1,16 @@
 import React from 'react';
-import { formatLead } from '../../lib/resilience';
-import { medianLeadS } from '../../lib/estate';
 import { LEVEL_META } from '../../lib/vision/levels';
 import { card, cardPad, cardTitle, num } from '../../styles/tokens';
-import type { Episode } from '../../types/resilience';
 import type { AlertEvent, Camera, Level } from '../../types/vision';
 
 interface Props {
   level: Level | null;
   cameras: Camera[];
   alerts: AlertEvent[];
-  episodes: Episode[];
-  resilienceStatus: 'loading' | 'error' | 'ready';
-  windowLabel: string;
 }
 
-/** Water level, recent alerts and flood events for the cameras inside one township. */
-export function AreaOverview({ level, cameras, alerts, episodes, resilienceStatus, windowLabel }: Props) {
+/** Water level and recent alerts for the cameras inside one township. */
+export function AreaOverview({ level, cameras, alerts }: Props) {
   const meta = level ? LEVEL_META[level] : null;
   const Icon = meta?.icon;
   return (
@@ -35,36 +29,21 @@ export function AreaOverview({ level, cameras, alerts, episodes, resilienceStatu
         </span>
       </div>
 
-      <div className="mt-4 grid gap-4 @min-[760px]/main:grid-cols-2">
-        <div>
-          <h3 className="text-sm/5 font-semibold text-slate-900">Recent alerts</h3>
-          {alerts.length === 0 ? (
-            <p className="mt-1 text-sm/5 text-slate-700">No alerts yet.</p>
-          ) : (
-            <ul className="mt-1 divide-y divide-slate-100 text-sm/5">
-              {alerts.slice(0, 5).map((a) => (
-                <li key={a.id} className="flex flex-wrap items-center justify-between gap-2 py-1.5">
-                  <span className="font-medium text-slate-900">{a.camera_name}</span>
-                  <span className={LEVEL_META[a.level].text}>{a.kind === 'all_clear' ? 'All clear' : LEVEL_META[a.level].label}</span>
-                  <span className={`${num} text-xs text-slate-600`}>{new Date(a.timestamp).toLocaleTimeString('en-MY')}</span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-        <div>
-          <h3 className="text-sm/5 font-semibold text-slate-900">Flood events</h3>
-          {resilienceStatus === 'error' ? (
-            <p className="mt-1 text-sm/5 text-slate-700">Event history unavailable (server not reachable).</p>
-          ) : resilienceStatus === 'loading' ? (
-            <p className="mt-1 text-sm/5 text-slate-700" role="status">Loading…</p>
-          ) : (
-            <p className="mt-1 text-sm/5 text-slate-700">
-              <span className={`${num} font-semibold text-slate-900`}>{episodes.length}</span> in the last {windowLabel}. Median warning before danger:{' '}
-              <span className={`${num} font-semibold text-slate-900`}>{formatLead(medianLeadS(episodes))}</span>
-            </p>
-          )}
-        </div>
+      <div className="mt-4">
+        <h3 className="text-sm/5 font-semibold text-slate-900">Recent alerts</h3>
+        {alerts.length === 0 ? (
+          <p className="mt-1 text-sm/5 text-slate-700">No alerts yet.</p>
+        ) : (
+          <ul className="mt-1 divide-y divide-slate-100 text-sm/5">
+            {alerts.slice(0, 5).map((a) => (
+              <li key={a.id} className="flex flex-wrap items-center justify-between gap-2 py-1.5">
+                <span className="font-medium text-slate-900">{a.camera_name}</span>
+                <span className={LEVEL_META[a.level].text}>{a.kind === 'all_clear' ? 'All clear' : LEVEL_META[a.level].label}</span>
+                <span className={`${num} text-xs text-slate-600`}>{new Date(a.timestamp).toLocaleTimeString('en-MY')}</span>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </section>
   );

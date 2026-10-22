@@ -1,5 +1,7 @@
 # PLAN: Estate-manager page and building/basement risk panel (STATUS.md item 5)
 
+> **Historical.** Executed 2026-10-22. The Resilience page this plan reads from (flood events, lead time, `useResilience`, `/api/v1/resilience/*`) was removed the same day, so the Estate page now shows water level, alerts, open reports and building risk only. Everything below that mentions resilience, episodes or the time window no longer applies.
+
 Executor: read this file top to bottom and do exactly what it says. Do not invent APIs. Every name below was checked in the repo on 2026-10-22; where the plan says "copy", open that file and copy the shape. If something here does not match the code, STOP and report the mismatch instead of guessing.
 
 ## 0. Goal and honesty rules

@@ -1,14 +1,13 @@
 """Estate page contract: the data the page reads from the backend, and the township file shared with the frontend."""
 import asyncio
 import json
-from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from app.routes import reports, resilience
+from app.routes import reports
 from app.security import RateLimiter
 from app.vision import routes as vision_routes
 from app.vision.alerts import AlertDispatcher
@@ -41,7 +40,7 @@ def report_client(monkeypatch):
 
 @pytest.fixture()
 def seeded(tmp_path, monkeypatch):
-    """A running app with the five sample cameras and the vision and resilience routers."""
+    """A running app with the five sample cameras and the vision router."""
     monkeypatch.delenv("VISION_WRITE_TOKEN", raising=False)
     settings = VisionSettings(data_dir=tmp_path, seed_samples=True)
     engine = VisionEngine(settings, get_analyzer(settings), AlertDispatcher([], cooldown_s=300))
@@ -49,7 +48,6 @@ def seeded(tmp_path, monkeypatch):
     seed_samples(engine)
     app = FastAPI()
     app.include_router(vision_routes.router)
-    app.include_router(resilience.router)
     app.state.vision_engine = engine
     return TestClient(app), engine
 
@@ -73,7 +71,7 @@ def test_a_new_report_lands_in_the_kampung_baru_township_as_under_review(report_
     assert inside(townships()["kampung-baru"]["bbox"], got["lat"], got["lon"])
 
 
-# ───────────── cameras and events ─────────────
+# ───────────── cameras ─────────────
 def test_sample_cameras_sit_inside_the_kl_wide_township(seeded):
     client, _ = seeded
     cams = client.get("/api/v1/vision/cameras").json()
@@ -89,21 +87,6 @@ def test_every_sub_township_with_a_camera_is_reachable_from_the_sample_set(seede
     cams = client.get("/api/v1/vision/cameras").json()
     with_cameras = [tid for tid, t in townships().items() if tid != "kl-all" and any(inside(t["bbox"], c["lat"], c["lon"]) for c in cams)]
     assert "kampung-baru" in with_cameras
-
-
-def test_summary_episode_carries_the_camera_id_the_page_filters_on(seeded):
-    client, engine = seeded
-    cam = next(c for c in client.get("/api/v1/vision/cameras").json() if c["id"] == "sample-klang-jamek")
-
-    def ts(seconds_ago):
-        return (datetime.now(timezone.utc).astimezone() - timedelta(seconds=seconds_ago)).isoformat(timespec="seconds")
-
-    for level, ago in (("WARNING", 400), ("DANGER", 200)):
-        engine.events.append({"kind": "alert", "ts": ts(ago), "camera_id": cam["id"], "camera_name": cam["name"], "level": level,
-                              "alert_kind": "alert", "outcomes": {"log": "sent"}, "suppressed": False, "simulated": True})
-    body = client.get("/api/v1/resilience/summary?window_h=24").json()
-    ep = next(e for e in body["episodes"] if e["camera_id"] == "sample-klang-jamek")
-    assert ep["simulated"] is True and ep["ended_at"] is None
 
 
 # ───────────── the shared township file ─────────────

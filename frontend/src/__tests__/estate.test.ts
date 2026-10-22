@@ -1,20 +1,18 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { FLOOD_PRONE, ORIGINS } from '../data/klDemo';
 import {
-  ACTIONS, DEFAULT_BUILDING, EQUIPMENT_ACTION, alertsFor, areaLevel, buildingRisk, camerasIn, episodesFor, loadBuilding,
-  medianLeadS, reportsFor, sanitizeBuilding, saveBuilding, type BuildingInput,
+  ACTIONS, DEFAULT_BUILDING, EQUIPMENT_ACTION, alertsFor, areaLevel, buildingRisk, camerasIn, loadBuilding,
+  reportsFor, sanitizeBuilding, saveBuilding, type BuildingInput,
 } from '../lib/estate';
 import { townshipById, TOWNSHIPS, townshipContents } from '../lib/townships';
 import { levelRank } from '../lib/vision/levels';
 import type { CitizenReport } from '../types';
-import type { Episode } from '../types/resilience';
 import type { AlertEvent, Camera, Level } from '../types/vision';
 
 const cam = (id: string, lat: number, lon: number, level: Level | null, online = true) =>
   ({ id, name: id, lat, lon, online, source_type: 'synthetic', reading: level && { level, water_ratio: 0.5, timestamp: 't' } }) as unknown as Camera;
 const rep = (id: string, lat: number, lon: number, status: CitizenReport['status'], depth: number) =>
   ({ id, title: id, location: 'x', lat, lon, waterDepthCm: depth, status }) as CitizenReport;
-const epi = (camera_id: string, lead: number | null) => ({ camera_id, lead_time_s: lead }) as Episode;
 const alert = (camera_id: string) => ({ id: camera_id, camera_id }) as AlertEvent;
 const B = (over: Partial<BuildingInput> = {}): BuildingInput => ({ ...DEFAULT_BUILDING, ...over });
 const origin = (id: string) => ORIGINS.find((o) => o.id === id)!;
@@ -34,20 +32,10 @@ describe('area helpers', () => {
     expect(areaLevel([])).toBeNull();
     expect(areaLevel([cam('a', 0, 0, null)])).toBeNull();
   });
-  it('alertsFor and episodesFor filter by camera id and keep order', () => {
+  it('alertsFor filters by camera id and keeps order', () => {
     const ids = new Set(['b', 'a']);
     expect(alertsFor([alert('a'), alert('z'), alert('b')], ids).map((x) => x.id)).toEqual(['a', 'b']);
-    expect(episodesFor([epi('z', 1), epi('b', 2), epi('a', 3)], ids).map((x) => x.camera_id)).toEqual(['b', 'a']);
     expect(alertsFor([alert('a')], new Set())).toEqual([]);
-    expect(episodesFor([epi('a', 1)], new Set())).toEqual([]);
-  });
-  it('medianLeadS', () => {
-    expect(medianLeadS([])).toBeNull();
-    expect(medianLeadS([epi('a', null)])).toBeNull();
-    expect(medianLeadS([epi('a', 600)])).toBe(600);
-    expect(medianLeadS([epi('a', 600), epi('b', 1200)])).toBe(900);
-    expect(medianLeadS([epi('a', 1200), epi('b', null), epi('c', 600), epi('d', 300)])).toBe(600);
-    expect(medianLeadS([epi('a', 1), epi('b', 2)])).toBe(2);
   });
 });
 

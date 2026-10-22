@@ -260,3 +260,24 @@ def test_all_clear_ignores_cooldown_and_resets_it():
     asyncio.run(d.dispatch(ev(Level.ADVISORY, "all_clear")))
     assert "c" not in d._last
     assert d.should_send(ev(Level.WARNING), now=1020)                    # the next WARNING is new
+
+
+@pytest.mark.parametrize("status,raises", [(200, False), (400, True), (500, True)])
+def test_telegram_channel_raises_when_telegram_rejects_the_message(monkeypatch, status, raises):
+    """A rejected message must not look delivered: the dispatcher logs the failure and carries on."""
+    import httpx
+
+    from app.vision import alerts as alerts_mod
+    from app.vision.alerts import TelegramChannel
+    from app.vision.schemas import Level
+
+    real = httpx.AsyncClient
+    monkeypatch.setattr(alerts_mod.httpx, "AsyncClient",
+                        lambda **kw: real(transport=httpx.MockTransport(lambda req: httpx.Response(status, json={})), **kw))
+    event = AlertEvent(id="1", camera_id="c", camera_name="C", level=Level.WARNING, water_ratio=0.5, timestamp="2026-10-22T10:00:00+00:00", message="m")
+    send = TelegramChannel("tok", "chat").send(event)
+    if raises:
+        with pytest.raises(httpx.HTTPStatusError):
+            asyncio.run(send)
+    else:
+        asyncio.run(send)

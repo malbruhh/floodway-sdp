@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Map, FileText, Video, Camera, BarChart3, User } from 'lucide-react';
+import { LayoutDashboard, Map, FileText, Video, Camera, User } from 'lucide-react';
 
 export function BottomNav() {
   const tabs = [
@@ -9,7 +9,6 @@ export function BottomNav() {
     { label: 'Reports', icon: FileText, path: '/reports' },
     { label: 'Live', icon: Video, path: '/live' },
     { label: 'JPS', icon: Camera, path: '/jps' },
-    { label: 'Resilience', icon: BarChart3, path: '/resilience' },
     { label: 'Profile', icon: User, path: '/profile' },
   ];
 

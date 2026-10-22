@@ -10,7 +10,6 @@ import { JpsCamerasPage } from './pages/JpsCamerasPage';
 import { ReportPage } from './pages/ReportPage';
 import { NavigationPage } from './pages/NavigationPage';
 import { ProfilePage } from './pages/ProfilePage';
-import { ResiliencePage } from './pages/ResiliencePage';
 import { EstatePage } from './pages/EstatePage';
 
 // three.js is only needed by the 3D studio, so it loads with that route instead of on every page.
@@ -34,7 +33,6 @@ export function App() {
           <Route path="/shelters" element={<Navigate to="/map" replace />} />
           <Route path="/live" element={<ProtectedRoute><LiveVisionPage /></ProtectedRoute>} />
           <Route path="/jps" element={<ProtectedRoute><JpsCamerasPage /></ProtectedRoute>} />
-          <Route path="/resilience" element={<ProtectedRoute><ResiliencePage /></ProtectedRoute>} />
           <Route path="/estate" element={<ProtectedRoute><EstatePage /></ProtectedRoute>} />
           <Route path="/simulation" element={<Navigate to="/live" replace />} />
           <Route path="/studio" element={<ProtectedRoute><Suspense fallback={null}><HouseStudio360 /></Suspense></ProtectedRoute>} />

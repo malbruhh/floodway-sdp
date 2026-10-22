@@ -25,7 +25,6 @@ from .alerts import AlertDispatcher
 from .analysis import WaterAnalyzer
 from .analysis.temporal import aggregate
 from .config import VisionSettings
-from .events import EventLog
 from .levels import LevelTracker, compute_trend, lines_crossed, rank, ratio_to_level, thresholds_from_calibration
 from .schemas import (
     AlertEvent,
@@ -98,9 +97,6 @@ class VisionEngine:
         self.dispatcher = dispatcher
         self.cameras: dict[str, CameraRecord] = {}
         self.alerts: deque[AlertEvent] = deque(maxlen=ALERT_LIMIT)
-        self.events = EventLog()  # durable history for the Resilience dashboard; persisted once start() opens it
-        if dispatcher.events is None:
-            dispatcher.events = self.events
         self._subscribers: set[asyncio.Queue] = set()
         self._loop: Optional[asyncio.AbstractEventLoop] = None
         self._running = False
@@ -109,8 +105,6 @@ class VisionEngine:
     async def start(self, run_loops: bool = True) -> None:
         self._loop = asyncio.get_running_loop()
         self._running = True
-        self.events.open(self.settings.events_file)
-        self.events.append({"kind": "engine_start", "ts": _now_iso()})
         self._load_user_cameras()
         if run_loops:
             for rec in self.cameras.values():
@@ -265,10 +259,6 @@ class VisionEngine:
                 action="show_on_map" if rank(level) >= rank(Level.ADVISORY) else "none",
             )
             rec.readings.append(reading)
-            if changed:
-                self.events.append({"kind": "level_change", "ts": reading.timestamp, "camera_id": rec.id,
-                                    "camera_name": rec.name, "from": previous.value, "to": level.value,
-                                    "simulated": rec.source.is_playback})
 
             alert = None
             escalated = changed and rank(level) > rank(previous) and rank(level) >= rank(Level.WARNING)
@@ -354,8 +344,7 @@ class VisionEngine:
         await self.publish({"type": "reading", "reading": reading.model_dump(mode="json")})
         if alert:
             await self.publish({"type": "alert", "alert": alert.model_dump(mode="json")})
-            cam = self.cameras.get(alert.camera_id)
-            await self.dispatcher.dispatch(alert, simulated=bool(cam and cam.source.is_playback))
+            await self.dispatcher.dispatch(alert)
 
     async def _camera_loop(self, camera_id: str) -> None:
         rec = self.cameras[camera_id]

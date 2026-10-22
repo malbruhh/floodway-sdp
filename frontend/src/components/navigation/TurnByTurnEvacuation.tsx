@@ -4,7 +4,6 @@ import { Navigation, ShieldCheck, CheckCircle2, AlertTriangle, Phone, ArrowLeft 
 import { useAuth } from '../../contexts/AuthContext';
 import { useApp } from '../../contexts/AppContext';
 import { dispatchArrivalCheckin } from '../../services/telegramService';
-import { postRouteEvent } from '../../services/resilience';
 
 interface Props {
   shelterId: string;
@@ -23,9 +22,6 @@ export function TurnByTurnEvacuation({ shelterId }: Props) {
     address: 'Kampung Baru, Kuala Lumpur (demo location)',
     contact: 'Not available (demo)'
   };
-
-  // The drive starts as the page opens. The server counts one start per client and shelter, so a re-render cannot double it.
-  useEffect(() => { void postRouteEvent('start', shelterId); }, [shelterId]);
 
   useEffect(() => {
     if (!isSimulating || hasArrived) return;
@@ -49,7 +45,6 @@ export function TurnByTurnEvacuation({ shelterId }: Props) {
             timeStr: timeText
           });
           setFamilySafetyStatus('ARRIVED_SAFE');
-          void postRouteEvent('arrived', shelterId);
           return 100;
         }
         return prev + 12;

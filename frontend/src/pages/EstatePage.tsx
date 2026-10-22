@@ -6,32 +6,26 @@ import { AreaOverview } from '../components/estate/AreaOverview';
 import { BuildingRiskPanel } from '../components/estate/BuildingRiskPanel';
 import { OpenReportsCard } from '../components/estate/OpenReportsCard';
 import { useApp } from '../contexts/AppContext';
-import { useResilience } from '../hooks/useResilience';
 import { useVisionStore } from '../hooks/vision/useVisionStore';
-import { alertsFor, areaLevel, camerasIn, episodesFor, loadBuilding, reportsFor, saveBuilding } from '../lib/estate';
+import { alertsFor, areaLevel, camerasIn, loadBuilding, reportsFor, saveBuilding } from '../lib/estate';
 import { allSampleCameras, scenarioFromLevel } from '../lib/home';
 import { DEFAULT_TOWNSHIP_ID, TOWNSHIPS, townshipById, townshipContents } from '../lib/townships';
 import { interactive, label, pageTitle } from '../styles/tokens';
 
-const WINDOWS = [{ h: 24, label: '24 hours' }, { h: 168, label: '7 days' }, { h: 720, label: '30 days' }];
-
 /** For the person who manages buildings in one township: water level, alerts, open reports and a building risk estimate. */
 export function EstatePage() {
   const [townshipId, setTownshipId] = useState(DEFAULT_TOWNSHIP_ID);
-  const [windowH, setWindowH] = useState(24);
   const [building, setBuilding] = useState(loadBuilding);
   useEffect(() => saveBuilding(building), [building]);
 
   const { cameras, alerts } = useVisionStore();
   const { reports } = useApp();
-  const resilience = useResilience(windowH);
 
   const township = townshipById(townshipId);
   const areaCams = useMemo(() => camerasIn(township, cameras), [township, cameras]);
   const ids = useMemo(() => new Set(areaCams.map((c) => c.id)), [areaCams]);
   const level = areaLevel(areaCams);
   const areaAlerts = useMemo(() => alertsFor(alerts, ids), [alerts, ids]);
-  const episodes = useMemo(() => (resilience.status === 'ready' ? episodesFor(resilience.data.episodes, ids) : []), [resilience, ids]);
   const rep = useMemo(() => reportsFor(reports, township), [reports, township]);
   const origins = useMemo(() => townshipContents(township, [], []).origins, [township]);
 
@@ -57,21 +51,6 @@ export function EstatePage() {
                   {TOWNSHIPS.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
                 </select>
               </label>
-              <div role="group" aria-label="Time window" className="flex gap-2">
-                {WINDOWS.map((w) => (
-                  <button
-                    key={w.h}
-                    type="button"
-                    aria-pressed={windowH === w.h}
-                    onClick={() => setWindowH(w.h)}
-                    className={`min-h-11 rounded-xl border px-3 text-sm font-semibold ${interactive} ${
-                      windowH === w.h ? 'border-[#0958D9] bg-[#0958D9] text-white' : 'border-slate-300 bg-white text-slate-800 hover:bg-slate-50'
-                    }`}
-                  >
-                    {w.label}
-                  </button>
-                ))}
-              </div>
             </div>
           </div>
 
@@ -81,14 +60,7 @@ export function EstatePage() {
             </p>
           )}
 
-          <AreaOverview
-            level={level}
-            cameras={areaCams}
-            alerts={areaAlerts}
-            episodes={episodes}
-            resilienceStatus={resilience.status}
-            windowLabel={WINDOWS.find((w) => w.h === windowH)!.label}
-          />
+          <AreaOverview level={level} cameras={areaCams} alerts={areaAlerts} />
 
           <div className="grid gap-4 md:gap-6 @min-[760px]/main:grid-cols-[3fr_2fr] @min-[760px]/main:items-start">
             <BuildingRiskPanel origins={origins} building={building} onChange={setBuilding} scenario={scenarioFromLevel(level)} areaLevel={level} />

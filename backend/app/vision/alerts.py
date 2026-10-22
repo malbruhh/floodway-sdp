@@ -9,7 +9,6 @@ from typing import Protocol
 
 import httpx
 
-from .events import EventLog
 from .levels import rank
 from .schemas import AlertEvent, Level
 
@@ -61,13 +60,6 @@ class AlertDispatcher:
         self.channels = channels
         self.cooldown_s = cooldown_s
         self._last: dict[str, tuple[Level, float]] = {}
-        self.events: EventLog | None = None  # set by the engine; every dispatch decision is recorded here
-
-    def _record(self, event: AlertEvent, outcomes: dict[str, str], suppressed: bool, simulated: bool) -> None:
-        if self.events is not None:
-            self.events.append({"kind": "alert", "ts": event.timestamp, "alert_id": event.id, "alert_kind": event.kind,
-                                "level": event.level.value, "camera_id": event.camera_id, "camera_name": event.camera_name,
-                                "outcomes": outcomes, "suppressed": suppressed, "simulated": simulated})
 
     def should_send(self, event: AlertEvent, now: float | None = None) -> bool:
         if event.kind == "all_clear":  # closing an alert is never rate limited
@@ -81,21 +73,16 @@ class AlertDispatcher:
             return True
         return now - last_ts >= self.cooldown_s
 
-    async def dispatch(self, event: AlertEvent, simulated: bool = False) -> bool:
+    async def dispatch(self, event: AlertEvent) -> bool:
         if not self.should_send(event):
-            self._record(event, {}, True, simulated)
             return False
         if event.kind == "all_clear":
             self._last.pop(event.camera_id, None)  # the next WARNING is a new event
         else:
             self._last[event.camera_id] = (event.level, time.time())
-        outcomes: dict[str, str] = {}
         for channel in self.channels:
             try:
                 await channel.send(event)
-                outcomes[channel.name] = "sent"
             except Exception:  # one broken channel must never block the others
                 log.exception("alert channel %s failed", channel.name)
-                outcomes[channel.name] = "failed"
-        self._record(event, outcomes, False, simulated)
         return True

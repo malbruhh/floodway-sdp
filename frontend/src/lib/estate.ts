@@ -2,7 +2,6 @@
 import { DANGER_RADIUS_SCALE, FLOOD_PRONE } from '../data/klDemo';
 import { radiusOf, stateOf, type Scenario } from './floodScenario';
 import type { CitizenReport } from '../types';
-import type { Episode } from '../types/resilience';
 import type { AlertEvent, Camera, Level } from '../types/vision';
 import { overallLevel } from './home';
 import { reportStatusInfo } from './reportStatus';
@@ -13,15 +12,6 @@ import { LEVELS, levelRank } from './vision/levels';
 export const camerasIn = (t: Township, cameras: Camera[]): Camera[] => cameras.filter((c) => inTownship(t, c));
 export const areaLevel = (cameras: Camera[]): Level | null => overallLevel(cameras);
 export const alertsFor = (alerts: AlertEvent[], cameraIds: Set<string>): AlertEvent[] => alerts.filter((a) => cameraIds.has(a.camera_id));
-export const episodesFor = (episodes: Episode[], cameraIds: Set<string>): Episode[] => episodes.filter((e) => cameraIds.has(e.camera_id));
-
-/** Median of the episodes' lead times in seconds; null when none has one. An even count averages the middle two, rounded. */
-export function medianLeadS(episodes: Episode[]): number | null {
-  const v = episodes.map((e) => e.lead_time_s).filter((s): s is number => s !== null).sort((a, b) => a - b);
-  if (v.length === 0) return null;
-  const mid = v.length >> 1;
-  return v.length % 2 ? v[mid] : Math.round((v[mid - 1] + v[mid]) / 2);
-}
 
 export interface AreaReports {
   open: CitizenReport[];
