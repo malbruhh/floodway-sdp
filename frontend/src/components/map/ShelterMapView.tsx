@@ -28,12 +28,20 @@ import { useVisionStore } from '../../hooks/vision/useVisionStore';
 import { useVisionHazards } from '../../hooks/vision/useVisionHazards';
 import { useDriveSim } from '../../hooks/useDriveSim';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { DEFAULT_TOWNSHIP_ID, TOWNSHIPS, townshipById, townshipContents } from '../../lib/townships';
 
 type RoutesDb = Record<string, Parameters<typeof toRoadRoute>[0][]>;
 
 /** Length of the simulated drive on screen, whatever the real route length. */
 const DRIVE_MS = 30000;
 const KL_CENTER: LatLon = [3.155, 101.69];
+
+/** Moves the map to the chosen township. */
+function FlyToTownship({ center, zoom }: { center: LatLon; zoom: number }) {
+  const map = useMap();
+  useEffect(() => { map.flyTo(center, zoom, { duration: 0.8 }); }, [center, zoom, map]);
+  return null;
+}
 
 /** Fits the chosen route in the visible part of the map (the phone sheet covers the bottom). */
 function FitRoute({ line, bottomPad, enabled }: { line: LatLon[] | null; bottomPad: number; enabled: boolean }) {
@@ -67,6 +75,9 @@ export function ShelterMapView() {
   const [selectedId, setSelectedId] = useState('shelter-01');
   // The flood areas follow the cameras unless the user picks a scenario by hand.
   const { cameras } = useVisionStore();
+  const [townshipId, setTownshipId] = useState(DEFAULT_TOWNSHIP_ID);
+  const township = townshipById(townshipId);
+  const inArea = useMemo(() => townshipContents(township, shelters, cameras), [township, shelters, cameras]);
   const auto = scenarioFromLevel(overallLevel(cameras));
   const [override, setOverride] = useState<Scenario | null>(null);
   const scenario = override ?? auto;
@@ -224,8 +235,20 @@ export function ShelterMapView() {
     <div className="relative flex h-[calc(100dvh-8rem)] w-full flex-col overflow-hidden bg-slate-100 md:h-[calc(100vh-64px)] md:flex-row">
       <div className="relative min-h-[350px] flex-1">
         <InPageActionDock />
+        <label className="absolute left-3 top-3 z-[500] flex max-w-[calc(100%-1.5rem)] flex-col gap-0.5 rounded-xl bg-white/95 px-3 py-2 text-[11px] font-semibold text-slate-600 shadow-md">
+          Township
+          <select
+            value={townshipId}
+            onChange={(e) => setTownshipId(e.target.value)}
+            className="min-h-8 rounded-lg border border-slate-300 bg-white text-xs font-bold text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1677FF]"
+          >
+            {TOWNSHIPS.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
+          </select>
+          <span className="font-medium">{inArea.shelters.length} shelters · {inArea.floodAreas.length} flood areas · {inArea.cameras.length} cameras</span>
+        </label>
         <MapContainer center={KL_CENTER} zoom={12} scrollWheelZoom preferCanvas className="z-0 h-full w-full">
           <TileLayer attribution={BASEMAP_ATTRIBUTION} url={BASEMAP_URL} maxZoom={BASEMAP_MAX_ZOOM} />
+          <FlyToTownship center={township.center} zoom={township.zoom} />
           <VisionHazardLayer />
           <JpsCameraLayer />
           <FloodProneLayer scenario={scenario} />
