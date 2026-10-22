@@ -6,7 +6,6 @@ import {
   Map,
   FileText,
   Video,
-  Camera,
   Building2,
   User,
   PanelLeftClose,
@@ -23,8 +22,7 @@ export function DashboardSidebar({ defaultCollapsed = false }: { defaultCollapse
     { label: 'Home', icon: LayoutDashboard, path: '/home' },
     { label: 'Map', icon: Map, path: '/map' },
     { label: 'Reports', icon: FileText, path: '/reports' },
-    { label: 'Live Vision', icon: Video, path: '/live' },
-    { label: 'JPS Cameras', icon: Camera, path: '/jps' },
+    { label: 'Cameras', icon: Video, path: '/live' },
     { label: 'Estate', icon: Building2, path: '/estate' },
     { label: 'Profile', icon: User, path: '/profile' },
   ];

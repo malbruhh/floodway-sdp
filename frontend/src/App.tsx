@@ -6,7 +6,6 @@ import { WelcomePage } from './pages/WelcomePage';
 import { HomePage } from './pages/HomePage';
 import { MapPage } from './pages/MapPage';
 import LiveVisionPage from './pages/LiveVisionPage';
-import { JpsCamerasPage } from './pages/JpsCamerasPage';
 import { ReportPage } from './pages/ReportPage';
 import { NavigationPage } from './pages/NavigationPage';
 import { ProfilePage } from './pages/ProfilePage';
@@ -32,7 +31,7 @@ export function App() {
           <Route path="/map" element={<ProtectedRoute><MapPage /></ProtectedRoute>} />
           <Route path="/shelters" element={<Navigate to="/map" replace />} />
           <Route path="/live" element={<ProtectedRoute><LiveVisionPage /></ProtectedRoute>} />
-          <Route path="/jps" element={<ProtectedRoute><JpsCamerasPage /></ProtectedRoute>} />
+          <Route path="/jps" element={<Navigate to="/live?source=jps" replace />} />
           <Route path="/estate" element={<ProtectedRoute><EstatePage /></ProtectedRoute>} />
           <Route path="/simulation" element={<Navigate to="/live" replace />} />
           <Route path="/studio" element={<ProtectedRoute><Suspense fallback={null}><HouseStudio360 /></Suspense></ProtectedRoute>} />
