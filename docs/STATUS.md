@@ -15,7 +15,6 @@ Updated 2026-10-21. Sime Darby Property University Hackathon: proposal, prototyp
 | Evacuation map and turn-by-turn | Works; 8 demo shelters, 16 hand-placed flood areas, stored OpenStreetMap routes |
 | Citizen reports and AI photo check | Works; AI check needs `OPENROUTER_API_KEY`, else "not run" |
 | ESP32 sensor ingest, CSV export | Code works; demo shows simulated values |
-| Resilience page: events caught, lead time, alerts sent, households routed, CSV export, loss-avoided estimate | Real code and a durable log; inputs are the sample cameras and simulated drives (tagged `simulated`). Loss figure is illustrative |
 | Forecast | A formula, labelled "not a trained model" |
 | Home dashboard numbers | Simulated (`frontend/src/config/demoScenario.ts`) |
 
@@ -38,14 +37,15 @@ The JPS Selangor public API (`infobanjirjps.selangor.gov.my/JPSAPI/api/`) is **r
 Weights: Impact and sustainability 25%, Innovation 20%, Feasibility 20%, Strategic fit 15%, Commercial value 10%, Team, evidence and pitch 10%. Each item shows what it scores. Slides and video are done. Only what is built and working in the prototype by 23 Oct can be claimed in them; anything after that is pitch-day extra.
 
 1. ~~Proposal write-up, slides and demo video~~ done (impact case, honesty lines, demo recording). Re-check the slides against the prototype before submitting: every claim must match what the app does.
-2. ~~Resilience dashboard and "loss avoided" estimate~~ done 2026-10-22 (see Done). Follow-up: replace the placeholder assumptions with sourced figures. Mobile bottom nav now has 7 tabs (flex width, "Live Vision" shortened to "Live"); checked at 375 px.
+2. ~~Resilience dashboard and "loss avoided" estimate~~ built, then removed 2026-10-22 by decision (page, backend event log and route logging all deleted).
 3. **Hand-calibrate 3 to 5 JPS cameras** with a dry reference frame (innovation 20%, feasibility 20%). The only item that turns the demo from generated images into a real reading on a real river. Only counts toward the 23 Oct submission if it works in the prototype by then; otherwise it is a pitch-day demo item.
-4. **Township layer** (strategic fit 15%). One JSON file of boundary, cameras, shelters and flood areas, with a selector. This is the unit SDP would deploy to, and it feeds item 5.
-5. **Estate-manager page and building or basement risk panel** (strategic fit 15%, commercial 10%). Alerts and open reports for one township; the person who would pay for it.
+4. ~~Township layer~~ done 2026-10-22 (see Done). Feeds item 5.
+5. ~~Estate-manager page and building/basement risk panel~~ done 2026-10-22 (see Done).
 6. **Real rainfall inputs** (feasibility 20%): Open-Meteo and MetMalaysia warnings into the forecast, still labelled a formula.
 
 Done:
-- ~~Resilience dashboard~~ (2026-10-22): `/resilience` page, `backend/app/vision/events.py` (JSONL event log in `data_dir/events.jsonl`, episode and lead-time maths, `engine_start` marker closes open episodes as "interrupted"), `backend/app/routes/resilience.py` (`GET /api/v1/resilience/summary`, `GET /export.csv?kind=episodes|alerts|routes`, `POST /route-events` with write token, rate limit and 10 min dedupe). The dispatcher records sent, failed and suppressed per channel; Telegram HTTP errors now count as failed. Frontend logic is in `lib/resilience.ts`. Route starts and arrivals are logged from the Map drive and the navigation page. All events are tagged `simulated` on the demo. Definitions are in the `events.py` docstring. Loss avoided = episodes with lead time at least N min x households x response rate x value, with editable placeholder inputs.
+- ~~Estate page~~ (2026-10-22): `/estate` (`pages/EstatePage.tsx`, `components/estate/*`, pure logic in `lib/estate.ts`, plan in `docs/PLAN-ESTATE.md`). Township selector; water level from that township's cameras; recent alerts; open citizen reports; building/basement risk panel (nearest illustrative flood area vs the camera-driven scenario; a basement raises one level; ground-floor height never lowers it; inputs saved in the browser). No new backend route. Desktop sidebar only, not in the 7-tab mobile nav. `Scenario`, `stateOf` and `radiusOf` moved to `lib/floodScenario.ts` (Leaflet-free); `FloodProneLayer` re-exports them. Risk is a rule-based estimate, not an engineering assessment. Backend contract test: `backend/tests/test_estate_contract.py`.
+- ~~Township layer~~ (2026-10-22): `data/townships.json` (id, name, centre, zoom, bbox; 3 KL townships plus a KL-wide entry), `lib/townships.ts` (`townshipContents` picks origins, flood areas, shelters and cameras inside the bbox, so each kind keeps one list). Map has a Township selector that flies to the area and shows counts; it does not yet filter the markers or routes. Boundaries are rough boxes, not surveyed.
 - ~~JPS camera layer~~: `backend/app/services/jps_client.py` (cache, image proxy, host lock), `/api/v1/jps/*`, `/jps` page, map dots. Map dots were fetched but not seen on screen: zoom the Map out to Selangor and check.
 - ~~Fix 1~~ test run is real: `backend/.venv` is Python 3.12, `asyncio_mode` line removed from pytest.ini (no async tests), check.ps1 green.
 - ~~Fix 2~~ per-device sensor thresholds, `/ingest` rejects stale (400) and replayed (409) readings, PhaseMachine steps down one level at a time, forecaster takes the device danger line. Seed reading is now 0.80 m.
@@ -67,5 +67,5 @@ After submission, if time: Bahasa Malaysia toggle, alert feedback, touch targets
 
 - Backend: `cd backend; python run.py` (Python 3.12, port 8080). Env template: `backend/.env.example`. Never read `backend/.env` into chat.
 - Frontend: `cd frontend; npm install; npm run dev` (port 5173).
-- All checks: `powershell -File scripts/check.ps1`. Last run (2026-10-22): backend 198 passed, frontend 153 passed and build passes.
+- All checks: `powershell -File scripts/check.ps1`. Last run (2026-10-22, after the Estate page and Resilience removal): backend 149 passed, frontend 149 passed and build passes.
 - Demo script and "what is real" table: `docs/ops/DEMO_RUNBOOK.md`.

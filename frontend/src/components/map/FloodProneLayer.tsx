@@ -1,23 +1,12 @@
 import { Circle, Popup } from 'react-leaflet';
-import { DANGER_RADIUS_SCALE, FLOOD_PRONE, type FloodProneArea } from '../../data/klDemo';
+import { FLOOD_PRONE } from '../../data/klDemo';
 import type { Zone } from '../../lib/routing';
+import { radiusOf, stateOf, type Scenario } from '../../lib/floodScenario';
 
-export type Scenario = 'normal' | 'warning' | 'danger';
+export { radiusOf, stateOf };
+export type { Scenario };
 
 export const SCENARIO_COLOR: Record<Scenario, string> = { normal: '#0284C7', warning: '#D97706', danger: '#DC2626' };
-const WATCH_SCALE = 0.55;
-
-/** Whether the area is flooded in this scenario, or only on watch (low-lying but dry). */
-export function stateOf(area: FloodProneArea, scenario: Scenario): 'flooded' | 'watch' {
-  if (scenario === 'danger') return 'flooded';
-  if (scenario === 'warning' && area.onset === 'warning') return 'flooded';
-  return 'watch';
-}
-
-export function radiusOf(area: FloodProneArea, scenario: Scenario): number {
-  if (stateOf(area, scenario) === 'watch') return area.radiusM * WATCH_SCALE;
-  return area.radiusM * (scenario === 'danger' ? DANGER_RADIUS_SCALE : 1);
-}
 
 /** The circles routes must avoid in this scenario. */
 export function floodedZones(scenario: Scenario): Zone[] {

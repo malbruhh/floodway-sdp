@@ -1,5 +1,5 @@
 // Pure logic behind the Home screen, kept out of the components so it can be tested.
-import type { Scenario } from '../components/map/FloodProneLayer';
+import type { Scenario } from './floodScenario';
 import type { Camera, Level } from '../types/vision';
 import { haversineKm, PLACES } from './vision/geo';
 import type { Place } from './vision/geo';

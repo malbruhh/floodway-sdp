@@ -186,7 +186,6 @@ Proposed before any real deployment:
 - A calibrated AI water level on a small pilot of JPS cameras, cross-checked with the nearest JPS river station.
 - A township layer for an SDP development: boundary, cameras, shelters and flood areas.
 - An estate-manager page and building or basement risk panel.
-- A resilience dashboard with export for sustainability reporting.
 - Bahasa Malaysia, alert subscriptions and accessibility fixes.
 - Hosting, persistence and hardened write routes.
 

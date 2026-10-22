@@ -1,0 +1,6 @@
+[
+  { "id": "kl-all", "name": "Kuala Lumpur (all demo areas)", "center": [3.155, 101.69], "zoom": 12, "bbox": [3.05, 101.6, 3.25, 101.78] },
+  { "id": "kampung-baru", "name": "Kampung Baru / Titiwangsa", "center": [3.168, 101.703], "zoom": 14, "bbox": [3.155, 101.685, 3.19, 101.72] },
+  { "id": "sentul-segambut", "name": "Sentul / Segambut", "center": [3.188, 101.678], "zoom": 14, "bbox": [3.172, 101.655, 3.205, 101.7] },
+  { "id": "bangsar-pantai", "name": "Bangsar / Pantai Dalam", "center": [3.118, 101.672], "zoom": 14, "bbox": [3.095, 101.655, 3.14, 101.69] }
+]
