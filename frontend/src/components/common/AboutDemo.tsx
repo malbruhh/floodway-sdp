@@ -28,6 +28,7 @@ export function AboutDemo({ tone = 'light', className = '' }: Props) {
         </li>
         <li>Sensor counts, river levels, rainfall and the forecast are simulated examples. The forecast is a simple formula, not a trained model.</li>
         <li>The Resilience page counts real events from the demo's sample cameras and simulated drives. Its loss-avoided figure is an illustrative estimate built from editable placeholder assumptions.</li>
+        <li>The Estate page groups cameras, alerts and reports by township. Its building risk is a rule-based estimate from illustrative flood areas, not an engineering assessment.</li>
         <li>Reports are examples or unverified citizen submissions. No agency or cloud service verifies, certifies or supplies any data shown.</li>
         <li>Routes are approximate straight-line detours, not road-aware navigation.</li>
         <li>Map data &copy; OpenStreetMap contributors.</li>
