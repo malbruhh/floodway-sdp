@@ -225,3 +225,38 @@ def test_reads_and_the_socket_stay_open_when_a_token_is_set(client, monkeypatch)
     assert client.get("/api/v1/vision/alerts").status_code == 200
     with client.websocket_connect("/api/v1/vision/ws") as ws:
         assert ws.receive_json()["type"] == "snapshot"
+
+
+def test_all_clear_is_sent_once_when_a_camera_drops_below_warning(settings):
+    from app.vision.sources.synthetic import SyntheticRiverSource
+
+    channel = FakeChannel()
+    engine = VisionEngine(settings, get_analyzer(settings), AlertDispatcher([channel], cooldown_s=300))
+    rec = engine.register_synthetic("c", "Clear test", "mine", 3.1, 101.7, sample_calibration(),
+                                    SyntheticRiverSource(1.05, 1.05, 100, seed=3), 8)
+
+    async def run():
+        await engine.start(run_loops=False)
+        await engine.analyze_once_async("c")  # DANGER
+        rec.source = SyntheticRiverSource(0.1, 0.1, 100, seed=3)  # river falls
+        for _ in range(6):  # DANGER -> WARNING after 3, WARNING -> ADVISORY after 3 more
+            await engine.analyze_once_async("c")
+        await engine.stop()
+
+    asyncio.run(run())
+    kinds = [a.kind for a in engine.alerts]
+    assert kinds == ["all_clear", "alert"]
+    assert [e.kind for e in channel.sent] == ["alert", "all_clear"]
+
+
+def test_all_clear_ignores_cooldown_and_resets_it():
+    from app.vision.schemas import Level
+
+    d = AlertDispatcher([], cooldown_s=300)
+    ev = lambda lvl, kind="alert": AlertEvent(id="1", camera_id="c", camera_name="C", level=lvl, water_ratio=0.5,
+                                              timestamp="t", message="m", kind=kind)
+    d._last["c"] = (Level.WARNING, 1000)
+    assert d.should_send(ev(Level.ADVISORY, "all_clear"), now=1010)     # inside cooldown, still sent
+    asyncio.run(d.dispatch(ev(Level.ADVISORY, "all_clear")))
+    assert "c" not in d._last
+    assert d.should_send(ev(Level.WARNING), now=1020)                    # the next WARNING is new

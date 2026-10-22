@@ -7,7 +7,7 @@ class Forecaster:
         # Honest label: this class evaluates a hand-written hydrologic formula (below). It is not a trained GRU.
         self.source = "Rule-based hydrologic estimate (not a trained model)"
 
-    async def predict_horizon(self, current_level_m: float, rainfall_rate_mm: float) -> dict:
+    async def predict_horizon(self, current_level_m: float, rainfall_rate_mm: float, danger_m: float = 1.50) -> dict:
         """
         Returns P10, P50, and P90 forecast curves across +15m, +30m, +45m, +60m, +90m, +120m.
         Uses calibrated hydrologic decay & accretion equations matched to Klang Valley river basin.
@@ -35,7 +35,7 @@ class Forecaster:
 
         peak_m = max(p50)
         time_to_peak_min = horizons[p50.index(peak_m)]
-        danger_threshold = 1.50
+        danger_threshold = danger_m
         time_to_danger_min = None
         for i, val in enumerate(p50):
             if val >= danger_threshold and horizons[i] > 0:

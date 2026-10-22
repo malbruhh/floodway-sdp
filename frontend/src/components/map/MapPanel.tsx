@@ -21,6 +21,9 @@ interface Props {
   onOrigin: (id: string) => void;
   scenario: Scenario;
   onScenario: (s: Scenario) => void;
+  auto: boolean;
+  onAuto: () => void;
+  autoNote: string;
   floodedCount: number;
   cameraZoneCount: number;
   shelters: Shelter[];
@@ -81,10 +84,10 @@ export function MapPanel(p: Props) {
             <button
               key={k}
               type="button"
-              aria-pressed={p.scenario === k}
+              aria-pressed={!p.auto && p.scenario === k}
               onClick={() => p.onScenario(k)}
               className={`flex min-h-11 flex-col items-center justify-center rounded-lg text-xs font-bold focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1677FF] ${
-                p.scenario === k ? `${SCENARIO_INFO[k].active} shadow-md` : 'text-slate-700 hover:bg-white'
+                !p.auto && p.scenario === k ? `${SCENARIO_INFO[k].active} shadow-md` : 'text-slate-700 hover:bg-white'
               }`}
             >
               <span>{SCENARIO_INFO[k].label}</span>
@@ -92,6 +95,17 @@ export function MapPanel(p: Props) {
             </button>
           ))}
         </div>
+        <button
+          type="button"
+          aria-pressed={p.auto}
+          onClick={p.onAuto}
+          className={`mt-1.5 min-h-11 w-full rounded-lg border text-xs font-bold focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1677FF] ${
+            p.auto ? 'border-[#1677FF] bg-blue-50 text-blue-900' : 'border-slate-200 text-slate-700 hover:bg-white'
+          }`}
+        >
+          Auto (from cameras): {SCENARIO_INFO[p.scenario].label}
+        </button>
+        {p.auto && <p className="mt-1.5 text-xs text-slate-600">{p.autoNote}.</p>}
         <p className="mt-1.5 text-xs text-slate-600">
           {p.floodedCount} of 16 flood-prone areas flooded
           {p.cameraZoneCount > 0 ? `, plus ${p.cameraZoneCount} sample-camera ${p.cameraZoneCount === 1 ? 'zone' : 'zones'}` : ''}. Demo data, not an official flood map.

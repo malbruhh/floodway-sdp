@@ -1,11 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { FloodPhase, Shelter, CitizenReport, SosEvent, IoTStationTelemetry } from '../types';
+import { Shelter, CitizenReport, SosEvent, IoTStationTelemetry } from '../types';
 import { fetchShelters, fetchReports } from '../services/api';
 
 interface AppContextType {
-  waterLevelM: number;
-  setWaterLevelM: (level: number) => void;
-  floodPhase: FloodPhase;
   shelters: Shelter[];
   /** true once the shelter fetch has finished (successfully or not), so screens can tell loading from empty. */
   sheltersReady: boolean;
@@ -26,7 +23,6 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
-  const [waterLevelM, setWaterLevelM] = useState(1.20);
   const [selectedLocation, setSelectedLocation] = useState('Kampung Baru, Kuala Lumpur');
   const [shelters, setShelters] = useState<Shelter[]>([]);
   const [sheltersReady, setSheltersReady] = useState(false);
@@ -52,7 +48,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     fetchReports().then(setReports);
   }, []);
 
-  const floodPhase: FloodPhase = waterLevelM >= 1.50 ? 'DANGER' : waterLevelM >= 1.15 ? 'WARNING' : waterLevelM >= 0.70 ? 'ADVISORY' : 'NORMAL';
 
   const addReport = (r: CitizenReport) => {
     setReports((prev) => [r, ...prev]);
@@ -107,9 +102,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   return (
     <AppContext.Provider
       value={{
-        waterLevelM,
-        setWaterLevelM,
-        floodPhase,
         shelters,
         sheltersReady,
         reports,

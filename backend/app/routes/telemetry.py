@@ -12,14 +12,16 @@ router = APIRouter(prefix="/api/v1", tags=["Telemetry"])
 
 readings: dict[str, deque] = defaultdict(lambda: deque(maxlen=2000))
 raw_buffer: dict[str, deque] = defaultdict(lambda: deque(maxlen=5))
-machines: dict[str, PhaseMachine] = defaultdict(PhaseMachine)
+# Each station has its own warning/danger line, as JPS sets them per station.
+machines: dict[str, PhaseMachine] = {
+    dev_id: PhaseMachine(cfg.get("warning_threshold_m", 1.20), cfg.get("danger_threshold_m", 1.50))
+    for dev_id, cfg in DEVICES.items()
+}
 
-# Seed initial normal reading for demo devices
-for dev_id, dev_cfg in DEVICES.items():
-    init_ts = int(time.time()) - 60
-    # Mount height 400cm, distance 280cm -> water level 1.20m
-    readings[dev_id].append((init_ts, 1.20))
-    machines[dev_id].update(1.20)
+# Seed initial normal reading for demo devices (seed: a calm river)
+for dev_id in DEVICES:
+    readings[dev_id].append((int(time.time()) - 60, 0.80))
+    machines[dev_id].update(0.80)
 
 class IngestPayload(BaseModel):
     device_id: str
@@ -39,6 +41,11 @@ def ingest_sensor_reading(p: IngestPayload):
         good_sig = hmac.new(dev["secret"].encode(), expected_msg, hashlib.sha256).hexdigest()
         if not hmac.compare_digest(good_sig, p.sig):
             raise HTTPException(401, "Invalid HMAC signature")
+
+    if abs(time.time() - p.ts) > MAX_SKEW_SECONDS:
+        raise HTTPException(400, "timestamp outside allowed window")
+    if readings[p.device_id] and p.ts <= readings[p.device_id][-1][0]:
+        raise HTTPException(409, "reading older than the last one")
 
     raw_buffer[p.device_id].append(p.distance_cm)
     filtered_dist = median(raw_buffer[p.device_id])

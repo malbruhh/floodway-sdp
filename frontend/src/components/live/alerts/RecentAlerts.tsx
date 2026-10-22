@@ -32,7 +32,8 @@ export function RecentAlerts({ alerts }: { alerts: AlertEvent[] }) {
       ) : (
         <ul className="mt-2 divide-y divide-slate-100" aria-live="polite">
           {shown.map((a) => {
-            const meta = LEVEL_META[a.level];
+            const clear = a.kind === 'all_clear';
+            const meta = LEVEL_META[clear ? 'NORMAL' : a.level]; // all-clear rows use the green style
             const Icon = meta.icon;
             return (
               <li key={a.id} className="flex gap-3 py-3 first:pt-1 last:pb-0">
@@ -41,11 +42,11 @@ export function RecentAlerts({ alerts }: { alerts: AlertEvent[] }) {
                 </span>
                 <div className="min-w-0 flex-1">
                   <p className="flex items-baseline justify-between gap-2 text-sm/5">
-                    <span className={`font-semibold ${meta.text}`}>{meta.label.toUpperCase()}</span>
+                    <span className={`font-semibold ${meta.text}`}>{clear ? 'ALL CLEAR' : meta.label.toUpperCase()}</span>
                     <time dateTime={a.timestamp} title={timeAgo(a.timestamp)} className={`${num} shrink-0 text-xs/4 text-slate-600`}>{clockTime(a.timestamp)}</time>
                   </p>
                   <p className="truncate text-sm/5 font-medium text-slate-900" title={a.camera_name}>{a.camera_name}</p>
-                  <p className="text-xs/4 text-slate-600">Reached <span className={num}>{Math.round(a.water_ratio * 100)}%</span> of bank height</p>
+                  <p className="text-xs/4 text-slate-600">{clear ? 'Back below the warning line at ' : 'Reached '}<span className={num}>{Math.round(a.water_ratio * 100)}%</span> of bank height</p>
                 </div>
               </li>
             );

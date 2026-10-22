@@ -22,7 +22,8 @@ export function AlertToast({ alert, onOpen, onDismiss }: Props) {
   }, [alert, onDismiss]);
 
   if (!alert) return null;
-  const meta = LEVEL_META[alert.level];
+  const clear = alert.kind === 'all_clear';
+  const meta = LEVEL_META[clear ? 'NORMAL' : alert.level];
   const Icon = meta.icon;
 
   return (
@@ -32,10 +33,10 @@ export function AlertToast({ alert, onOpen, onDismiss }: Props) {
           <Icon className="h-5 w-5" aria-hidden="true" />
         </span>
         <button type="button" onClick={() => onOpen(alert)} className={`group min-w-0 flex-1 rounded-lg text-left ${interactive}`}>
-          <span className={`block text-sm/5 font-semibold ${meta.text}`}>{meta.label.toUpperCase()}</span>
+          <span className={`block text-sm/5 font-semibold ${meta.text}`}>{clear ? 'ALL CLEAR' : meta.label.toUpperCase()}</span>
           <span className="block truncate text-sm/5 font-semibold text-slate-900">{alert.camera_name}</span>
           <span className="mt-0.5 block text-sm/5 text-slate-600">
-            Reached <span className={num}>{Math.round(alert.water_ratio * 100)}%</span> of bank.{' '}
+            {clear ? 'Back below the warning line at' : 'Reached'} <span className={num}>{Math.round(alert.water_ratio * 100)}%</span> of bank.{' '}
             <span className="inline-flex items-center whitespace-nowrap font-semibold text-[#0958D9]">
               Open routes
               <ChevronRight className="h-4 w-4 transition-transform duration-150 group-hover:translate-x-0.5 motion-reduce:transition-none" aria-hidden="true" />

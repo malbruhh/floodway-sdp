@@ -61,6 +61,7 @@ export interface AlertEvent {
   water_ratio: number;
   timestamp: string;
   message: string;
+  kind?: 'alert' | 'all_clear';
 }
 
 export interface CameraDraft {
