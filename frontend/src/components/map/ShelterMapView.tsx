@@ -7,6 +7,7 @@ import { Navigation } from 'lucide-react';
 import { useApp } from '../../contexts/AppContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { dispatchArrivalCheckin, type TelegramResult } from '../../services/telegramService';
+import { postRouteEvent } from '../../services/resilience';
 import { InPageActionDock } from './InPageActionDock';
 import { VisionHazardLayer } from './VisionHazardLayer';
 import { JpsCameraLayer } from './JpsCameraLayer';
@@ -117,6 +118,7 @@ export function ShelterMapView() {
     const date = now.toLocaleDateString('en-MY', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
     const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     setFamilySafetyStatus('ARRIVED_SAFE');
+    void postRouteEvent('arrived', selected.id);
     setArrival({ when: `${date} · ${time}`, telegram: null });
     dispatchArrivalCheckin({ userName: user?.name || 'Demo user', shelterName: selected.name, dateStr: date, timeStr: time })
       .then((telegram) => setArrival((a) => (a ? { ...a, telegram } : a)))
@@ -137,6 +139,7 @@ export function ShelterMapView() {
     setSnap('peek'); // on a phone the sheet must get out of the way, so the map with the route is what you see
     setArrival(null);
     sim.start();
+    void postRouteEvent('start', selected.id);
   };
   const cancel = () => sim.stop();
 

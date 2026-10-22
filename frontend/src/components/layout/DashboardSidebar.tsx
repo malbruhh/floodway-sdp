@@ -7,6 +7,7 @@ import {
   FileText,
   Video,
   Camera,
+  BarChart3,
   User,
   PanelLeftClose,
   PanelLeftOpen,
@@ -24,6 +25,7 @@ export function DashboardSidebar({ defaultCollapsed = false }: { defaultCollapse
     { label: 'Reports', icon: FileText, path: '/reports' },
     { label: 'Live Vision', icon: Video, path: '/live' },
     { label: 'JPS Cameras', icon: Camera, path: '/jps' },
+    { label: 'Resilience', icon: BarChart3, path: '/resilience' },
     { label: 'Profile', icon: User, path: '/profile' },
   ];
 

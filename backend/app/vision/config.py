@@ -42,5 +42,9 @@ class VisionSettings:
         return self.data_dir / "cameras.json"
 
     @property
+    def events_file(self) -> Path:
+        return self.data_dir / "events.jsonl"
+
+    @property
     def uploads_dir(self) -> Path:
         return self.data_dir / "uploads"

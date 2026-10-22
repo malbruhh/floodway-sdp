@@ -1,6 +1,6 @@
 # AGENTS.md: FloodWay (any AI agent reads this first)
 
-FloodWay: AI flood early warning for Malaysia. Live Vision reads river and drain camera water levels, the map routes around flooded roads. Sime Darby Property University Hackathon 2026 (proposal 23 Oct, final submission 11 Nov, pitch day 14 Nov).
+FloodWay: AI flood early warning for Malaysia. Live Vision reads river and drain camera water levels, the map routes around flooded roads. Sime Darby Property University Hackathon 2026 (proposal, prototype, slides and video submitted 23 Oct, pitch day 14 Nov).
 
 ## The loop (every task, every agent)
 

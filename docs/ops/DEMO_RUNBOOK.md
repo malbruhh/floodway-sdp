@@ -1,6 +1,6 @@
 # FloodWay demo runbook
 
-For the Sime Darby Property University Hackathon: proposal 23 Oct, final submission 11 Nov, pitch day 14 Nov. Written from the app as it is on branch
+For the Sime Darby Property University Hackathon: proposal, prototype, slides and video submitted 23 Oct, pitch day 14 Nov. Written from the app as it is on branch
 `demo-polish`. Everything here was checked against the running app; where something was not, it says so.
 
 ---
@@ -22,6 +22,7 @@ Say this plainly. A judge who asks "is that real?" must get a straight answer.
 | **Real data, simulated drive** | Evacuation route (Map) | Road geometry and turn steps come from OpenStreetMap through the public OSRM server, computed in advance and stored. The route chosen avoids the flood areas it can; the car on screen is a sped-up simulation, not a tracked position. No live traffic. |
 | **Approximate** | Evacuation route (Home) | A straight line bent around camera flood zones. Not road-aware. The UI says "approximate". |
 | **Real, if wired** | JPS Selangor public camera snapshots | Real images from an unofficial public API (see `docs/STATUS.md`). Label them "JPS Selangor public snapshot". AI level only on hand-calibrated cameras. The five sample cameras are still not real or government feeds. |
+| **Real code, simulated inputs** | Resilience page (`/resilience`) | Events, lead times, alerts sent and households routed are counted from a durable event log (`data/events.jsonl`, survives restarts). On the demo the events come from the sample cameras and the in-app drives, so every row is tagged `simulated`. "Alerts sent" counts only external channels (Telegram); with no bot token it reads 0. The loss-avoided figure is an **illustrative** formula with editable placeholder assumptions, not a measured saving. |
 | **Not built / not claimed** | Verification by an agency, certification, any external cloud AI service | Nothing verifies reports. No external cloud service is called by this demo. |
 | **Not built / not claimed** | Real IoT sensors in the demo | The code can read a USB sensor, but the demo shows simulated values. |
 

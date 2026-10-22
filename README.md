@@ -50,6 +50,10 @@ The browser never talks to JPS directly. The backend fetches the camera list (ca
 
 ## What is real and what is simulated
 
+before moving on real telemetric data, we will be using sampled/simulated data to show how the system should perform under normal condition.
+
+
+
 | Real | Simulated or limited |
 |---|---|
 | JPS Selangor camera list and snapshots | The five Live Vision sample cameras are **AI-generated images**, labelled SAMPLE |
