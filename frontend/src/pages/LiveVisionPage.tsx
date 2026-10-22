@@ -1,6 +1,6 @@
 import { ChevronDown, Search, SlidersHorizontal, Video } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { DashboardSidebar } from '../components/layout/DashboardSidebar';
 import { Header } from '../components/layout/Header';
 import { BottomNav } from '../components/layout/BottomNav';
@@ -21,6 +21,7 @@ import { DEFAULT_OVERLAYS, OverlayToggles } from '../components/live/feed/Overla
 import type { OverlayState } from '../components/live/feed/OverlayToggles';
 import { ViewToggle } from '../components/live/feed/ViewToggle';
 import type { ViewMode } from '../components/live/feed/ViewToggle';
+import { JpsCameraWall } from '../components/live/jps/JpsCameraWall';
 import { AddCameraWizard } from '../components/live/onboarding/AddCameraWizard';
 import { ConnectionChip, OfflineNotice } from '../components/live/shared/ConnectionStatus';
 import { EmptyState } from '../components/live/shared/EmptyState';
@@ -44,6 +45,8 @@ const TAB_LABEL: Record<CameraTab, string> = { nearby: 'Nearby', city: 'City', m
 /** Live Vision: replaces the old 3D simulation page. Route: /live */
 export default function LiveVisionPage() {
   const navigate = useNavigate();
+  const [params, setParams] = useSearchParams();
+  const source = params.get('source') === 'jps' ? 'jps' : 'ai';
   const state = useVisionStore();
   const gps = useGpsPlace();
 
@@ -108,11 +111,18 @@ export default function LiveVisionPage() {
                 </h1>
                 <p className="mt-0.5 hidden text-sm/5 text-slate-600 @min-[640px]/main:block">AI reads the water level from nearby river cameras every few seconds.</p>
               </div>
-              {!loading && <ConnectionChip usingMock={state.usingMock} connected={state.connected} online={onlineCount} total={state.cameras.length} />}
+              {source === 'ai' && !loading && <ConnectionChip usingMock={state.usingMock} connected={state.connected} online={onlineCount} total={state.cameras.length} />}
             </div>
-            {!loading && state.usingMock && <div className="mt-3"><OfflineNotice forcedMock={FORCE_MOCK} error={state.error} /></div>}
+            <div className="mt-3 inline-flex rounded-xl border border-slate-200 bg-white p-1" role="group" aria-label="Camera source">
+              {([['ai', 'Live Vision (AI)'], ['jps', 'JPS Selangor snapshots']] as const).map(([id, label]) => (
+                <button key={id} type="button" aria-pressed={source === id} onClick={() => setParams(id === 'jps' ? { source: 'jps' } : {}, { replace: true })} className={`min-h-11 rounded-lg px-3 text-sm/5 font-semibold @min-[760px]/main:min-h-9 ${interactive} ${source === id ? 'bg-[#0958D9] text-white' : 'text-slate-700 hover:bg-slate-100'}`}>{label}</button>
+              ))}
+            </div>
+            {source === 'ai' && !loading && state.usingMock && <div className="mt-3"><OfflineNotice forcedMock={FORCE_MOCK} error={state.error} /></div>}
 
-            {loading ? (
+            {source === 'jps' ? (
+              <JpsCameraWall />
+            ) : loading ? (
               <LiveVisionSkeleton />
             ) : (
               <div className="mt-4 grid grid-cols-1 gap-4 @min-[640px]/main:mt-6 @min-[760px]/main:grid-cols-[320px_minmax(0,1fr)] @min-[760px]/main:gap-5 @min-[1260px]/main:grid-cols-[300px_minmax(520px,1fr)_340px]">

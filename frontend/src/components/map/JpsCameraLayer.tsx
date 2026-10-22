@@ -20,7 +20,7 @@ export function JpsCameraLayer() {
               <img src={jpsImageUrl(c)} alt={`Latest snapshot: ${c.name}`} loading="lazy" style={{ width: 200, marginTop: 6, borderRadius: 8 }} />
               <small>JPS Selangor public snapshot. Image only, no AI water reading.</small>
               <br />
-              <Link to="/jps">All JPS cameras</Link>
+              <Link to="/live?source=jps">All JPS cameras</Link>
             </Popup>
           </CircleMarker>
         );
