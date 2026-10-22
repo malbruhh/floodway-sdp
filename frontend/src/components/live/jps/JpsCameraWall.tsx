@@ -51,9 +51,9 @@ export function JpsCameraWall() {
   return (
     <section className="mx-auto w-full max-w-7xl px-4 py-5 md:px-6 lg:px-8" aria-labelledby="jps-title">
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-        <h1 id="jps-title" className="flex items-center gap-2 font-heading text-xl font-extrabold text-slate-900">
+        <h2 id="jps-title" className="flex items-center gap-2 font-heading text-xl font-extrabold text-slate-900">
           <Camera className="h-5 w-5 text-[#1677FF]" aria-hidden="true" /> Selangor river cameras
-        </h1>
+        </h2>
         <DistrictMenu
           value={district}
           total={cameras.length}
