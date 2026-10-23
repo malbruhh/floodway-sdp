@@ -41,7 +41,7 @@ export function EstatePage() {
                 <select
                   value={townshipId}
                   onChange={(e) => setTownshipId(e.target.value)}
-                  className={`mt-1 block min-h-11 rounded-ctl border border-control bg-surface px-3 text-sm font-semibold text-ink ${interactive}`}
+                  className={`mt-1 block min-h-11 rounded-ctl border border-control bg-surface px-3 text-base font-medium text-ink ${interactive}`}
                 >
                   {TOWNSHIPS.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
                 </select>

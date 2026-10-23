@@ -68,6 +68,6 @@ test('blocked-notification note can be dismissed', async ({ page, context }) => 
   await settle(page, 2500);
   const note = page.getByText(/Phone alerts are blocked/);
   await expect(note).toBeVisible();
-  await page.getByRole('button', { name: 'Dismiss' }).click();
+  await note.locator('..').getByRole('button', { name: 'Dismiss' }).click();
   await expect(note).toHaveCount(0);
 });

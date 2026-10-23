@@ -14,7 +14,7 @@ interface Props {
   areaLevel: Level | null;
 }
 
-const field = `mt-1 min-h-11 w-full rounded-ctl border border-control bg-surface px-3 text-sm text-ink ${interactive}`;
+const field = `mt-1 min-h-11 w-full rounded-ctl border border-control bg-surface px-3 text-base text-ink ${interactive}`;
 
 /** Rule-based building and basement risk for a named place in the township. */
 export function BuildingRiskPanel({ origins, building, onChange, scenario, areaLevel }: Props) {

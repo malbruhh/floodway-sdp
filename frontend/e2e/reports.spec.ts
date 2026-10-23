@@ -38,7 +38,7 @@ test('a report can be sent, confirmed, and then appears in the list', async ({ p
   await expect(page.getByRole('dialog', { name: 'Report sent' })).toBeVisible({ timeout: 15000 });
   await expect(page.getByText(/not verified/).first()).toBeVisible();
   await page.getByRole('button', { name: 'Done' }).click();
-  await expect(page.getByText('Water over the road near the school')).toBeVisible();
+  await expect(page.getByText('Water over the road near the school').first()).toBeVisible();
   noErrors(errors);
 });
 

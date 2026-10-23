@@ -17,7 +17,7 @@ export function CameraStrip({ cameras, allCameras, selectedId, useScene, onSelec
   if (cameras.length < 2) return null;
   return (
     <div className="relative">
-      <div className="flex snap-x gap-3 overflow-x-auto pb-2 pr-8 [scrollbar-width:thin]" role="listbox" aria-label="Switch camera" aria-orientation="horizontal">
+      <div className="relative flex snap-x gap-3 overflow-x-auto pb-2 pr-8 [scrollbar-width:thin]" role="listbox" aria-label="Switch camera" aria-orientation="horizontal">
         {cameras.map((camera) => {
           const selected = camera.id === selectedId;
           const level = camera.online ? camera.reading?.level : undefined;
@@ -43,7 +43,7 @@ export function CameraStrip({ cameras, allCameras, selectedId, useScene, onSelec
           );
         })}
       </div>
-      <div className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-[#F8FAFC] to-transparent" aria-hidden="true" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-ground to-transparent" aria-hidden="true" />
     </div>
   );
 }

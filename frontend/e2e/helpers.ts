@@ -38,7 +38,8 @@ export async function layoutFacts(page: Page) {
     const vis = (el: Element) => { const r = el.getBoundingClientRect(); const cs = getComputedStyle(el); return r.width > 0 && r.height > 0 && cs.visibility !== 'hidden' && cs.display !== 'none'; };
     const label = (el: Element) => `${el.tagName.toLowerCase()}"${(el.getAttribute('aria-label') || el.textContent || el.getAttribute('placeholder') || '').trim().replace(/\s+/g, ' ').slice(0, 30)}"`;
     const inter = [...document.querySelectorAll('a[href], button, input, select, textarea, [role=button], [role=tab]')].filter((e) => vis(e) && !e.closest('.leaflet-container') && !e.closest('[aria-hidden=true]'));
-    const smallTargets = inter.filter((e) => { const r = e.getBoundingClientRect(); return r.width < 44 || r.height < 44; }).map(label);
+    // A checkbox or radio is tapped through its label, so the label's size is what counts.
+    const smallTargets = inter.filter((e) => { const box = (e as HTMLInputElement).type === 'checkbox' || (e as HTMLInputElement).type === 'radio' ? (e.closest('label') ?? e) : e; const r = box.getBoundingClientRect(); return r.width < 44 || r.height < 44; }).map(label);
     const smallInputs = [...document.querySelectorAll('input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=file]), select, textarea')].filter(vis).filter((e) => parseFloat(getComputedStyle(e).fontSize) < 16).map(label);
     const smallText = [...document.querySelectorAll('body *')].filter((e) => [...e.childNodes].some((n) => n.nodeType === 3 && (n.textContent ?? '').trim()) && vis(e) && !e.closest('svg') && !e.closest('.leaflet-container') && parseFloat(getComputedStyle(e).fontSize) < 12).map(label);
     return { overflow: document.documentElement.scrollWidth - window.innerWidth, smallTargets, smallInputs, smallText };
