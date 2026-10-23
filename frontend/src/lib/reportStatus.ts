@@ -49,3 +49,20 @@ export function countReports(reports: CitizenReport[]): ReportCounts {
     aiAssessed: visible.filter((r) => r.status === 'AI_VERIFIED' || r.aiVerification?.ran === true).length,
   };
 }
+
+/** Minutes since a report, read from its "12 min ago" / "Just now" text. Unreadable text counts as old. */
+export function reportAgeMin(timestampStr: string): number {
+  const t = timestampStr.trim().toLowerCase();
+  if (t === 'just now') return 0;
+  const m = t.match(/^(\d+)\s*(min|minute|minutes|h|hr|hour|hours)\b/);
+  if (!m) return Number.POSITIVE_INFINITY;
+  return m[2].startsWith('m') ? Number(m[1]) : Number(m[1]) * 60;
+}
+
+export const REPORT_GROUPS = ['Last 30 minutes', 'Last hour', 'Earlier today'] as const;
+export type ReportGroup = (typeof REPORT_GROUPS)[number];
+
+export function reportGroup(timestampStr: string): ReportGroup {
+  const a = reportAgeMin(timestampStr);
+  return a <= 30 ? 'Last 30 minutes' : a <= 60 ? 'Last hour' : 'Earlier today';
+}
