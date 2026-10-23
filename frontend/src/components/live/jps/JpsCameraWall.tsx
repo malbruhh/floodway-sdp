@@ -16,10 +16,10 @@ function Card({ cam, wx }: { cam: JpsCamera; wx: PointWeather | undefined }) {
   const [open, setOpen] = useState(false);
   const s = JPS_STATUS[cam.status];
   return (
-    <li className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-      <div className="relative aspect-video bg-slate-100">
+    <li className="overflow-hidden rounded-card border border-line bg-surface shadow-sm">
+      <div className="relative aspect-video bg-raised">
         {broken ? (
-          <div className="flex h-full flex-col items-center justify-center gap-1 text-xs text-slate-500">
+          <div className="flex h-full flex-col items-center justify-center gap-1 text-xs text-muted">
             <ImageOff className="h-5 w-5" aria-hidden="true" /> Snapshot unavailable
           </div>
         ) : (
@@ -28,17 +28,17 @@ function Card({ cam, wx }: { cam: JpsCamera; wx: PointWeather | undefined }) {
         <span className={`absolute left-2 top-2 rounded-full px-2 py-0.5 text-xs font-semibold ring-1 ${s.chip}`}>{s.label}</span>
       </div>
       <div className="p-3">
-        <p className="truncate text-sm font-bold text-slate-900">{cam.name}</p>
-        <p className="truncate text-xs text-slate-600">
+        <p className="truncate text-sm font-bold text-ink">{cam.name}</p>
+        <p className="truncate text-xs text-muted">
           {cam.district}
           {cam.river_basin ? ` · ${cam.river_basin}` : ''}
         </p>
-        <p className="mt-1 text-xs text-slate-600">Updated {ageText(cam.age_s)}</p>
+        <p className="mt-1 text-xs text-muted">Updated {ageText(cam.age_s)}</p>
         <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} className="mt-1 flex min-h-11 items-center gap-2 text-left">
-          <WeatherChip w={wx} /> <span className="text-xs font-semibold text-[#0958D9]">{open ? 'Hide weather' : 'Weather details'}</span>
+          <WeatherChip w={wx} /> <span className="text-xs font-semibold text-link">{open ? 'Hide weather' : 'Weather details'}</span>
         </button>
         {open && <WeatherPanel lat={cam.lat} lon={cam.lon} name={cam.name} />}
-        <p className="mt-1 text-xs font-medium text-slate-500">Image only, no AI reading</p>
+        <p className="mt-1 text-xs font-medium text-muted">Image only, no AI reading</p>
       </div>
     </li>
   );
@@ -61,8 +61,8 @@ export function JpsCameraWall() {
   return (
     <section className="mx-auto w-full max-w-7xl px-4 py-5 md:px-6 lg:px-8" aria-labelledby="jps-title">
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-        <h2 id="jps-title" className="flex items-center gap-2 font-heading text-xl font-extrabold text-slate-900">
-          <Camera className="h-5 w-5 text-[#1677FF]" aria-hidden="true" /> Selangor river cameras
+        <h2 id="jps-title" className="flex items-center gap-2 text-xl font-bold text-ink">
+          <Camera className="h-5 w-5 text-link" aria-hidden="true" /> Selangor river cameras
         </h2>
         <DistrictMenu
           value={district}
@@ -74,21 +74,21 @@ export function JpsCameraWall() {
           }}
         />
       </div>
-      <p className="mt-1 max-w-2xl text-sm text-slate-600">{JPS_LABEL} Photos refresh about every 1 to 2 minutes; this page checks every 2 minutes.</p>
+      <p className="mt-1 max-w-2xl text-sm text-muted">Public snapshots from river cameras run by JPS (Jabatan Pengairan dan Saliran, the Department of Irrigation and Drainage) in Selangor. FloodWay reads a water level only from cameras it has calibrated; the rest are photos only. Photos refresh every 1 to 2 minutes.</p>
 
       {data && (
-        <p className="mt-3 text-xs text-slate-600">
+        <p className="mt-3 text-xs text-muted">
           {counts.online} online · {counts.stale} stale · {counts.offline} offline
         </p>
       )}
       {(error || data?.stale) && (
-        <p role="status" className="mt-3 flex items-center gap-2 rounded-xl bg-amber-50 px-3 py-2 text-xs font-medium text-amber-900 ring-1 ring-amber-200">
+        <p role="status" className="mt-3 flex items-center gap-2 rounded-ctl bg-warning-bg px-3 py-2 text-xs font-medium text-warning ring-1 ring-amber-200">
           <AlertTriangle className="h-4 w-4 shrink-0" aria-hidden="true" />
           {data?.stale ? 'JPS Selangor did not answer; showing the last list we received.' : error}
         </p>
       )}
-      {loading && <p className="mt-6 text-sm text-slate-600">Loading cameras…</p>}
-      {!loading && !data && <p className="mt-6 text-sm text-slate-700">Could not load the JPS camera list. Check that the backend is running.</p>}
+      {loading && <p className="mt-6 text-sm text-muted">Loading cameras…</p>}
+      {!loading && !data && <p className="mt-6 text-sm text-muted">Could not load the JPS camera list. Check that the backend is running.</p>}
 
       <ul className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {visible.slice(0, shown).map((c) => (
@@ -96,7 +96,7 @@ export function JpsCameraWall() {
         ))}
       </ul>
       {visible.length > shown && (
-        <button onClick={() => setShown((n) => n + PAGE)} className="mt-5 min-h-11 rounded-xl bg-[#1677FF] px-5 text-sm font-bold text-white">
+        <button onClick={() => setShown((n) => n + PAGE)} className="mt-5 min-h-11 rounded-ctl bg-action px-5 text-sm font-bold text-white">
           Show more ({visible.length - shown} left)
         </button>
       )}

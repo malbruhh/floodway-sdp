@@ -28,16 +28,16 @@ export function CameraGrid({ cameras, allCameras, useScene, overlays, selectedId
                 type="button"
                 onClick={() => onSelect(camera.id)}
                 aria-label={`Open ${camera.name}`}
-                className={`${card} flex w-full flex-col p-2 text-left ${interactive} ${selectedId === camera.id ? 'border-[#1677FF] ring-1 ring-[#1677FF]' : 'hover:border-slate-300'}`}
+                className={`${card} flex w-full flex-col p-2 text-left ${interactive} ${selectedId === camera.id ? 'border-action ring-1 ring-[#1677FF]' : 'hover:border-control'}`}
               >
                 <FeedViewer camera={camera} tag={camTag(allCameras, camera.id)} useScene={useScene} overlays={overlays} compact />
                 <span className="flex flex-1 flex-col gap-2 px-2 pb-1 pt-3">
-                  <span className="truncate text-sm/5 font-semibold text-slate-900" title={camera.name}>{camera.name}</span>
+                  <span className="truncate text-sm/5 font-semibold text-ink" title={camera.name}>{camera.name}</span>
                   <span className="flex items-center gap-2">
                     {reading ? (
                       <>
                         <StatusChip level={reading.level} />
-                        <span className={`${num} text-xs/4 font-medium text-slate-700`}>{pct(reading.water_ratio)} of bank</span>
+                        <span className={`${num} text-xs/4 font-medium text-muted`}>{pct(reading.water_ratio)} up the bank</span>
                       </>
                     ) : (
                       <OfflineChip label={camera.online ? 'WAITING' : 'OFFLINE'} />

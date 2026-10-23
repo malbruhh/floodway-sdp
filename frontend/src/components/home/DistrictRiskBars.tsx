@@ -12,7 +12,7 @@ interface Props {
   cameras: Camera[];
 }
 
-/** Ranked bars: level word plus a bar for water as a share of bank height. Colour is never the only signal. */
+/** Ranked bars: level word plus a bar for water as a share up the bank. Colour is never the only signal. */
 export function DistrictRiskBars({ loading, cameras }: Props) {
   const rows = districtRisk(cameras);
   return (
@@ -41,7 +41,7 @@ export function DistrictRiskBars({ loading, cameras }: Props) {
                       <span className={`${num} font-normal text-slate-700`}>{Math.round(r.ratio * 100)}%</span>
                     </span>
                   </div>
-                  <div className="mt-1 h-2.5 overflow-hidden rounded-full bg-slate-100" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.min(100, Math.round(r.ratio * 100))} aria-label={`${r.district}: ${meta.label}, water at ${Math.round(r.ratio * 100)}% of bank height`}>
+                  <div className="mt-1 h-2.5 overflow-hidden rounded-full bg-slate-100" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.min(100, Math.round(r.ratio * 100))} aria-label={`${r.district}: ${meta.label}, water at ${Math.round(r.ratio * 100)}% up the bank`}>
                     <div className="h-full rounded-full" style={{ width: `${width}%`, backgroundColor: LEVEL_PALETTE[r.level].marker }} />
                   </div>
                 </li>

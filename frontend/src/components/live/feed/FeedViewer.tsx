@@ -3,6 +3,7 @@ import { Clock, Film, Radio, RotateCw, WifiOff } from 'lucide-react';
 import { useCaptureCycle } from '../../../hooks/vision/useCaptureCycle';
 import { useDemoVideo } from '../../../hooks/vision/useDemoVideo';
 import { useElementHeight } from '../../../hooks/vision/useElementSize';
+import { cameraPlace } from '../../../lib/home';
 import { sourceLabel } from '../../../lib/vision/describe';
 import { pct, timeAgo } from '../../../lib/vision/format';
 import { spreadLabels } from '../../../lib/vision/labels';
@@ -22,7 +23,7 @@ interface Props {
 }
 
 const LINES = {
-  danger: { color: '#EF4444', label: 'Danger', tag: 'bg-red-600 text-white' },
+  danger: { color: '#EF4444', label: 'Danger', tag: 'bg-danger text-white' },
   warning: { color: '#F59E0B', label: 'Warning', tag: 'bg-amber-400 text-slate-950' },
   normal: { color: '#10B981', label: 'Normal', tag: 'bg-emerald-700 text-white' },
 } as const;
@@ -70,9 +71,9 @@ export function FeedViewer({ camera, tag, useScene, overlays, compact = false, o
   return (
     <div
       ref={box}
-      className="relative aspect-video w-full overflow-hidden rounded-xl bg-slate-800"
+      className="relative aspect-video w-full overflow-hidden rounded-ctl bg-slate-800"
       role="img"
-      aria-label={`${camera.name}, ${kind.toLowerCase()} feed${reading ? `, water at ${pct(reading.water_ratio)} of bank height` : ''}${stale ? ', feed is stale' : ''}`}
+      aria-label={`${camera.name}, ${kind.toLowerCase()} feed${reading ? `, water at ${pct(reading.water_ratio)} up the bank` : ''}${stale ? ', feed is stale' : ''}`}
     >
       {showLoop && demo ? (
         <video
@@ -126,16 +127,15 @@ export function FeedViewer({ camera, tag, useScene, overlays, compact = false, o
       {live && overlays.waterline && waterY !== null && reading && !compact && (
         <>
           <span className={`pointer-events-none absolute left-2 top-10 whitespace-nowrap rounded-lg bg-[#0958D9] px-2.5 py-1 text-xs/4 font-semibold text-white ${onFrame}`}>
-            Water at <span className={num}>{pct(reading.water_ratio)}</span> of bank
+            Water at <span className={num}>{pct(reading.water_ratio)}</span> up the bank
           </span>
-          <span className="pointer-events-none absolute h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-[3px] border-[#1677FF] bg-white shadow" style={{ left: `${((xMin + xMax) / 2) * 100}%`, top: `${waterY * 100}%` }} aria-hidden="true" />
+          <span className="pointer-events-none absolute h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-[3px] border-action bg-surface shadow" style={{ left: `${((xMin + xMax) / 2) * 100}%`, top: `${waterY * 100}%` }} aria-hidden="true" />
         </>
       )}
 
-      <span className={`${num} absolute left-2 top-2 rounded-md bg-black/65 font-medium text-white ${chip}`}>{compact ? tag : showLoop ? 'DEMO LOOP' : formatStamp(reading?.timestamp)}</span>
-      {!compact && <span className={`${num} absolute right-2 top-2 rounded-md bg-black/65 px-2.5 py-1 text-xs/4 font-medium text-white`}>{tag}</span>}
-      <span className={`absolute left-2 ${stale ? 'bottom-10' : 'bottom-2'} inline-flex items-center gap-1 rounded-full font-semibold ${chip} ${onFrame} ${kind === 'LIVE' && !showLoop ? 'bg-red-600 text-white' : 'bg-amber-400 text-slate-950'}`}>
-        {kind === 'LIVE' && !showLoop && <span className="h-1.5 w-1.5 rounded-full bg-white" aria-hidden="true" />}
+      <span className={`${num} absolute left-2 top-2 rounded-md bg-black/65 font-medium text-white ${chip}`}>{compact ? cameraPlace(camera.name) : showLoop ? 'DEMO LOOP' : formatStamp(reading?.timestamp)}</span>
+      <span className={`absolute left-2 ${stale ? 'bottom-10' : 'bottom-2'} inline-flex items-center gap-1 rounded-full font-semibold ${chip} ${onFrame} ${kind === 'LIVE' && !showLoop ? 'bg-danger text-white' : 'bg-amber-400 text-slate-950'}`}>
+        {kind === 'LIVE' && !showLoop && <span className="h-1.5 w-1.5 rounded-full bg-surface" aria-hidden="true" />}
         {showLoop ? 'PLAYBACK' : kind}
         {!compact && !showLoop && kind !== 'SAMPLE' && <span className="font-medium">· {sourceLabel(camera)}</span>}
         {!compact && !showLoop && kind === 'SAMPLE' && <span className="font-medium">· simulated water</span>}
@@ -148,7 +148,7 @@ export function FeedViewer({ camera, tag, useScene, overlays, compact = false, o
             type="button"
             aria-pressed={showLoop}
             onClick={() => setLoopOn(!loopOn)}
-            className={`inline-flex min-h-11 items-center gap-1.5 rounded-lg px-3 text-xs/4 font-semibold shadow ring-1 ring-black/25 ${interactive} ${showLoop ? 'bg-white text-slate-900' : 'bg-slate-900/80 text-white hover:bg-slate-900'}`}
+            className={`inline-flex min-h-11 items-center gap-1.5 rounded-lg px-3 text-xs/4 font-semibold shadow ring-1 ring-black/25 ${interactive} ${showLoop ? 'bg-surface text-ink' : 'bg-slate-900/80 text-white hover:bg-slate-900'}`}
           >
             {showLoop ? <Radio className="h-3.5 w-3.5" aria-hidden="true" /> : <Film className="h-3.5 w-3.5" aria-hidden="true" />}
             {showLoop ? 'Back to live frame' : 'Demo loop'}
@@ -159,10 +159,10 @@ export function FeedViewer({ camera, tag, useScene, overlays, compact = false, o
       {!camera.online && !showLoop && (
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-slate-900/90 px-4 text-center">
           <WifiOff className="h-7 w-7 text-slate-300" aria-hidden="true" />
-          <p className="font-heading text-base/6 font-bold text-white">Camera offline</p>
+          <p className="text-base/6 font-bold text-white">Camera offline</p>
           {!compact && <p className="text-sm/5 text-slate-300">{camera.last_frame_at ? `No signal. Last frame ${timeAgo(camera.last_frame_at)}.` : 'No frame received yet. We keep retrying.'}</p>}
           {onRetry && !compact && (
-            <button type="button" onClick={onRetry} className={`mt-1 inline-flex min-h-11 items-center gap-1.5 rounded-xl bg-[#0958D9] px-4 text-sm font-semibold text-white hover:bg-[#003EB3] ${interactive}`}>
+            <button type="button" onClick={onRetry} className={`mt-1 inline-flex min-h-11 items-center gap-1.5 rounded-ctl bg-[#0958D9] px-4 text-sm font-semibold text-white hover:bg-[#003EB3] ${interactive}`}>
               <RotateCw className="h-4 w-4" aria-hidden="true" /> Try now
             </button>
           )}

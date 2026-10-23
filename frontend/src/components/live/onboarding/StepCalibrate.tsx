@@ -14,14 +14,14 @@ interface Props {
   onChange: (next: Calibration) => void;
 }
 
-const tool = `inline-flex min-h-11 items-center gap-1.5 rounded-xl border border-slate-300 bg-white px-3 text-sm font-bold text-slate-800 hover:bg-slate-50 disabled:opacity-50 ${focusRing}`;
+const tool = `inline-flex min-h-11 items-center gap-1.5 rounded-ctl border border-control bg-surface px-3 text-sm font-bold text-ink hover:bg-slate-50 disabled:opacity-50 ${focusRing}`;
 
 export function StepCalibrate({ imageUrl, value, onChange }: Props) {
   const valid = linesAreValid(value);
   return (
     <div className="space-y-3">
       <CalibrationCanvas imageUrl={imageUrl} value={value} onChange={onChange} />
-      <p className="rounded-xl bg-blue-50 px-3 py-2 text-sm/5 text-slate-800">
+      <p className="rounded-ctl bg-blue-50 px-3 py-2 text-sm/5 text-ink">
         Drag <b>Danger</b> to the top of the bank, <b>Normal</b> to the usual water level, <b>Warning</b> between. Outline only the water.
       </p>
       <div className="flex flex-wrap gap-2">

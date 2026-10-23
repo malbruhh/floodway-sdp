@@ -42,13 +42,13 @@ export function CameraCard({ camera, distanceKm, history, selected, useScene, on
       type="button"
       onClick={onSelect}
       aria-pressed={selected}
-      className={`block w-full rounded-2xl border p-3 text-left ${interactive} ${
-        selected ? 'border-[#1677FF] bg-blue-50/50 ring-1 ring-[#1677FF]' : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/60'
+      className={`block w-full rounded-card border p-3 text-left ${interactive} ${
+        selected ? 'border-action bg-blue-50/50 ring-1 ring-[#1677FF]' : 'border-line bg-surface hover:border-control hover:bg-slate-50/60'
       }`}
     >
       <span className="flex items-baseline justify-between gap-2">
-        <span className="truncate text-base/6 font-semibold text-slate-900" title={camera.name}>{camera.name}</span>
-        <span className={`${num} shrink-0 text-xs/4 text-slate-600`}>{formatDistance(distanceKm)}</span>
+        <span className="truncate text-base/6 font-semibold text-ink" title={camera.name}>{camera.name}</span>
+        <span className={`${num} shrink-0 text-xs/4 text-muted`}>{formatDistance(distanceKm)}</span>
       </span>
       <span className="mt-2 flex gap-3">
         <FeedThumb camera={camera} useScene={useScene} className="h-16 w-28 shrink-0" />
@@ -56,17 +56,17 @@ export function CameraCard({ camera, distanceKm, history, selected, useScene, on
           <span className="block">{reading ? <StatusChip level={reading.level} /> : <OfflineChip label={camera.online ? 'WAITING' : 'OFFLINE'} />}</span>
           <span className="flex items-end justify-between gap-2">
             <span className="leading-none">
-              <span className={`${num} block text-sm/5 font-semibold ${reading ? 'text-slate-900' : 'text-slate-500'}`}>{reading ? pct(reading.water_ratio) : '--'}</span>
-              <span className="block text-xs/4 text-slate-600">of bank</span>
+              <span className={`${num} block text-sm/5 font-semibold ${reading ? 'text-ink' : 'text-muted'}`}>{reading ? pct(reading.water_ratio) : '--'}</span>
+              <span className="block text-xs/4 text-muted">up the bank</span>
             </span>
             <Sparkline values={reading ? history.slice(-20).map((r) => r.water_ratio) : []} color={meta?.hex ?? '#94A3B8'} width={56} height={24} className="shrink-0" />
           </span>
         </span>
       </span>
       {weather && <span className="mt-2 block"><WeatherChip w={weather} /></span>}
-      <span className="mt-2 flex items-center justify-between gap-2 border-t border-slate-100 pt-2 text-xs/4">
-        <span className={`truncate ${cycle.phase === 'stale' ? 'font-semibold text-amber-800' : 'text-slate-600'}`}>{status}</span>
-        <span className="shrink-0 text-slate-600">{sourceLabel(camera)}</span>
+      <span className="mt-2 flex items-center justify-between gap-2 border-t border-rule pt-2 text-xs/4">
+        <span className={`truncate ${cycle.phase === 'stale' ? 'font-semibold text-amber-800' : 'text-muted'}`}>{status}</span>
+        <span className="shrink-0 text-muted">{sourceLabel(camera)}</span>
       </span>
     </button>
   );

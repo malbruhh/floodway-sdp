@@ -44,7 +44,7 @@ export function VisionHazardLayer() {
           <Popup>
             <strong>{h.name}</strong>
             <br />
-            {LEVEL_META[h.level].label}: water at {Math.round(h.waterRatio * 100)}% of bank height.
+            {LEVEL_META[h.level].label}: water at {Math.round(h.waterRatio * 100)}% up the bank.
             <br />
             Sample camera (simulated). The route is adjusted around this zone, approximately.
           </Popup>
