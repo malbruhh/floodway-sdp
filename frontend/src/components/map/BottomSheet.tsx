@@ -4,7 +4,7 @@ export type Snap = 'peek' | 'half' | 'full';
 
 /** Sheet height as a share of its container, per snap. Peek is a fixed pixel height (see PEEK_PX). */
 const SNAP_FRACTION: Record<Exclude<Snap, 'peek'>, number> = { half: 0.5, full: 0.92 };
-const PEEK_PX = 92;
+const PEEK_PX = 112;
 const ORDER: Snap[] = ['peek', 'half', 'full'];
 const LABEL: Record<Snap, string> = { peek: 'Show more', half: 'Show all', full: 'Show less' };
 
@@ -91,7 +91,7 @@ export function BottomSheet({ snap, onSnapChange, header, children, onHeight }: 
       ref={ref}
       aria-label="Relief centres and route"
       data-snap={snap}
-      className={`absolute inset-x-0 bottom-0 z-[600] flex flex-col rounded-t-3xl border-t border-slate-200 bg-white shadow-[0_-8px_30px_rgba(15,23,42,0.18)] md:hidden ${
+      className={`absolute inset-x-0 bottom-0 z-[600] flex flex-col rounded-t-sheet border-t border-line bg-surface shadow-[0_-8px_30px_rgba(15,23,42,0.18)] md:hidden ${
         dragPx === null ? 'transition-[height] duration-200 ease-out' : ''
       }`}
       style={{ height }}
@@ -110,12 +110,12 @@ export function BottomSheet({ snap, onSnapChange, header, children, onHeight }: 
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerUp}
         onKeyDown={onKeyDown}
-        className="flex h-7 w-full shrink-0 touch-none cursor-grab items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1677FF]"
+        className="flex h-11 w-full shrink-0 touch-none cursor-grab items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-link"
       >
         <span className="h-1.5 w-11 rounded-full bg-slate-300" aria-hidden="true" />
       </button>
       <div className="shrink-0 px-3 pb-2">{header}</div>
-      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain border-t border-slate-100">{children}</div>
+      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain border-t border-rule">{children}</div>
     </section>
   );
 }

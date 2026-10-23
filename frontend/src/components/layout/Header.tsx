@@ -16,7 +16,7 @@ export function Header({ showLocation = true }: { showLocation?: boolean }) {
 
   return (
     <header className="sticky top-0 z-[500] flex h-[var(--top-h)] items-center gap-2 bg-ground px-4 shadow-[0_1px_0_var(--color-line)] md:px-6">
-      <Link to="/home" aria-label="FloodWay home" className="flex h-11 w-9 shrink-0 items-center md:hidden">
+      <Link to="/home" aria-label="FloodWay home" className="flex h-11 w-11 shrink-0 items-center md:hidden">
         <FloodWayLogo className="h-7 w-7" />
       </Link>
 

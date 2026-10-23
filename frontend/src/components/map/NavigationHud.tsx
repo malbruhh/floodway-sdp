@@ -20,14 +20,14 @@ export function NavigationHud({ instruction, toNextM, remainingM, remainingMin, 
     <div
       role="status"
       aria-live="polite"
-      className="absolute left-1/2 top-3 z-[700] w-[calc(100%-1.5rem)] max-w-md -translate-x-1/2 rounded-2xl border border-[#1677FF] bg-slate-950/95 p-3 text-white shadow-2xl"
+      className="absolute left-1/2 top-3 z-[700] w-[calc(100%-1.5rem)] max-w-md -translate-x-1/2 rounded-card border border-action bg-slate-950/95 p-3 text-white shadow-2xl"
     >
       <div className="flex items-start gap-3">
-        <span className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#1677FF]">
+        <span className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-ctl bg-action">
           <Navigation className="h-5 w-5" aria-hidden="true" />
         </span>
         <div className="min-w-0 flex-1">
-          <p className="text-lg font-extrabold leading-tight">{fmtDist(toNextM)}</p>
+          <p className="text-lg font-bold leading-tight">{fmtDist(toNextM)}</p>
           <p className="truncate text-sm font-semibold text-slate-100">{instruction}</p>
         </div>
         <button

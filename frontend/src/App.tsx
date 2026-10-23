@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useParams } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { AppProvider } from './contexts/AppContext';
 import { WelcomePage } from './pages/WelcomePage';
@@ -7,12 +7,17 @@ import { HomePage } from './pages/HomePage';
 import { MapPage } from './pages/MapPage';
 import LiveVisionPage from './pages/LiveVisionPage';
 import { ReportPage } from './pages/ReportPage';
-import { NavigationPage } from './pages/NavigationPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { EstatePage } from './pages/EstatePage';
 
 // three.js is only needed by the 3D studio, so it loads with that route instead of on every page.
 const HouseStudio360 = lazy(() => import('./components/sandbox/HouseStudio360').then((m) => ({ default: m.HouseStudio360 })));
+
+/** The old turn-by-turn page had no real route. The map has the stored road routes and the steps, so refuge links land there. */
+function ToMap() {
+  const { shelterId } = useParams<{ shelterId: string }>();
+  return <Navigate to={`/map?to=${encodeURIComponent(shelterId ?? '')}`} replace />;
+}
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -36,7 +41,7 @@ export function App() {
           <Route path="/simulation" element={<Navigate to="/live" replace />} />
           <Route path="/studio" element={<ProtectedRoute><Suspense fallback={null}><HouseStudio360 /></Suspense></ProtectedRoute>} />
           <Route path="/reports" element={<ProtectedRoute><ReportPage /></ProtectedRoute>} />
-          <Route path="/navigation/:shelterId" element={<ProtectedRoute><NavigationPage /></ProtectedRoute>} />
+          <Route path="/navigation/:shelterId" element={<ProtectedRoute><ToMap /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
           <Route path="*" element={<Navigate to="/home" replace />} />
         </Routes>

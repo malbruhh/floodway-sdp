@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker, Polyline, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -71,7 +71,8 @@ export function ShelterMapView() {
 
   const desktop = useMediaQuery('(min-width: 768px)');
   const origin = originForLocation(selectedLocation);
-  const [selectedId, setSelectedId] = useState('shelter-01');
+  const [params] = useSearchParams();
+  const [selectedId, setSelectedId] = useState(params.get('to') ?? 'shelter-01');
   // The flood areas follow the cameras unless the user picks a scenario by hand.
   const { cameras } = useVisionStore();
   const [townshipId, setTownshipId] = useState(DEFAULT_TOWNSHIP_ID);
@@ -195,13 +196,13 @@ export function ShelterMapView() {
   const peekHeader = selected && (
     <div className="flex items-center gap-2">
       <div className="min-w-0 flex-1">
-        <p className="truncate font-heading text-sm font-extrabold text-slate-900">{selected.name.replace('Demo relief centre: ', '')}</p>
-        <p className="truncate text-xs text-slate-700">
+        <p className="truncate text-sm font-bold text-ink">{selected.name.replace('Demo relief centre: ', '')}</p>
+        <p className="truncate text-xs text-muted">
           {route ? (
             <>
               {(route.distanceM / 1000).toFixed(1)} km · ~{formatMin(etaMin(route, mode))} ·{' '}
-              <span className={route.crossings === 0 ? 'font-bold text-emerald-700' : 'font-bold text-red-700'}>
-                {route.crossings === 0 ? 'avoids flood' : `crosses ${route.crossings} flooded`}
+              <span className={route.crossings === 0 ? 'font-bold text-normal' : 'font-bold text-danger'}>
+                {route.crossings === 0 ? 'avoids flooded areas' : `passes through ${route.crossings} flooded ${route.crossings === 1 ? 'area' : 'areas'}`}
               </span>
             </>
           ) : routesDb ? (
@@ -212,7 +213,7 @@ export function ShelterMapView() {
         </p>
       </div>
       {sim.active ? (
-        <button type="button" onClick={cancel} className="min-h-11 shrink-0 rounded-xl bg-red-600 px-3.5 text-xs font-bold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-red-700">
+        <button type="button" onClick={cancel} className="min-h-11 shrink-0 rounded-ctl bg-danger px-3.5 text-xs font-bold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-red-700">
           Stop
         </button>
       ) : (
@@ -220,24 +221,24 @@ export function ShelterMapView() {
           type="button"
           onClick={start}
           disabled={!route || selected.status === 'FULL' || selected.status === 'CLOSED'}
-          className="flex min-h-11 shrink-0 items-center gap-1.5 rounded-xl bg-[#1677FF] px-3.5 text-xs font-bold text-white shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1677FF] focus-visible:ring-offset-2 disabled:opacity-50"
+          className="flex min-h-11 shrink-0 items-center gap-1.5 rounded-ctl bg-action px-3.5 text-xs font-bold text-white shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-link focus-visible:ring-offset-2 disabled:opacity-50"
         >
-          <Navigation className="h-4 w-4" aria-hidden="true" /> Start
+          <Navigation className="h-4 w-4" aria-hidden="true" /> Start route
         </button>
       )}
     </div>
   );
 
   return (
-    <div className="relative flex h-[calc(100dvh-8rem)] w-full flex-col overflow-hidden bg-slate-100 md:h-[calc(100vh-64px)] md:flex-row">
+    <div className="relative flex h-[calc(100dvh-8rem)] w-full flex-col overflow-hidden bg-raised md:h-[calc(100vh-64px)] md:flex-row">
       <div className="relative min-h-[350px] flex-1">
         <InPageActionDock />
-        <label className="absolute left-3 top-3 z-[500] flex max-w-[calc(100%-1.5rem)] flex-col gap-0.5 rounded-xl bg-white/95 px-3 py-2 text-[11px] font-semibold text-slate-600 shadow-md">
+        <label className="absolute left-3 top-3 z-[500] flex max-w-[calc(100%-1.5rem)] flex-col gap-0.5 rounded-ctl bg-surface/95 px-3 py-2 text-xs font-semibold text-muted shadow-md">
           Township
           <select
             value={townshipId}
             onChange={(e) => setTownshipId(e.target.value)}
-            className="min-h-8 rounded-lg border border-slate-300 bg-white text-xs font-bold text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1677FF]"
+            className="min-h-11 rounded-ctl border border-control bg-surface text-base font-medium text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-link"
           >
             {TOWNSHIPS.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
           </select>
@@ -266,7 +267,7 @@ export function ShelterMapView() {
           {route && (
             <>
               <Polyline positions={route.line} pathOptions={{ color: '#FFFFFF', weight: 10, opacity: 0.9 }} />
-              <Polyline positions={route.line} pathOptions={{ color: '#1677FF', weight: 6, opacity: 0.95 }} />
+              <Polyline positions={route.line} pathOptions={{ color: '#1d5fbf', weight: 6, opacity: 0.95 }} />
             </>
           )}
 
@@ -289,12 +290,12 @@ export function ShelterMapView() {
             >
               <Popup>
                 <div className="p-1 text-xs">
-                  <b className="block text-slate-900">{s.name}</b>
-                  <span className="block font-semibold text-slate-700">
+                  <b className="block text-ink">{s.name}</b>
+                  <span className="block font-semibold text-muted">
                     {s.status} · {formatCapacity(s.currentCapacity, s.maxCapacity)}
                   </span>
-                  <span className="block text-slate-600">{s.address}</span>
-                  <span className="mt-1 block font-semibold text-slate-600">Demo relief centre, not an official register.</span>
+                  <span className="block text-muted">{s.address}</span>
+                  <span className="mt-1 block font-semibold text-muted">Demo relief centre, not an official register.</span>
                 </div>
               </Popup>
             </Marker>
@@ -335,7 +336,7 @@ export function ShelterMapView() {
       </div>
 
       {desktop && (
-        <aside aria-label="Route planner" className="z-20 h-full w-[410px] shrink-0 overflow-y-auto border-l border-slate-200 bg-white shadow-2xl lg:w-[450px]">
+        <aside aria-label="Route planner" className="z-20 h-full w-[410px] shrink-0 overflow-y-auto border-l border-line bg-surface shadow-2xl lg:w-[450px]">
           {panel}
         </aside>
       )}
