@@ -1,9 +1,7 @@
 import { ChevronDown, Search, SlidersHorizontal, Video } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { DashboardSidebar } from '../components/layout/DashboardSidebar';
-import { Header } from '../components/layout/Header';
-import { BottomNav } from '../components/layout/BottomNav';
+import { AppShell } from '../components/layout/AppShell';
 import { AlertToast } from '../components/live/alerts/AlertToast';
 import { RecentAlerts } from '../components/live/alerts/RecentAlerts';
 import { AnalysisColumn } from '../components/live/analysis/AnalysisColumn';
@@ -98,11 +96,9 @@ export default function LiveVisionPage() {
   );
 
   return (
-    <div className="flex min-h-dvh bg-[#F8FAFC]">
-      <DashboardSidebar defaultCollapsed={compactSidebar} />
-      <div className="flex h-dvh min-w-0 flex-1 flex-col overflow-hidden pb-[var(--nav-h)] md:pb-0">
-        <Header />
-        <main className="@container/main flex-1 overflow-y-auto overscroll-contain" aria-label="Live Vision">
+    <>
+    <AppShell compactSidebar={compactSidebar}>
+        <main className="@container/main flex-1" aria-label="Live Vision">
           <div className="mx-auto w-full max-w-[1600px] p-4 @min-[640px]/main:p-6 @min-[1280px]/main:p-8">
             <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
               <div className="min-w-0">
@@ -212,11 +208,9 @@ export default function LiveVisionPage() {
             )}
           </div>
         </main>
-        <BottomNav />
-      </div>
-
+        </AppShell>
       <AlertToast alert={state.unseen[0]} onOpen={openAlert} onDismiss={dismissAlert} />
       <AddCameraWizard open={wizardOpen} onClose={() => setWizardOpen(false)} onSaved={(id) => { setTab('mine'); setSelectedId(id); }} origin={origin} offlineDemo={state.usingMock} gpsAvailable={Boolean(gps)} />
-    </div>
+    </>
   );
 }

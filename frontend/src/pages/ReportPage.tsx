@@ -15,9 +15,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { FloodWayLogo } from '../components/brand/FloodWayLogo';
-import { DashboardSidebar } from '../components/layout/DashboardSidebar';
-import { Header } from '../components/layout/Header';
-import { BottomNav } from '../components/layout/BottomNav';
+import { AppShell } from '../components/layout/AppShell';
 import { countReports } from '../lib/reportStatus';
 import { ReportFeed } from '../components/reports/ReportFeed';
 import { ReportModal } from '../components/reports/ReportModal';
@@ -38,10 +36,7 @@ export function ReportPage() {
   const activeCount = reports.filter((r) => r.waterDepthCm >= 30).length;
 
   return (
-    <div className="min-h-screen flex bg-[#F8FAFC]">
-      <DashboardSidebar />
-      <div className="flex-1 flex flex-col min-w-0 pb-20 md:pb-6">
-        <Header />
+    <AppShell>
 
         <main className="flex-1 p-4 md:p-6 lg:p-8 space-y-6 max-w-7xl w-full mx-auto">
           {/* Top Header Bar */}
@@ -181,8 +176,6 @@ export function ReportPage() {
 
         <ReportModal isOpen={isReportModalOpen} onClose={() => setIsReportModalOpen(false)} />
         <LiveCCTVModal isOpen={isCctvModalOpen} onClose={() => setIsCctvModalOpen(false)} />
-        <BottomNav />
-      </div>
-    </div>
+        </AppShell>
   );
 }

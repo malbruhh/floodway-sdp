@@ -1,7 +1,5 @@
 import React from 'react';
-import { DashboardSidebar } from '../components/layout/DashboardSidebar';
-import { Header } from '../components/layout/Header';
-import { BottomNav } from '../components/layout/BottomNav';
+import { AppShell } from '../components/layout/AppShell';
 import { FamilySafetyBanner } from '../components/dashboard/FamilySafetyBanner';
 import { SystemStatusStrip } from '../components/dashboard/SystemStatusStrip';
 import { CameraStatusRow } from '../components/home/CameraStatusRow';
@@ -25,11 +23,7 @@ export function HomePage() {
   const sample = vision.usingMock || (vision.cameras.length > 0 && allSampleCameras(vision.cameras));
 
   return (
-    <div className="min-h-screen flex bg-[#F8FAFC]">
-      <DashboardSidebar />
-
-      <div className="flex-1 flex flex-col min-w-0 pb-20 md:pb-6">
-        <Header />
+    <AppShell>
 
         <main className="mx-auto w-full max-w-7xl flex-1 space-y-4 p-4 md:space-y-6 md:p-6 lg:p-8" aria-label="Home">
           <FamilySafetyBanner />
@@ -63,8 +57,6 @@ export function HomePage() {
           </div>
         </main>
 
-        <BottomNav />
-      </div>
-    </div>
+        </AppShell>
   );
 }
