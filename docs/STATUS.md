@@ -44,6 +44,7 @@ Weights: Impact and sustainability 25%, Innovation 20%, Feasibility 20%, Strateg
 6. ~~Real rainfall inputs~~ done 2026-10-23 (see Done).
 
 Done:
+- ~~Frontend makeover~~ (2026-10-23, branch `frontend-makeover`, cut from `feat/merge-camera-pages`): the approved B+C design (`docs/design/04-final-design.md`) is built mobile first. Tokens and Geist in `styles/index.css`; one `AppShell` (top bar, 5-tab bar Home/Map/Report/Cameras/Me, one "Demo · simulated data" chip); Welcome (demo user first, inline errors), Home (risk bar, main action, Now/Next 2 hours/What to do), Map (plain route wording, river-level control folded, legend restyled), Reports (time rail, form in a sheet), Cameras (plain wording, level-lines switch, developer panel folded, JPS explained), Me (family contacts, Advanced folded, sign out), offline banner. `/navigation/:id` now redirects to `/map?to=:id` (the old page had no real route). Tests: Playwright e2e in `frontend/e2e` (`npm run e2e`, 91 pass; needs both dev servers), plus vitest for the new pure logic. Report: `docs/design/mobile-test/REPORT.md` (outside this repo, next to the mockups; copy in `docs/makeover/REPORT.md`). Not done: dark mode, desktop redesign, real-device checks. Blocked on backend: route steps, hysteresis count, `ai_check_available`, contacts CRUD, JPS filter.
 - ~~Depth from photo~~ (2026-10-23): Report modal "Measure depth from the photo" (`components/reports/DepthFromPhoto.tsx`, pure maths in `lib/photoDepth.ts`, tests `__tests__/photoDepth.test.ts`). User picks car, motorbike, person or door, taps two marks above the water and the waterline; gives a 5 cm-step range from assumed object sizes, midpoint goes to the slider. The modal also shows driving and on-foot guidance for the slider depth (general guidance, not an official advisory). Not checked in a browser yet; no sensor comparison, no server change.
   - **To refine next, ranked by feasibility (most feasible first):**
     1. **Passability advice.** `passability()` in `lib/photoDepth.ts` already exists; reuse it. Show it on map flood areas and the chosen route, and on Home next to the risk sentence. Pure logic, no new data. Keep the "general guidance, not an official advisory" line.
@@ -66,7 +67,7 @@ After submission, if time: Bahasa Malaysia toggle, alert feedback, touch targets
 
 ## Known problems
 
-- Navigation hardcodes "Jalan Raja Muda"; the Home route is a straight-line detour, the Map route is road-based.
+- Home's refuge map draws a straight-line detour; the Map route is road-based.
 - Leaked OpenRouter key and Telegram bot token are still not rotated.
 - `models/ml_pipeline` (GRU, synthetic data) and `models/legacy_ann` are not used by the app.
 
