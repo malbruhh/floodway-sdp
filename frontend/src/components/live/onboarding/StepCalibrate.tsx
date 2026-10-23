@@ -21,7 +21,7 @@ export function StepCalibrate({ imageUrl, value, onChange }: Props) {
   return (
     <div className="space-y-3">
       <CalibrationCanvas imageUrl={imageUrl} value={value} onChange={onChange} />
-      <p className="rounded-ctl bg-blue-50 px-3 py-2 text-sm/5 text-ink">
+      <p className="rounded-ctl bg-advisory-bg px-3 py-2 text-sm/5 text-ink">
         Drag <b>Danger</b> to the top of the bank, <b>Normal</b> to the usual water level, <b>Warning</b> between. Outline only the water.
       </p>
       <div className="flex flex-wrap gap-2">
@@ -36,7 +36,7 @@ export function StepCalibrate({ imageUrl, value, onChange }: Props) {
         </button>
       </div>
       {!valid && (
-        <p role="status" className="text-sm font-semibold text-amber-800">
+        <p role="status" className="text-sm font-semibold text-warning">
           {value.roi.length < 3 ? 'Add at least 3 points to outline the water zone.' : 'Keep the Normal line inside the zone, with Danger above Warning above Normal.'}
         </p>
       )}

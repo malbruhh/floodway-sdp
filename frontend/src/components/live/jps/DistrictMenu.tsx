@@ -46,7 +46,7 @@ export function DistrictMenu({ value, districts, total, onChange }: Props) {
 
       {open && (
         <div role="listbox" aria-label="District" className="absolute left-0 z-50 mt-2 max-h-80 w-64 overflow-y-auto rounded-ctl border border-line bg-surface py-1.5 shadow-xl">
-          <div className="border-b border-rule px-3 py-1.5 text-xs font-semibold uppercase text-slate-400">JPS Selangor districts</div>
+          <div className="border-b border-rule px-3 py-1.5 text-xs font-semibold uppercase text-muted">JPS Selangor districts</div>
           {items.map((i) => (
             <button
               key={i.name}
@@ -58,7 +58,7 @@ export function DistrictMenu({ value, districts, total, onChange }: Props) {
                 setOpen(false);
               }}
               className={`flex min-h-11 w-full items-center justify-between px-3 py-2 text-left text-xs font-medium transition-colors hover:bg-slate-50 ${
-                i.name === value ? 'bg-blue-50/50 font-semibold text-link' : 'text-muted'
+                i.name === value ? 'bg-advisory-bg font-semibold text-link' : 'text-muted'
               }`}
             >
               <span>

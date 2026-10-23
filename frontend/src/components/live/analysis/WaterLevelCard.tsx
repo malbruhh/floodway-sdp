@@ -50,7 +50,7 @@ export function WaterLevelCard({ camera, history }: { camera: Camera; history: R
   const since = levelSince(history);
 
   return (
-    <section className={`${card} ${cardPad} ${reading.level === 'DANGER' ? 'border-red-400 motion-safe:animate-[live-danger-border_2s_ease-in-out_infinite]' : ''}`} aria-labelledby="wl-title">
+    <section className={`${card} ${cardPad} ${reading.level === 'DANGER' ? 'border-danger/50 motion-safe:animate-[live-danger-border_2s_ease-in-out_infinite]' : ''}`} aria-labelledby="wl-title">
       <div className="flex items-center justify-between gap-3">
         <span id="wl-title"><Title /></span>
         <StatusChip level={reading.level} size="md" />

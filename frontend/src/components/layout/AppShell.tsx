@@ -2,6 +2,7 @@ import React from 'react';
 import { BottomNav } from './BottomNav';
 import { DashboardSidebar } from './DashboardSidebar';
 import { Header } from './Header';
+import { OfflineBanner } from './OfflineBanner';
 
 interface Props {
   children: React.ReactNode;
@@ -17,6 +18,7 @@ export function AppShell({ children, showLocation = true, compactSidebar = false
       <DashboardSidebar defaultCollapsed={compactSidebar} />
       <div className="flex min-w-0 flex-1 flex-col pb-[var(--nav-h)] md:pb-0">
         <Header showLocation={showLocation} />
+        <OfflineBanner />
         {children}
       </div>
       <BottomNav />

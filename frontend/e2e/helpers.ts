@@ -24,7 +24,7 @@ export function watchErrors(page: Page) {
 }
 
 export async function signIn(page: Page) {
-  await page.addInitScript((u) => localStorage.setItem('floodway_user', JSON.stringify(u)), USER);
+  await page.addInitScript((u) => { if (!localStorage.getItem('floodway_signed_out')) localStorage.setItem('floodway_user', JSON.stringify(u)); }, USER);
 }
 
 export async function settle(page: Page, ms = 1800) {

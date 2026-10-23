@@ -23,7 +23,7 @@ export function NowCard({ camera, useScene }: { camera: Camera | null; useScene:
       <p className="text-sm text-muted">of the way up the river bank at {place}</p>
       <Link to={`/live?camera=${encodeURIComponent(camera.id)}`} className="relative block overflow-hidden rounded-media" aria-label={`Open the ${place} camera full screen`}>
         <FeedThumb camera={camera} useScene={useScene} className="aspect-video w-full rounded-media" />
-        {isSampleCamera(camera) && <span className="absolute left-2 top-2 rounded-full bg-white/95 px-2 py-0.5 text-xs font-semibold">Sample camera</span>}
+        {isSampleCamera(camera) && <span className="absolute left-2 top-2 rounded-full bg-surface/95 px-2 py-0.5 text-xs font-semibold">Sample camera</span>}
         <span className="absolute bottom-2 right-2 inline-flex min-h-10 items-center gap-1.5 rounded-full bg-ink/75 px-3 text-sm font-medium text-white">
           <Maximize2 className="h-4 w-4" aria-hidden="true" /> Full screen
         </span>

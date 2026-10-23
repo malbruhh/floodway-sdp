@@ -33,7 +33,7 @@ export function EstatePage() {
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div>
               <h1 className={pageTitle}>Estate</h1>
-              <p className="text-sm/5 text-slate-700">Water, alerts, reports and building risk for one township.</p>
+              <p className="text-sm/5 text-muted">Water, alerts, reports and building risk for one township.</p>
             </div>
             <div className="flex flex-wrap items-end gap-3">
               <label className={label}>
@@ -41,7 +41,7 @@ export function EstatePage() {
                 <select
                   value={townshipId}
                   onChange={(e) => setTownshipId(e.target.value)}
-                  className={`mt-1 block min-h-11 rounded-xl border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-900 ${interactive}`}
+                  className={`mt-1 block min-h-11 rounded-ctl border border-control bg-surface px-3 text-sm font-semibold text-ink ${interactive}`}
                 >
                   {TOWNSHIPS.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
                 </select>
@@ -50,7 +50,7 @@ export function EstatePage() {
           </div>
 
           {areaCams.length > 0 && allSampleCameras(areaCams) && (
-            <p className="rounded-xl border border-amber-300 bg-amber-50 px-3 py-2 text-sm/5 font-medium text-amber-900">
+            <p className="rounded-ctl border border-warning/40 bg-warning-bg px-3 py-2 text-sm/5 font-medium text-warning">
               Simulated: the cameras here are AI-generated sample scenes, so the levels and alerts show how the system works, not what is happening on a real river.
             </p>
           )}

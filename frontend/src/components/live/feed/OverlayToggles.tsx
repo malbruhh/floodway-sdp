@@ -35,7 +35,7 @@ export function OverlayToggles({ value, onChange }: Props) {
             title={`${on ? 'Hide' : 'Show'}: ${hint}`}
             onClick={() => onChange({ ...value, lines: !on, waterline: !on })}
             className={`inline-flex min-h-11 min-w-11 items-center @min-[760px]/main:min-h-9 @min-[760px]/main:min-w-9 justify-center gap-1.5 rounded-lg px-2 text-sm/5 font-medium ${interactive} ${
-              on ? 'bg-blue-50 text-link' : 'text-muted hover:bg-slate-50 hover:text-ink'
+              on ? 'bg-advisory-bg text-link' : 'text-muted hover:bg-slate-50 hover:text-ink'
             }`}
           >
             <Icon className="h-4 w-4" aria-hidden="true" />

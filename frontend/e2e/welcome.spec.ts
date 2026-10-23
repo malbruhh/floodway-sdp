@@ -34,7 +34,7 @@ test('own name signs in and shows on Me', async ({ page }) => {
   await page.getByRole('button', { name: 'Sign in', exact: true }).click();
   await expect(page).toHaveURL(/\/home/);
   await page.getByRole('link', { name: 'Me', exact: true }).click();
-  await expect(page.getByText('Aina Rahman').first()).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Aina Rahman' })).toBeVisible();
   noErrors(errors);
 });
 

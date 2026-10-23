@@ -43,7 +43,7 @@ export function CameraCard({ camera, distanceKm, history, selected, useScene, on
       onClick={onSelect}
       aria-pressed={selected}
       className={`block w-full rounded-card border p-3 text-left ${interactive} ${
-        selected ? 'border-action bg-blue-50/50 ring-1 ring-[#1677FF]' : 'border-line bg-surface hover:border-control hover:bg-slate-50/60'
+        selected ? 'border-action bg-advisory-bg ring-1 ring-[#1677FF]' : 'border-line bg-surface hover:border-control hover:bg-slate-50/60'
       }`}
     >
       <span className="flex items-baseline justify-between gap-2">
@@ -65,7 +65,7 @@ export function CameraCard({ camera, distanceKm, history, selected, useScene, on
       </span>
       {weather && <span className="mt-2 block"><WeatherChip w={weather} /></span>}
       <span className="mt-2 flex items-center justify-between gap-2 border-t border-rule pt-2 text-xs/4">
-        <span className={`truncate ${cycle.phase === 'stale' ? 'font-semibold text-amber-800' : 'text-muted'}`}>{status}</span>
+        <span className={`truncate ${cycle.phase === 'stale' ? 'font-semibold text-warning' : 'text-muted'}`}>{status}</span>
         <span className="shrink-0 text-muted">{sourceLabel(camera)}</span>
       </span>
     </button>

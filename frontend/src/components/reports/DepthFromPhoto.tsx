@@ -33,12 +33,12 @@ export function DepthFromPhoto({ imageUrl, onApply }: Props) {
   };
 
   return (
-    <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200 space-y-2.5">
-      <div className="flex items-center gap-1.5 text-xs font-bold text-slate-900">
-        <Ruler className="w-4 h-4 text-[#1677FF]" aria-hidden="true" />
+    <div className="p-3 rounded-card bg-slate-50 border border-line space-y-2.5">
+      <div className="flex items-center gap-1.5 text-xs font-bold text-ink">
+        <Ruler className="w-4 h-4 text-link" aria-hidden="true" />
         <span>Depth from your photo</span>
       </div>
-      <p className="text-xs text-slate-600">
+      <p className="text-xs text-muted">
         Pick an object in the water. Mark two points on it above the water, then the waterline. You get a range, because sizes and camera angles vary.
       </p>
 
@@ -50,22 +50,22 @@ export function DepthFromPhoto({ imageUrl, onApply }: Props) {
             role="radio"
             aria-checked={o.id === objId}
             onClick={() => { setObjId(o.id); setPts([]); }}
-            className={`text-xs py-1.5 rounded-lg border font-semibold cursor-pointer ${o.id === objId ? 'bg-blue-50 border-blue-400 text-blue-800' : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-100'}`}
+            className={`text-xs py-1.5 rounded-lg border font-semibold cursor-pointer ${o.id === objId ? 'bg-advisory-bg border-advisory text-blue-800' : 'bg-surface border-line text-muted hover:bg-raised'}`}
           >
             {o.label}
           </button>
         ))}
       </div>
-      <p className="text-xs text-slate-500">{obj.hint}</p>
+      <p className="text-xs text-muted">{obj.hint}</p>
 
-      <p role="status" className="text-xs font-semibold text-slate-800">
+      <p role="status" className="text-xs font-semibold text-ink">
         {pts.length < 3 ? `Step ${pts.length + 1} of 3: ${steps[pts.length]}.` : range ? 'Done. Undo a point to adjust it.' : 'The marks must go top to bottom, with the waterline below the lower mark.'}
       </p>
 
       <div
         ref={boxRef}
         onClick={place}
-        className="relative mx-auto w-fit max-w-full touch-none select-none overflow-hidden rounded-xl border border-slate-200 bg-slate-900 cursor-crosshair"
+        className="relative mx-auto w-fit max-w-full touch-none select-none overflow-hidden rounded-ctl border border-line bg-slate-900 cursor-crosshair"
       >
         <img
           src={imageUrl}
@@ -77,7 +77,7 @@ export function DepthFromPhoto({ imageUrl, onApply }: Props) {
         {pts.map((p, i) => (
           <span
             key={i}
-            className={`absolute w-4 h-4 -ml-2 -mt-2 rounded-full border-2 border-white shadow ${i === 2 ? 'bg-sky-500' : 'bg-red-500'}`}
+            className={`absolute w-4 h-4 -ml-2 -mt-2 rounded-full border-2 border-white shadow ${i === 2 ? 'bg-sky-500' : 'bg-danger-bg0'}`}
             style={{ left: `${p.x * 100}%`, top: `${p.y * 100}%` }}
             aria-hidden="true"
           />
@@ -86,15 +86,15 @@ export function DepthFromPhoto({ imageUrl, onApply }: Props) {
 
       <div className="flex items-center justify-between gap-2">
         <div className="flex gap-1.5">
-          <button type="button" disabled={!pts.length} onClick={() => setPts(pts.slice(0, -1))} className="px-2.5 py-1.5 rounded-lg text-xs font-bold text-slate-700 bg-white border border-slate-200 disabled:opacity-40 flex items-center gap-1 cursor-pointer">
+          <button type="button" disabled={!pts.length} onClick={() => setPts(pts.slice(0, -1))} className="px-2.5 py-1.5 rounded-lg text-xs font-bold text-muted bg-surface border border-line disabled:opacity-40 flex items-center gap-1 cursor-pointer">
             <Undo2 className="w-3.5 h-3.5" aria-hidden="true" /> Undo
           </button>
-          <button type="button" disabled={!pts.length} onClick={() => setPts([])} className="px-2.5 py-1.5 rounded-lg text-xs font-bold text-slate-700 bg-white border border-slate-200 disabled:opacity-40 flex items-center gap-1 cursor-pointer">
+          <button type="button" disabled={!pts.length} onClick={() => setPts([])} className="px-2.5 py-1.5 rounded-lg text-xs font-bold text-muted bg-surface border border-line disabled:opacity-40 flex items-center gap-1 cursor-pointer">
             <RotateCcw className="w-3.5 h-3.5" aria-hidden="true" /> Reset
           </button>
         </div>
         {range && (
-          <button type="button" onClick={() => onApply(range, obj.label)} className="px-3 py-1.5 rounded-lg text-xs font-extrabold text-white bg-[#1677FF] hover:bg-[#0958D9] cursor-pointer">
+          <button type="button" onClick={() => onApply(range, obj.label)} className="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-action hover:bg-[#2b2b2b] cursor-pointer">
             Use {range.minCm}–{range.maxCm} cm
           </button>
         )}

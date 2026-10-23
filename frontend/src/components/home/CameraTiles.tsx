@@ -33,7 +33,7 @@ export function CameraTiles({ loading, cameras, useScene }: Props) {
                 <Link to={`/live?camera=${encodeURIComponent(c.id)}`} className="grid gap-1 text-left text-sm">
                   <span className="relative block">
                     <FeedThumb camera={c} useScene={useScene} className="aspect-[4/3] w-full rounded-media" />
-                    {isSampleCamera(c) && <span className="absolute left-1.5 top-1.5 rounded-full bg-white/95 px-2 py-0.5 text-xs font-semibold">Sample</span>}
+                    {isSampleCamera(c) && <span className="absolute left-1.5 top-1.5 rounded-full bg-surface/95 px-2 py-0.5 text-xs font-semibold">Sample</span>}
                   </span>
                   <span className="truncate font-medium">{cameraPlace(c.name)}</span>
                   {r ? <StatusChip level={r.level} /> : <OfflineChip label={c.online ? 'Waiting' : 'Offline'} />}

@@ -9,16 +9,16 @@ export function FamilySafetyBanner() {
 
   return (
     <div
-      className={`rounded-2xl p-4 text-xs md:text-sm font-medium flex items-center justify-between shadow-xs mb-4 ${
+      className={`rounded-card p-4 text-xs md:text-sm font-medium flex items-center justify-between shadow-xs mb-4 ${
         familySafetyStatus === 'ARRIVED_SAFE'
-          ? 'bg-emerald-50 border border-emerald-300 text-emerald-900'
-          : 'bg-blue-50 border border-blue-300 text-blue-900'
+          ? 'bg-normal-bg border border-emerald-300 text-emerald-900'
+          : 'bg-advisory-bg border border-advisory text-advisory'
       }`}
     >
       <div className="flex items-center gap-3">
         <div
-          className={`p-2 rounded-xl text-white ${
-            familySafetyStatus === 'ARRIVED_SAFE' ? 'bg-emerald-600' : 'bg-[#1677FF]'
+          className={`p-2 rounded-ctl text-white ${
+            familySafetyStatus === 'ARRIVED_SAFE' ? 'bg-emerald-600' : 'bg-action'
           }`}
         >
           {familySafetyStatus === 'ARRIVED_SAFE' ? (
@@ -43,7 +43,7 @@ export function FamilySafetyBanner() {
 
       <button
         onClick={() => setFamilySafetyStatus('IDLE')}
-        className="px-3 py-1 rounded-lg text-xs font-semibold bg-white/80 hover:bg-white shadow-xs"
+        className="px-3 py-1 rounded-lg text-xs font-semibold bg-surface/80 hover:bg-surface shadow-xs"
       >
         Dismiss
       </button>

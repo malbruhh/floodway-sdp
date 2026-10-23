@@ -30,7 +30,7 @@ export function CameraStrip({ cameras, allCameras, selectedId, useScene, onSelec
               role="option"
               aria-selected={selected}
               onClick={() => onSelect(camera.id)}
-              className={`w-40 shrink-0 snap-start rounded-ctl border p-2 text-left ${interactive} ${selected ? 'border-action/70 bg-blue-50/60 shadow-sm' : 'border-line/70 bg-surface hover:border-control'}`}
+              className={`w-40 shrink-0 snap-start rounded-ctl border p-2 text-left ${interactive} ${selected ? 'border-action/70 bg-advisory-bg shadow-sm' : 'border-line/70 bg-surface hover:border-control'}`}
             >
               <FeedThumb camera={camera} useScene={useScene} />
               <span className="mt-2 flex items-center gap-1.5">

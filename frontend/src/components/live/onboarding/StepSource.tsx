@@ -61,7 +61,7 @@ export function StepSource({ form, onChange, error, onUseMyLocation }: Props) {
               aria-checked={form.source_type === t.id}
               onClick={() => onChange({ ...form, source_type: t.id, feed_refresh_s: t.id === 'upload' ? 0 : form.feed_refresh_s })}
               className={`flex min-h-12 items-center justify-center gap-1.5 rounded-ctl border-2 px-3 text-sm font-bold ${focusRing} ${
-                form.source_type === t.id ? 'border-action bg-blue-50 text-link' : 'border-line text-muted hover:border-control'
+                form.source_type === t.id ? 'border-action bg-advisory-bg text-link' : 'border-line text-muted hover:border-control'
               }`}
             >
               {t.text}
@@ -78,7 +78,7 @@ export function StepSource({ form, onChange, error, onUseMyLocation }: Props) {
       {isUpload ? (
         <div>
           <span className={label} id="cam-photo-label">Photo of the water</span>
-          <label htmlFor="cam-photo" className={`flex min-h-32 cursor-pointer flex-col items-center justify-center gap-2 overflow-hidden rounded-card border-2 border-dashed border-control bg-slate-50 p-3 text-center text-sm font-semibold text-muted hover:border-action hover:bg-blue-50/40 focus-within:ring-2 focus-within:ring-[#1677FF] ${photoUrl ? 'p-0' : ''}`}>
+          <label htmlFor="cam-photo" className={`flex min-h-32 cursor-pointer flex-col items-center justify-center gap-2 overflow-hidden rounded-card border-2 border-dashed border-control bg-slate-50 p-3 text-center text-sm font-semibold text-muted hover:border-action hover:bg-advisory-bg focus-within:ring-2 focus-within:ring-[#1677FF] ${photoUrl ? 'p-0' : ''}`}>
             {photoUrl ? (
               <img src={photoUrl} alt="The photo you chose" className="max-h-56 w-full object-contain" />
             ) : (
@@ -125,7 +125,7 @@ export function StepSource({ form, onChange, error, onUseMyLocation }: Props) {
         </div>
       </div>
       {onUseMyLocation && (
-        <button type="button" onClick={onUseMyLocation} className={`-mt-1 min-h-10 rounded-lg px-2 text-sm font-bold text-link hover:bg-blue-50 ${focusRing}`}>
+        <button type="button" onClick={onUseMyLocation} className={`-mt-1 min-h-10 rounded-lg px-2 text-sm font-bold text-link hover:bg-advisory-bg ${focusRing}`}>
           Use my location
         </button>
       )}

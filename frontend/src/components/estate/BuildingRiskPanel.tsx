@@ -14,7 +14,7 @@ interface Props {
   areaLevel: Level | null;
 }
 
-const field = `mt-1 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm text-slate-900 ${interactive}`;
+const field = `mt-1 min-h-11 w-full rounded-ctl border border-control bg-surface px-3 text-sm text-ink ${interactive}`;
 
 /** Rule-based building and basement risk for a named place in the township. */
 export function BuildingRiskPanel({ origins, building, onChange, scenario, areaLevel }: Props) {
@@ -26,7 +26,7 @@ export function BuildingRiskPanel({ origins, building, onChange, scenario, areaL
     return (
       <section className={`${card} ${cardPad}`} aria-labelledby="risk-title">
         <h2 id="risk-title" className={cardTitle}>Building and basement risk</h2>
-        <p className="mt-2 text-sm/5 text-slate-700">No named places in this township.</p>
+        <p className="mt-2 text-sm/5 text-muted">No named places in this township.</p>
       </section>
     );
   }
@@ -50,25 +50,25 @@ export function BuildingRiskPanel({ origins, building, onChange, scenario, areaL
           Ground floor above road (cm)
           <input className={field} type="number" min={0} max={200} step={10} value={building.groundFloorCm} onChange={(e) => set({ groundFloorCm: Number(e.target.value) })} />
         </label>
-        <label className="flex min-h-11 items-center gap-2 self-end text-sm/5 text-slate-900">
+        <label className="flex min-h-11 items-center gap-2 self-end text-sm/5 text-ink">
           <input type="checkbox" className="h-5 w-5" checked={building.criticalEquipment} onChange={(e) => set({ criticalEquipment: e.target.checked })} />
           Critical equipment (pumps, switchgear, servers) is in the basement
         </label>
       </div>
 
       <div className="mt-4" aria-live="polite">
-        <span className={`inline-flex min-h-11 items-center gap-2 rounded-xl border px-4 text-base font-bold ${meta.chip}`}>
+        <span className={`inline-flex min-h-11 items-center gap-2 rounded-ctl border px-4 text-base font-bold ${meta.chip}`}>
           <Icon className="h-5 w-5" aria-hidden="true" /> Risk: {meta.label}
         </span>
-        {areaLevel === null && <p className="mt-2 text-sm/5 text-slate-700">No camera is reporting here, so this assumes normal water.</p>}
-        <ul className="mt-2 list-disc space-y-1 pl-5 text-sm/5 text-slate-800">
+        {areaLevel === null && <p className="mt-2 text-sm/5 text-muted">No camera is reporting here, so this assumes normal water.</p>}
+        <ul className="mt-2 list-disc space-y-1 pl-5 text-sm/5 text-ink">
           {risk.reasons.map((r) => <li key={r}>{r}</li>)}
         </ul>
-        <h3 className="mt-3 text-sm/5 font-semibold text-slate-900">What to do</h3>
-        <ol className="mt-1 list-decimal space-y-1 pl-5 text-sm/5 text-slate-800">
+        <h3 className="mt-3 text-sm/5 font-semibold text-ink">What to do</h3>
+        <ol className="mt-1 list-decimal space-y-1 pl-5 text-sm/5 text-ink">
           {risk.actions.map((a) => <li key={a}>{a}</li>)}
         </ol>
-        <p className="mt-3 text-xs/4 text-slate-600">{RISK_DISCLAIMER}</p>
+        <p className="mt-3 text-xs/4 text-muted">{RISK_DISCLAIMER}</p>
       </div>
     </section>
   );

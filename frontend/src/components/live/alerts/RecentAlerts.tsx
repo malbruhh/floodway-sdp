@@ -21,7 +21,7 @@ export function RecentAlerts({ alerts }: { alerts: AlertEvent[] }) {
           <Bell className="h-5 w-5 text-muted" aria-hidden="true" /> Recent alerts
         </h3>
         {alerts.length > COLLAPSED && (
-          <button type="button" onClick={() => setAll(!all)} aria-expanded={all} className={`inline-flex min-h-11 items-center gap-1 rounded-ctl px-2 text-sm font-semibold text-link hover:bg-blue-50 ${interactive}`}>
+          <button type="button" onClick={() => setAll(!all)} aria-expanded={all} className={`inline-flex min-h-11 items-center gap-1 rounded-ctl px-2 text-sm font-semibold text-link hover:bg-advisory-bg ${interactive}`}>
             {all ? 'Show less' : `View all (${Math.min(alerts.length, 10)})`}
             <ChevronDown className={`h-4 w-4 transition-transform duration-200 motion-reduce:transition-none ${all ? 'rotate-180' : ''}`} aria-hidden="true" />
           </button>

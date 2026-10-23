@@ -49,7 +49,7 @@ export function StepTest({ loading, error, reading, offlineSample, onRetry }: Pr
           <p className="mt-1 font-mono text-xs text-muted">confidence {Math.round(reading.confidence * 100)}%</p>
         </div>
       </div>
-      {reading.low_confidence && <p className="text-sm font-semibold text-amber-800">Low confidence. Check that the zone covers only water and the lines match the bank, then test again.</p>}
+      {reading.low_confidence && <p className="text-sm font-semibold text-warning">Low confidence. Check that the zone covers only water and the lines match the bank, then test again.</p>}
       <JsonOutputCard reading={reading} />
     </div>
   );
