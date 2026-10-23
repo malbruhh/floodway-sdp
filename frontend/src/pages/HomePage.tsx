@@ -1,62 +1,89 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { AppShell } from '../components/layout/AppShell';
 import { FamilySafetyBanner } from '../components/dashboard/FamilySafetyBanner';
-import { SystemStatusStrip } from '../components/dashboard/SystemStatusStrip';
-import { CameraStatusRow } from '../components/home/CameraStatusRow';
-import { DistrictRiskBars } from '../components/home/DistrictRiskBars';
+import { CameraTiles } from '../components/home/CameraTiles';
 import { ForecastTimeline } from '../components/home/ForecastTimeline';
-import { HeroStatus } from '../components/home/HeroStatus';
-import { HomeMap } from '../components/home/HomeMap';
-import { RefugeAction } from '../components/home/RefugeAction';
-import { ReportsSummary } from '../components/home/ReportsSummary';
-import { RiverTrend } from '../components/home/RiverTrend';
+import { GoButton } from '../components/home/GoButton';
+import { NowCard } from '../components/home/NowCard';
+import { RefugeCard } from '../components/home/RefugeCard';
+import { RiskBar } from '../components/home/RiskBar';
+import { Skeleton } from '../components/live/shared/Skeleton';
+import { useApp } from '../contexts/AppContext';
 import { useVisionStore } from '../hooks/vision/useVisionStore';
-import { allSampleCameras, cameraCounts, highestRisk, newestReadingAt, overallLevel } from '../lib/home';
+import { card } from '../styles/tokens';
+import { highestRisk, newestReadingAt, nearestOpenShelter, overallLevel, primaryAction, whatToDo } from '../lib/home';
+
+/** A stop on the timeline rail: a dot, a title, then the card. */
+function Stop({ title, hint, first = false, children }: { title: string; hint?: string; first?: boolean; children: React.ReactNode }) {
+  return (
+    <section className="relative grid gap-2 pb-[18px] pl-7 last:pb-0 [&:not(:last-child)]:before:absolute [&:not(:last-child)]:before:bottom-0 [&:not(:last-child)]:before:left-[7px] [&:not(:last-child)]:before:top-5 [&:not(:last-child)]:before:w-0.5 [&:not(:last-child)]:before:bg-control">
+      <span className={`absolute left-0 top-[3px] h-4 w-4 rounded-full shadow-[inset_0_0_0_3px_var(--color-ink)] ${first ? 'bg-ink' : 'bg-ground'}`} aria-hidden="true" />
+      <h2 className="text-sm font-semibold">{title} {hint && <span className="font-normal text-muted">{hint}</span>}</h2>
+      {children}
+    </section>
+  );
+}
 
 /**
- * The first screen. One overall level, one primary action, then the evidence behind it. Everything here is computed from
- * data (sample cameras, the shelter list, the forecast endpoint) or labelled simulated; see config/demoScenario.ts.
+ * The first screen: am I safe, and what do I do next. Risk bar, the main action, then Now -> Next 2 hours -> What to do,
+ * cameras and the refuge one scroll down. Everything is computed from the vision store, the shelter list and the forecast.
  */
 export function HomePage() {
   const vision = useVisionStore();
+  const { shelters } = useApp();
   const loading = vision.status === 'idle' || vision.status === 'loading';
-  const sample = vision.usingMock || (vision.cameras.length > 0 && allSampleCameras(vision.cameras));
+  const level = overallLevel(vision.cameras);
+  const top = highestRisk(vision.cameras);
+  const refuge = nearestOpenShelter(shelters);
+  const urgent = primaryAction(level).kind === 'refuge';
+
+  // The sticky "Go to refuge" shows only once the main one has scrolled out of sight.
+  const mainBtn = useRef<HTMLDivElement>(null);
+  const [mainVisible, setMainVisible] = useState(true);
+  useEffect(() => {
+    const el = mainBtn.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+    const io = new IntersectionObserver(([e]) => setMainVisible(e.isIntersecting));
+    io.observe(el);
+    return () => io.disconnect();
+  }, [loading]);
 
   return (
     <AppShell>
+      <main className="mx-auto grid w-full max-w-[720px] content-start gap-3 p-4 pb-8 lg:max-w-5xl" aria-label="Home">
+        <FamilySafetyBanner />
+        <RiskBar loading={loading} level={level} camera={top} updatedAt={newestReadingAt(vision.cameras)} />
+        <div ref={mainBtn}><GoButton level={level} refugeId={refuge?.id} /></div>
 
-        <main className="mx-auto w-full max-w-7xl flex-1 space-y-4 p-4 md:space-y-6 md:p-6 lg:p-8" aria-label="Home">
-          <FamilySafetyBanner />
-
-          <HeroStatus
-            loading={loading}
-            level={overallLevel(vision.cameras)}
-            topCamera={highestRisk(vision.cameras)}
-            updatedAt={newestReadingAt(vision.cameras)}
-            sample={sample}
-            counts={cameraCounts(vision.cameras)}
-          />
-
-          {/* On phones: action first, then cameras, then the map. On desktop: action beside the map. */}
-          <div className="grid grid-cols-1 gap-4 md:gap-6 lg:grid-cols-12">
-            <div className="lg:col-span-5"><RefugeAction /></div>
-            <div className="lg:col-span-7 lg:row-span-2 lg:row-start-1 lg:col-start-6"><HomeMap /></div>
-            <div className="min-w-0 lg:col-span-5"><CameraStatusRow loading={loading} cameras={vision.cameras} useScene={vision.usingMock} /></div>
+        <div className="grid gap-3 lg:grid-cols-[1fr_1fr] lg:items-start lg:gap-6">
+          <div className="mt-1 grid">
+            <Stop title="Now" first>
+              {loading ? <Skeleton className="h-64 w-full rounded-card" /> : <NowCard camera={top} useScene={vision.usingMock} />}
+            </Stop>
+            <Stop title="Next 2 hours" hint="a simulated estimate">
+              <ForecastTimeline />
+            </Stop>
+            <Stop title="What to do">
+              <div className={`${card} p-4`}>
+                <ol className="grid list-decimal gap-1.5 pl-5 text-[15px] marker:font-semibold marker:text-muted">
+                  {whatToDo(level).map((s) => <li key={s}>{s}</li>)}
+                </ol>
+                <p className="mt-3 text-xs text-muted">General guidance, not an official advisory.</p>
+              </div>
+            </Stop>
           </div>
-
-          <div className="grid grid-cols-1 gap-4 md:gap-6 lg:grid-cols-12">
-            <div className="lg:col-span-7"><RiverTrend loading={loading} cameras={vision.cameras} history={vision.history} /></div>
-            <div className="lg:col-span-5"><DistrictRiskBars loading={loading} cameras={vision.cameras} /></div>
+          <div className="grid gap-3">
+            <RefugeCard />
+            <CameraTiles loading={loading} cameras={vision.cameras} useScene={vision.usingMock} />
           </div>
+        </div>
+      </main>
 
-          <ForecastTimeline />
-
-          <div className="grid grid-cols-1 gap-4 md:gap-6 lg:grid-cols-12">
-            <div className="lg:col-span-5"><ReportsSummary /></div>
-            <div className="lg:col-span-7 lg:self-center"><SystemStatusStrip /></div>
-          </div>
-        </main>
-
-        </AppShell>
+      {urgent && !mainVisible && (
+        <div className="fixed inset-x-0 bottom-[var(--nav-h)] z-[550] bg-ground px-4 py-2.5 shadow-[0_-1px_0_var(--color-line)] md:hidden">
+          <GoButton level={level} refugeId={refuge?.id} className="min-h-[52px] py-1.5" />
+        </div>
+      )}
+    </AppShell>
   );
 }

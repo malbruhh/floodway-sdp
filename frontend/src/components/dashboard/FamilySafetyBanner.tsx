@@ -30,7 +30,7 @@ export function FamilySafetyBanner() {
         <div>
           <span className="font-bold block text-sm">
             {familySafetyStatus === 'ARRIVED_SAFE'
-              ? 'Family LifeLine Loop Complete: Safely Arrived at Shelter'
+              ? 'Family notified: you arrived safely at the shelter'
               : 'Evacuation in Progress · Family Alerted via Telegram'}
           </span>
           <span className="text-xs opacity-90">
