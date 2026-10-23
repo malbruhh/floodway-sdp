@@ -1,198 +1,123 @@
 import React, { useState } from 'react';
-import { User, Phone, Users, Send, ShieldCheck, CheckCircle2, Save, Trash2, Plus } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { CheckCircle2, ChevronDown, LogOut, Phone, Plus, Trash2 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { sendTelegramMessage } from '../../services/telegramService';
 import { hasWriteToken, setWriteToken } from '../../services/auth';
+import { loadContacts, saveContacts, validateContact, type Contact, type ContactErrors } from '../../lib/contacts';
+import { Field } from '../ui/Field';
+
+const section = 'grid gap-3 rounded-card border border-line bg-surface p-4';
 
 export function ProfileSettings() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const [contacts, setContacts] = useState<Contact[]>(loadContacts);
+  const [adding, setAdding] = useState(false);
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [errors, setErrors] = useState<ContactErrors>({});
+  const [added, setAdded] = useState<string | null>(null);
+
   const [tgChatId, setTgChatId] = useState(() => localStorage.getItem('floodway_tg_chat_id') || '');
-  const [testSent, setTestSent] = useState(false);
+  const [tgSaved, setTgSaved] = useState(false);
+  const [tgStatus, setTgStatus] = useState<{ ok: boolean; text: string } | null>(null);
   const [operatorToken, setOperatorToken] = useState('');
   const [operatorSet, setOperatorSet] = useState(hasWriteToken());
 
-  const [contacts, setContacts] = useState([
-    { id: 'c1', name: 'Nurul Huda (Mother)', phone: '+60 12-987 6543' },
-    { id: 'c2', name: 'Farhan Rosli (Brother)', phone: '+60 19-321 0987' },
-  ]);
-
-  const [newName, setNewName] = useState('');
-  const [newPhone, setNewPhone] = useState('');
-
-  const handleSaveTelegram = () => {
-    localStorage.setItem('floodway_tg_chat_id', tgChatId);
-    alert('Telegram Bot Settings Saved!');
-  };
-
-  const [tgStatus, setTgStatus] = useState<string | null>(null);
-
-  const handleTestTelegram = async () => {
-    setTgStatus('Sending…');
-    const res = await sendTelegramMessage('Test alert from the FloodWay demo.', tgChatId.trim() || undefined);
-    setTestSent(res.success);
-    setTgStatus(res.success ? 'Delivered by the FloodWay bot.' : res.error || 'Not delivered.');
-  };
+  const update = (next: Contact[]) => { setContacts(next); saveContacts(next); };
 
   const addContact = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newName || !newPhone) return;
-    setContacts([...contacts, { id: `c-${Date.now()}`, name: newName, phone: newPhone }]);
-    setNewName('');
-    setNewPhone('');
+    const found = validateContact(name, phone);
+    setErrors(found);
+    if (found.name || found.phone) return;
+    // The first real contact replaces the examples.
+    const base = contacts.filter((c) => !c.example);
+    update([...base, { id: `c-${Date.now()}`, name: name.trim(), phone: phone.trim() }]);
+    setAdded(name.trim());
+    setName(''); setPhone(''); setAdding(false);
   };
 
-  const removeContact = (id: string) => {
-    setContacts(contacts.filter((c) => c.id !== id));
+  const testTelegram = async () => {
+    setTgStatus({ ok: false, text: 'Sending…' });
+    const res = await sendTelegramMessage('Test alert from the FloodWay demo.', tgChatId.trim() || undefined);
+    setTgStatus({ ok: res.success, text: res.success ? 'Delivered by the FloodWay bot.' : res.error || 'Not delivered. The server may not have a bot set up.' });
   };
+
+  const signOut = () => { logout(); navigate('/', { replace: true }); };
 
   return (
-    <div className="w-full min-w-0 max-w-4xl mx-auto p-4 md:p-6 space-y-6">
-      {/* Profile Overview */}
-      <div className="rounded-3xl bg-white border border-slate-200 p-6 shadow-xs flex items-center gap-4">
-        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#1677FF] to-[#0958D9] text-white font-heading font-extrabold text-2xl flex items-center justify-center shadow-lg shadow-blue-500/20">
-          {user?.name ? user.name.slice(0, 2).toUpperCase() : 'LN'}
-        </div>
-        <div>
-          <h2 className="font-heading font-extrabold text-xl text-slate-900">{user?.name || 'Luqman Nurhakim'}</h2>
-          <p className="text-xs text-slate-500">{user?.email || 'luqman@floodway.my'} · {user?.phone || '+60 12-345 6789'}</p>
-          <span className="inline-block mt-1.5 px-2 py-0.5 rounded-full bg-blue-50 text-[#1677FF] text-xs font-bold border border-blue-200">
-            Registered Citizen Responder
-          </span>
+    <div className="mx-auto grid w-full max-w-2xl content-start gap-3 p-4">
+      <div className="flex items-center gap-3 rounded-card border border-line bg-surface p-4">
+        <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-action text-xl font-bold text-white" aria-hidden="true">{(user?.name ?? '?').slice(0, 2).toUpperCase()}</span>
+        <div className="min-w-0">
+          <h1 className="truncate text-xl font-bold">{user?.name}</h1>
+          <p className="truncate text-sm text-muted">{user?.email}</p>
+          {user?.isDemo && <p className="text-xs text-muted">Demo account</p>}
         </div>
       </div>
 
-      {/* Telegram Family SOS Gateway */}
-      <div className="rounded-3xl bg-white border border-slate-200 p-6 shadow-xs space-y-4">
-        <div className="flex items-center gap-2.5 pb-3 border-b border-slate-100">
-          <Send className="w-5 h-5 text-[#1677FF]" />
-          <h3 className="font-heading font-bold text-lg text-slate-900">Telegram Bot Family SOS Gateway</h3>
-        </div>
+      <section className={section} aria-labelledby="family-title">
+        <h2 id="family-title" className="text-base font-semibold">Family contacts</h2>
+        <p className="text-sm text-muted">People who should hear that you are safe. Kept on this device only.</p>
+        {added && <p role="status" className="flex items-center gap-2 rounded-ctl bg-normal-bg p-3 text-sm font-medium text-normal"><CheckCircle2 className="h-4 w-4" aria-hidden="true" /> {added} added.</p>}
+        {contacts.length === 0 && <p className="text-sm text-muted">No contacts yet.</p>}
+        <ul className="grid gap-2">
+          {contacts.map((c) => (
+            <li key={c.id} className="flex items-center gap-2 rounded-ctl bg-raised p-2 pl-3">
+              <div className="min-w-0 flex-1">
+                <p className="truncate font-medium">{c.name}</p>
+                <p className="text-sm text-muted">{c.phone}{c.example && ' · example'}</p>
+              </div>
+              <a href={`tel:${c.phone.replace(/[^\d+]/g, '')}`} aria-label={`Call ${c.name}`} className="flex h-11 w-11 items-center justify-center rounded-full bg-surface"><Phone className="h-5 w-5" aria-hidden="true" /></a>
+              <button type="button" onClick={() => update(contacts.filter((x) => x.id !== c.id))} aria-label={`Remove ${c.name}`} className="flex h-11 w-11 items-center justify-center rounded-full bg-surface text-danger"><Trash2 className="h-5 w-5" aria-hidden="true" /></button>
+            </li>
+          ))}
+        </ul>
+        {adding ? (
+          <form onSubmit={addContact} noValidate className="grid gap-3 rounded-ctl bg-raised p-3" aria-label="Add a family contact">
+            <Field label="Name" value={name} onChange={setName} error={errors.name} autoComplete="off" placeholder="Uncle Hadi" />
+            <Field label="Phone number" value={phone} onChange={setPhone} error={errors.phone} type="tel" inputMode="tel" autoComplete="off" placeholder="+60 17-555 1234" />
+            <div className="grid grid-cols-2 gap-2">
+              <button type="button" onClick={() => { setAdding(false); setErrors({}); }} className="min-h-12 rounded-btn bg-surface font-medium">Cancel</button>
+              <button type="submit" className="min-h-12 rounded-btn bg-action font-medium text-white">Save contact</button>
+            </div>
+          </form>
+        ) : (
+          <button type="button" onClick={() => { setAdding(true); setAdded(null); }} className="flex min-h-12 items-center justify-center gap-2 rounded-btn bg-raised font-medium"><Plus className="h-5 w-5" aria-hidden="true" /> Add a contact</button>
+        )}
+      </section>
 
-        <p className="text-xs text-slate-600">
-          Enter the chat or channel ID that should receive demo alerts. The bot token stays on the FloodWay server and is never sent to your browser.
-        </p>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Telegram Chat / Channel ID</label>
-            <input
-              type="text"
-              placeholder="e.g. @your_channel or -10012345678 (optional)"
-              value={tgChatId}
-              onChange={(e) => setTgChatId(e.target.value)}
-              className="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs font-mono focus:outline-none focus:border-[#1677FF]"
-            />
+      <details className={`${section} group`}>
+        <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between text-base font-semibold">
+          Advanced <ChevronDown className="h-5 w-5 transition-transform group-open:rotate-180" aria-hidden="true" />
+        </summary>
+        <div className="grid gap-4 pt-1">
+          <div className="grid gap-2">
+            <h3 className="font-medium">Telegram alerts</h3>
+            <p className="text-sm text-muted">The chat or channel that should receive demo alerts. The bot key stays on the FloodWay server.</p>
+            <Field label="Telegram chat or channel ID" value={tgChatId} onChange={(v) => { setTgChatId(v); setTgSaved(false); }} placeholder="@your_channel or -1001234567" autoComplete="off" />
+            <div className="grid grid-cols-2 gap-2">
+              <button type="button" onClick={() => { localStorage.setItem('floodway_tg_chat_id', tgChatId); setTgSaved(true); }} className="min-h-12 rounded-btn bg-raised font-medium">{tgSaved ? 'Saved' : 'Save'}</button>
+              <button type="button" onClick={testTelegram} className="min-h-12 rounded-btn bg-raised font-medium">Send test alert</button>
+            </div>
+            {tgStatus && <p role="status" className={`text-sm font-medium ${tgStatus.ok ? 'text-normal' : 'text-muted'}`}>{tgStatus.text}</p>}
+          </div>
+          <div className="grid gap-2">
+            <h3 className="font-medium">Operator access</h3>
+            <p className="text-sm text-muted">Only needed if this server protects changes such as adding cameras. Kept in this tab's memory and cleared on reload.</p>
+            <Field label="Operator token" type="password" value={operatorToken} onChange={setOperatorToken} autoComplete="off" />
+            <div className="grid grid-cols-2 gap-2">
+              <button type="button" onClick={() => { setWriteToken(operatorToken); setOperatorSet(hasWriteToken()); setOperatorToken(''); }} className="min-h-12 rounded-btn bg-raised font-medium">Use token</button>
+              <button type="button" onClick={() => { setWriteToken(''); setOperatorSet(false); setOperatorToken(''); }} className="min-h-12 rounded-btn bg-raised font-medium">Clear</button>
+            </div>
+            <p role="status" className="text-sm text-muted">{operatorSet ? 'A token is set for this tab.' : 'No token set.'}</p>
           </div>
         </div>
+      </details>
 
-        <div className="flex items-center gap-2 pt-2">
-          <button
-            onClick={handleSaveTelegram}
-            className="px-4 py-2 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold flex items-center gap-1.5 shadow-xs"
-          >
-            <Save className="w-4 h-4" />
-            <span>Save Configuration</span>
-          </button>
-          <button
-            onClick={handleTestTelegram}
-            className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold"
-          >
-            Send Test Alert
-          </button>
-          {tgStatus && (
-            <span role="status" className={`text-xs font-semibold flex items-center gap-1 ${testSent ? 'text-emerald-700' : 'text-slate-700'}`}>
-              {testSent && <CheckCircle2 className="w-4 h-4" aria-hidden="true" />} {tgStatus}
-            </span>
-          )}
-        </div>
-      </div>
-
-      {/* Operator access: only needed when the server sets VISION_WRITE_TOKEN */}
-      <div className="rounded-3xl bg-white border border-slate-200 p-6 shadow-xs space-y-3" aria-labelledby="operator-title">
-        <h3 id="operator-title" className="font-heading font-bold text-lg text-slate-900">Operator access</h3>
-        <p className="text-sm/5 text-slate-700">
-          Needed only if this server protects changes (adding or removing cameras, Telegram alerts, the AI photo check). The token is kept in this
-          browser tab's memory only and is cleared when you reload. It is never saved or sent anywhere except to this server.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-2">
-          <label className="sr-only" htmlFor="operator-token">Operator token</label>
-          <input
-            id="operator-token"
-            type="password"
-            autoComplete="off"
-            placeholder="Operator token"
-            value={operatorToken}
-            onChange={(e) => setOperatorToken(e.target.value)}
-            className="min-w-0 min-h-11 flex-1 px-3 py-2 rounded-xl border border-slate-300 text-sm font-mono focus:outline-none focus:border-[#1677FF]"
-          />
-          <button
-            type="button"
-            onClick={() => { setWriteToken(operatorToken); setOperatorSet(hasWriteToken()); setOperatorToken(''); }}
-            className="min-h-11 px-4 rounded-xl bg-[#0958D9] text-white text-sm font-semibold"
-          >
-            Use token
-          </button>
-          <button
-            type="button"
-            onClick={() => { setWriteToken(''); setOperatorSet(false); setOperatorToken(''); }}
-            className="min-h-11 px-4 rounded-xl border border-slate-300 bg-white text-slate-800 text-sm font-semibold"
-          >
-            Clear
-          </button>
-        </div>
-        <p role="status" className="text-sm/5 font-semibold text-slate-800">{operatorSet ? 'A token is set for this tab.' : 'No token set.'}</p>
-      </div>
-
-      {/* Emergency Contacts Circle */}
-      <div className="rounded-3xl bg-white border border-slate-200 p-6 shadow-xs space-y-4">
-        <div className="flex items-center gap-2.5 pb-3 border-b border-slate-100">
-          <Users className="w-5 h-5 text-emerald-600" />
-          <h3 className="font-heading font-bold text-lg text-slate-900">Family Emergency Circle</h3>
-        </div>
-
-        <div className="space-y-2">
-          {contacts.map((c) => (
-            <div key={c.id} className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-200 text-xs">
-              <div>
-                <span className="font-bold text-slate-800 block">{c.name}</span>
-                <span className="text-slate-500">{c.phone}</span>
-              </div>
-              <button
-                onClick={() => removeContact(c.id)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
-            </div>
-          ))}
-        </div>
-
-        <form onSubmit={addContact} className="flex flex-col sm:flex-row gap-2 pt-2">
-          <input
-            type="text"
-            placeholder="Name & Relationship (e.g. Uncle Hadi)"
-            aria-label="Contact name and relationship"
-            value={newName}
-            onChange={(e) => setNewName(e.target.value)}
-            className="min-w-0 min-h-11 flex-1 px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-[#1677FF]"
-          />
-          <input
-            type="text"
-            placeholder="Phone (e.g. +60 17-555 1234)"
-            aria-label="Contact phone number"
-            value={newPhone}
-            onChange={(e) => setNewPhone(e.target.value)}
-            className="min-w-0 min-h-11 flex-1 px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-[#1677FF]"
-          />
-          <button
-            type="submit"
-            className="min-h-11 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold flex items-center justify-center gap-1"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Add</span>
-          </button>
-        </form>
-      </div>
+      <button type="button" onClick={signOut} className="flex min-h-12 items-center justify-center gap-2 rounded-btn bg-raised font-medium"><LogOut className="h-5 w-5" aria-hidden="true" /> Sign out</button>
     </div>
   );
 }

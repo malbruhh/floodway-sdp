@@ -17,7 +17,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (saved) {
       try { return JSON.parse(saved); } catch (e) {}
     }
-    // Default demo user for instant reviewer access
+    // Signing out sticks across a reload; a first visit still opens as the demo user for instant reviewer access.
+    if (localStorage.getItem('floodway_signed_out') === '1') return null;
     return {
       id: 'usr-01',
       name: 'Luqman Nurhakim',
@@ -38,24 +39,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       isDemo: true
     };
     setUser(demoUser);
+    localStorage.removeItem('floodway_signed_out');
     localStorage.setItem('floodway_user', JSON.stringify(demoUser));
   };
 
   const login = (email: string, name: string) => {
     const u: User = {
       id: `usr-${Date.now()}`,
-      name: name || 'Citizen Evaluator',
+      name: name || 'Resident',
       email,
       phone: '+60 11-234 5678',
       isDemo: false
     };
     setUser(u);
+    localStorage.removeItem('floodway_signed_out');
     localStorage.setItem('floodway_user', JSON.stringify(u));
   };
 
   const logout = () => {
     setUser(null);
     localStorage.removeItem('floodway_user');
+    localStorage.setItem('floodway_signed_out', '1');
   };
 
   return (
