@@ -2,6 +2,7 @@ import time
 import math
 from fastapi import APIRouter, Query, HTTPException
 from app.config import DEVICES, STALE_AFTER_SECONDS
+from app.services import weather_client
 from app.services.forecaster import forecaster
 from app.services.shelters_data import SHELTERS_DATA
 from app.routes.telemetry import readings, machines
@@ -18,7 +19,8 @@ async def get_twin_state(
     device_id: str = Query("fw-node-01"),
     lat: float = Query(3.1610),
     lon: float = Query(101.7010),
-    rainfall_rate_mm: float = Query(95.0)
+    rainfall_rate_mm: float = Query(95.0),
+    live_rain: bool = Query(False, description="Use Open-Meteo rain at lat/lon instead of rainfall_rate_mm"),
 ):
     dev = DEVICES.get(device_id)
     if not dev:
@@ -29,6 +31,16 @@ async def get_twin_state(
     rs = readings.get(device_id, [])
     last_ts, level_m = (rs[-1] if rs else (now, 1.20))
     is_stale = (now - last_ts) > STALE_AFTER_SECONDS
+
+    weather = {"rain_source": "Simulated demo rate", "warnings": [], "warnings_source": weather_client.WARNING_SOURCE}
+    if live_rain:
+        live = await weather_client.rain_now(lat, lon)
+        if live:
+            rainfall_rate_mm = live["rate_mm_hr"]
+            weather.update(rain_source=live["source"], rain_observed_at=live["observed_at"])
+        else:
+            weather["rain_source"] = "Live rain unavailable, simulated demo rate used"
+        weather["warnings"] = await weather_client.warnings_now()
 
     forecast = await forecaster.predict_horizon(level_m, rainfall_rate_mm, dev.get("danger_threshold_m", 1.50))
     machine = machines.get(device_id)
@@ -47,6 +59,7 @@ async def get_twin_state(
         "water_level_m": round(level_m, 3),
         "water_depth_cm": round(level_m * 100, 1),
         "rainfall_rate_mm_hr": rainfall_rate_mm,
+        "weather": weather,
         "phase": phase,
         "is_stale": is_stale,
         "forecast": forecast,

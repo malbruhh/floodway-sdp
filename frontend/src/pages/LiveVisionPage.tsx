@@ -21,6 +21,7 @@ import { DEFAULT_OVERLAYS, OverlayToggles } from '../components/live/feed/Overla
 import type { OverlayState } from '../components/live/feed/OverlayToggles';
 import { ViewToggle } from '../components/live/feed/ViewToggle';
 import type { ViewMode } from '../components/live/feed/ViewToggle';
+import { WeatherPanel } from '../components/weather/WeatherPanel';
 import { JpsCameraWall } from '../components/live/jps/JpsCameraWall';
 import { AddCameraWizard } from '../components/live/onboarding/AddCameraWizard';
 import { ConnectionChip, OfflineNotice } from '../components/live/shared/ConnectionStatus';
@@ -162,6 +163,7 @@ export default function LiveVisionPage() {
                       {view === 'focus' ? (
                         <>
                           <FeedHeader camera={selected} distanceKm={selectedDistance} />
+                          <WeatherPanel lat={selected.lat} lon={selected.lon} name={selected.name} />
                           <div className={`${card} p-2`}>
                             <FeedViewer camera={selected} tag={camTag(state.cameras, selected.id)} useScene={state.usingMock} overlays={overlays} onRetry={() => void visionActions.analyzeNow(selected.id).catch(() => undefined)} />
                           </div>

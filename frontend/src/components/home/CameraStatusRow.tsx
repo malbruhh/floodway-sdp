@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Video } from 'lucide-react';
 import { isSampleCamera } from '../../lib/home';
@@ -9,6 +9,10 @@ import { FeedThumb } from '../live/feed/FeedThumb';
 import { EmptyState } from '../live/shared/EmptyState';
 import { Skeleton } from '../live/shared/Skeleton';
 import { OfflineChip, StatusChip } from '../live/shared/StatusChip';
+import { WeatherPanel } from '../weather/WeatherPanel';
+import { WeatherChip } from '../weather/WeatherChip';
+import { useWeather } from '../../hooks/useWeather';
+import { weatherKey } from '../../services/weather';
 import { card, cardPad, cardTitle, interactive, num } from '../../styles/tokens';
 
 interface Props {
@@ -25,6 +29,10 @@ export function CameraStatusRow({ loading, cameras, useScene }: Props) {
     const lb = b.online && b.reading ? levelRank(b.reading.level) : -1;
     return lb - la || a.name.localeCompare(b.name);
   });
+
+  const weather = useWeather(cameras);
+  const [focusId, setFocusId] = useState<string | null>(null);
+  const focused = sorted.find((c) => c.id === focusId) ?? sorted[0]; // the most urgent camera until another is hovered or focused
 
   return (
     <section className={`${card} ${cardPad}`} aria-labelledby="cams-row-title">
@@ -47,7 +55,7 @@ export function CameraStatusRow({ loading, cameras, useScene }: Props) {
             const reading = c.online ? c.reading : null;
             const sample = isSampleCamera(c);
             return (
-              <li key={c.id} className="w-44 shrink-0 snap-start">
+              <li key={c.id} className="w-44 shrink-0 snap-start" onMouseEnter={() => setFocusId(c.id)} onFocus={() => setFocusId(c.id)}>
                 <Link to="/live" className={`block rounded-xl border border-slate-200 bg-white p-2 hover:border-slate-300 ${interactive}`}>
                   <span className="relative block">
                     <FeedThumb camera={c} useScene={useScene} />
@@ -58,12 +66,14 @@ export function CameraStatusRow({ loading, cameras, useScene }: Props) {
                     {reading ? <StatusChip level={reading.level} /> : <OfflineChip label={c.online ? 'WAITING' : 'OFFLINE'} />}
                     <span className={`${num} text-xs/4 font-semibold text-slate-800`}>{reading ? pct(reading.water_ratio) : '--'}</span>
                   </span>
+                  <span className="mt-1 block"><WeatherChip w={weather[weatherKey(c.lat, c.lon)]} /></span>
                 </Link>
               </li>
             );
           })}
         </ul>
       )}
+      {focused && <div className="mt-3"><WeatherPanel lat={focused.lat} lon={focused.lon} name={focused.name} /></div>}
     </section>
   );
 }

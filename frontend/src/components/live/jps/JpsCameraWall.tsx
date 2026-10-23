@@ -4,11 +4,16 @@ import { JPS_LABEL, JPS_STATUS, ageText, type JpsCamera } from '../../../lib/jps
 import { jpsImageUrl } from '../../../services/jps';
 import { useJpsCameras } from '../../../hooks/useJpsCameras';
 import { DistrictMenu } from './DistrictMenu';
+import { WeatherPanel } from '../../weather/WeatherPanel';
+import { WeatherChip } from '../../weather/WeatherChip';
+import { useWeather } from '../../../hooks/useWeather';
+import { weatherKey, type PointWeather } from '../../../services/weather';
 
 const PAGE = 24;
 
-function Card({ cam }: { cam: JpsCamera }) {
+function Card({ cam, wx }: { cam: JpsCamera; wx: PointWeather | undefined }) {
   const [broken, setBroken] = useState(false);
+  const [open, setOpen] = useState(false);
   const s = JPS_STATUS[cam.status];
   return (
     <li className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
@@ -29,6 +34,10 @@ function Card({ cam }: { cam: JpsCamera }) {
           {cam.river_basin ? ` · ${cam.river_basin}` : ''}
         </p>
         <p className="mt-1 text-xs text-slate-600">Updated {ageText(cam.age_s)}</p>
+        <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} className="mt-1 flex min-h-11 items-center gap-2 text-left">
+          <WeatherChip w={wx} /> <span className="text-xs font-semibold text-[#0958D9]">{open ? 'Hide weather' : 'Weather details'}</span>
+        </button>
+        {open && <WeatherPanel lat={cam.lat} lon={cam.lon} name={cam.name} />}
         <p className="mt-1 text-xs font-medium text-slate-500">Image only, no AI reading</p>
       </div>
     </li>
@@ -45,6 +54,7 @@ export function JpsCameraWall() {
   const cameras = useMemo(() => [...(data?.cameras ?? [])].sort((a, b) => cmp(a.district, b.district) || cmp(a.name, b.name)), [data]);
   const districts = useMemo(() => Array.from(new Set(cameras.map((c) => c.district))), [cameras]);
   const visible = cameras.filter((c) => district === 'all' || c.district === district);
+  const weather = useWeather(visible.slice(0, shown));
   const counts = { online: 0, stale: 0, offline: 0 };
   for (const c of visible) counts[c.status] += 1;
 
@@ -82,7 +92,7 @@ export function JpsCameraWall() {
 
       <ul className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {visible.slice(0, shown).map((c) => (
-          <Card key={c.id} cam={c} />
+          <Card key={c.id} cam={c} wx={weather[weatherKey(c.lat, c.lon)]} />
         ))}
       </ul>
       {visible.length > shown && (

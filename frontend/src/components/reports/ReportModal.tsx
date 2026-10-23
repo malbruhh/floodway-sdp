@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   X,
   UploadCloud,
@@ -19,6 +19,8 @@ import { analyzeFloodImage } from '../../services/geminiVisionService';
 import { submitReport } from '../../services/api';
 import { dispatchFloodIncidentReportAlert } from '../../services/telegramService';
 import { AiVerificationResult, CitizenReport } from '../../types';
+import { DepthFromPhoto } from './DepthFromPhoto';
+import { passability, type DepthRange } from '../../lib/photoDepth';
 
 interface Props {
   isOpen: boolean;
@@ -42,7 +44,13 @@ export function ReportModal({ isOpen, onClose }: Props) {
   const [saveNote, setSaveNote] = useState<string | null>(null);
   const [aiResult, setAiResult] = useState<AiVerificationResult | null>(null);
 
+  const [measuring, setMeasuring] = useState(false);
+  const [photoDepth, setPhotoDepth] = useState<{ range: DepthRange; object: string } | null>(null);
+  // An estimate belongs to one photo: drop it when the photo changes.
+  useEffect(() => { setPhotoDepth(null); setMeasuring(false); }, [selectedImage]);
+
   if (!isOpen) return null;
+  const pass = passability(depthCm);
 
   // Real File Upload Handler (File Input & Drag & Drop)
   const handleFile = (file: File) => {
@@ -108,7 +116,7 @@ export function ReportModal({ isOpen, onClose }: Props) {
       author: authorName,
       upvotes: 1,
       imageUrl: selectedImage,
-      description: `Reported flood incident. Depth reported by the user: ${depthCm} cm.${aiAssessed ? ' A visual AI assessment judged the photo to show flooding.' : ' No AI check was completed.'}`,
+      description: `Reported flood incident. Depth reported by the user: ${depthCm} cm.${photoDepth ? ` Photo estimate using a ${photoDepth.object.toLowerCase()} as reference: ${photoDepth.range.minCm} to ${photoDepth.range.maxCm} cm.` : ''}${aiAssessed ? ' A visual AI assessment judged the photo to show flooding.' : ' No AI check was completed.'}`,
       aiVerification: aiResult ?? undefined,
     };
     // Keep the reporter's own photo on screen; the server copy has none.
@@ -219,6 +227,37 @@ export function ReportModal({ isOpen, onClose }: Props) {
               <span>75cm (Waist)</span>
               <span>150cm (Deep)</span>
             </div>
+
+            <div
+              role="status"
+              className={`mt-2 p-2.5 rounded-xl border text-xs space-y-0.5 ${pass.tone === 'stop' ? 'bg-red-50 border-red-200 text-red-900' : pass.tone === 'care' ? 'bg-amber-50 border-amber-200 text-amber-900' : 'bg-emerald-50 border-emerald-200 text-emerald-900'}`}
+            >
+              <div><b>Driving:</b> {pass.drive}</div>
+              <div><b>On foot:</b> {pass.walk}</div>
+              <div className="text-xs opacity-80">General guidance at {depthCm} cm, not an official advisory.</div>
+            </div>
+
+            {photoDepth && (
+              <p className="mt-1.5 text-xs text-slate-600">
+                Photo estimate ({photoDepth.object}): {photoDepth.range.minCm}–{photoDepth.range.maxCm} cm. Your slider value is what gets reported.
+              </p>
+            )}
+            <button
+              type="button"
+              onClick={() => setMeasuring((m) => !m)}
+              aria-expanded={measuring}
+              className="mt-2 text-xs font-bold text-[#1677FF] hover:underline cursor-pointer"
+            >
+              {measuring ? 'Hide photo measure' : 'Measure depth from the photo'}
+            </button>
+            {measuring && selectedImage && (
+              <div className="mt-2">
+                <DepthFromPhoto
+                  imageUrl={selectedImage}
+                  onApply={(range, object) => { setDepthCm(Math.min(150, Math.max(5, range.midCm))); setPhotoDepth({ range, object }); setMeasuring(false); }}
+                />
+              </div>
+            )}
           </div>
 
           {/* REAL IMAGE UPLOAD DROPZONE */}

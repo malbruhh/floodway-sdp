@@ -72,6 +72,8 @@ export async function fetchReports(): Promise<CitizenReport[]> {
 export interface ForecastResponse {
   station_name: string;
   water_level_m: number;
+  rainfall_rate_mm_hr: number;
+  weather?: { rain_source: string; rain_observed_at?: string; warnings: { title: string; valid_to: string }[]; warnings_source: string };
   forecast: {
     source: string;
     method?: string;
@@ -89,9 +91,9 @@ export interface ForecastResponse {
  * The backend's forecast, or null when it cannot be had. There is deliberately no built-in
  * fallback: the Home screen shows an error state instead of numbers the server never produced.
  */
-export async function fetchForecast(): Promise<ForecastResponse | null> {
+export async function fetchForecast(liveRain = false): Promise<ForecastResponse | null> {
   try {
-    const res = await fetch(`${BACKEND_URL}/twin/state`, { signal: AbortSignal.timeout(4000) });
+    const res = await fetch(`${BACKEND_URL}/twin/state${liveRain ? '?live_rain=true' : ''}`, { signal: AbortSignal.timeout(4000) });
     if (!res.ok) return null;
     const body = await res.json();
     return body?.forecast?.p50 ? (body as ForecastResponse) : null;

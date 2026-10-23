@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { useElementWidth } from '../../hooks/vision/useElementSize';
 import { RefreshCw, Waypoints } from 'lucide-react';
 import { useForecast } from '../../hooks/useForecast';
@@ -18,7 +18,8 @@ const DANGER_M = 1.5;
  * is part of the component and cannot be hidden by a prop.
  */
 export function ForecastTimeline() {
-  const { state, retry } = useForecast();
+  const [liveRain, setLiveRain] = useState(false);
+  const { state, retry } = useForecast(liveRain);
 
   return (
     <section className={`${card} ${cardPad}`} aria-labelledby="forecast-title">
@@ -28,6 +29,11 @@ export function ForecastTimeline() {
         </h2>
         <span className="rounded-full border border-amber-300 bg-amber-50 px-2.5 py-1 text-xs/4 font-semibold text-amber-900">Simulated · rule-based estimate, not a trained model</span>
       </div>
+
+      <label className="mt-3 flex min-h-11 cursor-pointer items-center gap-2 text-sm/5 text-slate-800">
+        <input type="checkbox" checked={liveRain} onChange={(e) => setLiveRain(e.target.checked)} className="h-5 w-5" />
+        Use live rain from Open-Meteo instead of the demo rate
+      </label>
 
       {state.status === 'loading' && <Skeleton className="mt-3 h-48 w-full" />}
 
@@ -65,7 +71,7 @@ function Chart({ data }: { data: ForecastResponse }) {
         {toDanger !== null
           ? <>In this simulation the level reaches <b className="tabular-nums">{DANGER_M.toFixed(2)} m</b> in about <b className="tabular-nums">{toDanger} min</b>.</>
           : <>In this simulation the level stays below <b className="tabular-nums">{DANGER_M.toFixed(2)} m</b> for the next 2 hours.</>}{' '}
-        Starting level <span className={num}>{data.water_level_m.toFixed(2)} m</span> is a seeded demo value, not a live sensor reading.
+        Rain used: <span className={num}>{data.rainfall_rate_mm_hr.toFixed(1)} mm/h</span> ({data.weather?.rain_source ?? 'simulated demo rate'}). Starting level <span className={num}>{data.water_level_m.toFixed(2)} m</span> is a seeded demo value, not a live sensor reading.
       </p>
       <svg viewBox={`0 0 ${W} ${H}`} width={W} height={H} className="mt-3 block w-full" role="img" aria-label={`Forecast of river level for the next two hours. Middle estimate rises from ${f.p50[0].toFixed(2)} to ${f.p50[f.p50.length - 1].toFixed(2)} metres. Simulated.`}>
         {[WARNING_M, DANGER_M].map((v, i) => (
@@ -86,6 +92,11 @@ function Chart({ data }: { data: ForecastResponse }) {
         <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-4" style={{ backgroundColor: warning.marker }} aria-hidden="true" /> {WARNING_M.toFixed(2)} m warning</span>
         <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-4" style={{ backgroundColor: danger.marker }} aria-hidden="true" /> {DANGER_M.toFixed(2)} m danger</span>
       </div>
+      {data.weather && data.weather.warnings.length > 0 && (
+        <p role="status" className="mt-2 rounded-xl bg-amber-50 px-3 py-2 text-xs/4 font-medium text-amber-900 ring-1 ring-amber-200">
+          {data.weather.warnings_source}: {data.weather.warnings.map((w) => w.title).join('; ')}
+        </p>
+      )}
       <p className="mt-2 text-xs/4 text-slate-700">{f.method ?? f.source}</p>
     </div>
   );

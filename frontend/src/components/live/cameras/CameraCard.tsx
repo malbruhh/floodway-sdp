@@ -8,6 +8,8 @@ import { OfflineChip, StatusChip } from '../shared/StatusChip';
 import { Sparkline } from '../shared/Sparkline';
 import { interactive, num } from '../shared/ui';
 import type { Camera, Reading } from '../../../types/vision';
+import { WeatherChip } from '../../weather/WeatherChip';
+import type { PointWeather } from '../../../services/weather';
 
 interface Props {
   camera: Camera;
@@ -16,6 +18,7 @@ interface Props {
   selected: boolean;
   useScene: boolean;
   onSelect: () => void;
+  weather?: PointWeather;
 }
 
 export function cycleStatus(camera: Camera, phase: string, secondsLeft: number): string {
@@ -28,7 +31,7 @@ export function cycleStatus(camera: Camera, phase: string, secondsLeft: number):
 }
 
 /** Fixed structure so every card has the same height: name row, thumbnail + reading row, status row. */
-export function CameraCard({ camera, distanceKm, history, selected, useScene, onSelect }: Props) {
+export function CameraCard({ camera, distanceKm, history, selected, useScene, onSelect, weather }: Props) {
   const cycle = useCaptureCycle(camera);
   const reading = camera.online ? camera.reading : null;
   const meta = reading ? LEVEL_META[reading.level] : null;
@@ -60,6 +63,7 @@ export function CameraCard({ camera, distanceKm, history, selected, useScene, on
           </span>
         </span>
       </span>
+      {weather && <span className="mt-2 block"><WeatherChip w={weather} /></span>}
       <span className="mt-2 flex items-center justify-between gap-2 border-t border-slate-100 pt-2 text-xs/4">
         <span className={`truncate ${cycle.phase === 'stale' ? 'font-semibold text-amber-800' : 'text-slate-600'}`}>{status}</span>
         <span className="shrink-0 text-slate-600">{sourceLabel(camera)}</span>
