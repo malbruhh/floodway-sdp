@@ -37,4 +37,4 @@ export function ageText(ageS: number | null): string {
   return `${Math.round(ageS / 86400)} d ago`;
 }
 
-export const JPS_LABEL = 'JPS Selangor public snapshot. Image only: no AI water reading.';
+export const JPS_LABEL = 'JPS Selangor public snapshot. Photo only: no AI water reading.';

@@ -24,15 +24,15 @@ export function CaptureStrip({ camera }: { camera: Camera }) {
 
   return (
     <div className={`${card} flex flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-3 @min-[760px]/main:px-5`}>
-      <p className="flex items-center gap-2 text-sm/5 font-semibold text-slate-900">
-        {cycle.phase === 'analysing' && <Loader2 className="h-4 w-4 text-[#1677FF] motion-safe:animate-spin" aria-hidden="true" />}
+      <p className="flex items-center gap-2 text-sm/5 font-semibold text-ink">
+        {cycle.phase === 'analysing' && <Loader2 className="h-4 w-4 text-link motion-safe:animate-spin" aria-hidden="true" />}
         {label}
       </p>
       {/* Announce phase changes only, never the per-second countdown. */}
       <span className="sr-only" aria-live="polite">{cycle.phase === 'waiting' ? '' : label}</span>
-      <p className={`${num} text-xs/4 text-slate-600`}>{detail}</p>
-      {camera.source_type === 'upload' && <p className="basis-full text-xs/4 text-slate-600">Uploaded photo. It does not change, so the reading repeats. Use a stream or snapshot URL to watch live water.</p>}
-      {camera.source_type === 'synthetic' && <p className="basis-full text-xs/4 text-slate-600">Sample footage. The water overlay is simulated, not a real camera.</p>}
+      <p className={`${num} text-xs/4 text-muted`}>{detail}</p>
+      {camera.source_type === 'upload' && <p className="basis-full text-xs/4 text-muted">Uploaded photo. It does not change, so the reading repeats. Use a stream or snapshot URL to watch live water.</p>}
+      {camera.source_type === 'synthetic' && <p className="basis-full text-xs/4 text-muted">Sample footage. The water overlay is simulated, not a real camera.</p>}
     </div>
   );
 }

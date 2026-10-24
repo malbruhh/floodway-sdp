@@ -1,4 +1,4 @@
-import { Droplets, Rows3, SquareDashed, Waves } from 'lucide-react';
+import { Rows3 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { interactive } from '../shared/ui';
 
@@ -11,11 +11,8 @@ export interface OverlayState {
 
 export const DEFAULT_OVERLAYS: OverlayState = { roi: false, lines: true, mask: false, waterline: true };
 const ITEMS: { key: keyof OverlayState; label: string; hint: string; icon: LucideIcon }[] = [
-  { key: 'roi', label: 'Zone', hint: 'Water zone outline', icon: SquareDashed },
-  { key: 'lines', label: 'Lines', hint: 'Normal, warning and danger lines', icon: Rows3 },
-  { key: 'mask', label: 'Water', hint: 'Detected water tint', icon: Droplets },
-  { key: 'waterline', label: 'Waterline', hint: 'Detected waterline', icon: Waves },
-];
+    { key: 'lines', label: 'Show level lines', hint: 'Normal, warning and danger lines and the waterline', icon: Rows3 },
+  ];
 
 interface Props {
   value: OverlayState;
@@ -26,7 +23,7 @@ interface Props {
  *  Must sit inside an `@container/toolbar`. */
 export function OverlayToggles({ value, onChange }: Props) {
   return (
-    <div className="inline-flex shrink-0 rounded-xl border border-slate-200 bg-white p-1" role="group" aria-label="Feed overlays">
+    <div className="inline-flex shrink-0 rounded-ctl border border-line bg-surface p-1" role="group" aria-label="Feed overlays">
       {ITEMS.map(({ key, label, hint, icon: Icon }) => {
         const on = value[key];
         return (
@@ -36,13 +33,13 @@ export function OverlayToggles({ value, onChange }: Props) {
             aria-pressed={on}
             aria-label={label}
             title={`${on ? 'Hide' : 'Show'}: ${hint}`}
-            onClick={() => onChange({ ...value, [key]: !on })}
+            onClick={() => onChange({ ...value, lines: !on, waterline: !on })}
             className={`inline-flex min-h-11 min-w-11 items-center @min-[760px]/main:min-h-9 @min-[760px]/main:min-w-9 justify-center gap-1.5 rounded-lg px-2 text-sm/5 font-medium ${interactive} ${
-              on ? 'bg-blue-50 text-[#0958D9]' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'
+              on ? 'bg-advisory-bg text-link' : 'text-muted hover:bg-slate-50 hover:text-ink'
             }`}
           >
             <Icon className="h-4 w-4" aria-hidden="true" />
-            <span className="hidden @min-[540px]/toolbar:inline">{label}</span>
+            <span>{label}</span>
           </button>
         );
       })}

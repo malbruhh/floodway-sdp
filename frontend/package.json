@@ -10,7 +10,8 @@
     "test": "vitest run",
     "check": "tsc -b && npm run test && npm run build",
     "layout-check": "node scripts/layout-check.mjs",
-    "map-fps": "node scripts/map-fps.mjs"
+    "map-fps": "node scripts/map-fps.mjs",
+    "e2e": "playwright test"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",
@@ -30,6 +31,7 @@
     "three": "^0.183.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.48.2",
     "@types/node": "^24.10.12",
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",

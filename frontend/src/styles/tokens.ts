@@ -11,23 +11,23 @@
 
 const motion = 'transition-[color,background-color,border-color,box-shadow,opacity] duration-150 ease-out motion-reduce:transition-none';
 
-export const card = 'rounded-2xl border border-slate-200 bg-white shadow-sm';
+export const card = 'rounded-card border border-line bg-surface';
 export const cardPad = 'p-4 @min-[760px]/main:p-5';
-export const focusRing = 'focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1677FF] focus-visible:ring-offset-2 focus-visible:ring-offset-white';
+export const focusRing = 'focus:outline-none focus-visible:ring-2 focus-visible:ring-link focus-visible:ring-offset-2 focus-visible:ring-offset-surface';
 export const interactive = `${motion} ${focusRing}`;
 
-export const btnPrimary = `inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#0958D9] px-4 text-sm font-semibold text-white hover:bg-[#003EB3] disabled:cursor-not-allowed disabled:opacity-50 ${interactive}`;
-export const btnSecondary = `inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-800 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 ${interactive}`;
+export const btnPrimary = `inline-flex min-h-11 items-center justify-center gap-2 rounded-btn bg-action px-4 text-sm font-medium text-white hover:bg-[#2b2b2b] disabled:cursor-not-allowed disabled:opacity-50 ${interactive}`;
+export const btnSecondary = `inline-flex min-h-11 items-center justify-center gap-2 rounded-btn bg-raised px-4 text-sm font-medium text-ink hover:bg-control/60 disabled:cursor-not-allowed disabled:opacity-50 ${interactive}`;
 
 // Type scale
-export const heading = 'font-heading font-bold text-slate-900';
-export const pageTitle = 'font-heading text-[32px]/10 font-bold tracking-tight text-slate-900 @min-[640px]/main:text-2xl/8';
-export const cardTitle = 'font-heading text-base/6 font-bold text-slate-900';
-export const label = 'text-xs/4 font-medium text-slate-600';
-export const muted = 'text-slate-600';
+export const heading = 'font-heading font-bold text-ink';
+export const pageTitle = 'font-heading text-[32px]/10 font-bold tracking-tight text-ink @min-[640px]/main:text-2xl/8';
+export const cardTitle = 'font-heading text-base/6 font-bold text-ink';
+export const label = 'text-xs/4 font-medium text-muted';
+export const muted = 'text-muted';
 /** Numbers, timestamps, coordinates and JSON: monospace with fixed-width digits so values never jitter. */
 export const num = "font-['JetBrains_Mono',ui-monospace,monospace] tabular-nums";
-export const hero = 'font-heading text-[44px]/[48px] font-extrabold tracking-tight tabular-nums text-slate-900 @min-[640px]/main:text-5xl/[52px]';
+export const hero = 'font-heading text-[44px]/[48px] font-extrabold tracking-tight tabular-nums text-ink @min-[640px]/main:text-5xl/[52px]';
 
 /** Small rounded pill used for counts and meta. */
-export const pill = `inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700`;
+export const pill = `inline-flex items-center gap-1.5 rounded-full bg-raised px-2.5 py-1 text-xs font-semibold text-muted`;

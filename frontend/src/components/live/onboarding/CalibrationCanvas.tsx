@@ -14,8 +14,8 @@ const PILL_PX = 36; // pill height plus breathing room
 const LINE_ORDER: LineKey[] = ['danger', 'warning', 'normal']; // top to bottom
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
 const LINE_UI: Record<LineKey, { label: string; stroke: string; tag: string }> = {
-  danger: { label: 'Danger', stroke: '#EF4444', tag: 'bg-red-600 text-white' },
-  warning: { label: 'Warning', stroke: '#F59E0B', tag: 'bg-amber-500 text-slate-900' },
+  danger: { label: 'Danger', stroke: '#EF4444', tag: 'bg-danger text-white' },
+  warning: { label: 'Warning', stroke: '#F59E0B', tag: 'bg-warning-bg0 text-ink' },
   normal: { label: 'Normal', stroke: '#10B981', tag: 'bg-emerald-700 text-white' },
 };
 
@@ -96,7 +96,7 @@ export function CalibrationCanvas({ imageUrl, value, onChange }: Props) {
       onPointerUp={() => (drag.current = null)}
       onPointerCancel={() => (drag.current = null)}
       onClick={addPoint}
-      className="relative aspect-video w-full cursor-crosshair touch-none select-none overflow-hidden rounded-xl bg-slate-800"
+      className="relative aspect-video w-full cursor-crosshair touch-none select-none overflow-hidden rounded-ctl bg-slate-800"
       data-testid="calibration-canvas"
     >
       {imageUrl ? <img src={imageUrl} alt="Camera frame to calibrate" draggable={false} className="h-full w-full object-cover" /> : <RiverScene ratio={0.3} />}
@@ -124,7 +124,7 @@ export function CalibrationCanvas({ imageUrl, value, onChange }: Props) {
           className="group absolute right-0 z-10 flex h-11 w-28 -translate-y-1/2 cursor-ns-resize touch-none items-center justify-end rounded-l-full focus:outline-none"
           style={{ top: `${pillTops[i] * 100}%` }}
         >
-          <span className={`mr-1 flex h-8 items-center gap-1 rounded-full px-3 text-xs font-semibold shadow ring-1 ring-black/20 group-focus-visible:ring-2 group-focus-visible:ring-[#1677FF] group-focus-visible:ring-offset-2 ${LINE_UI[k].tag}`}>
+          <span className={`mr-1 flex h-8 items-center gap-1 rounded-full px-3 text-xs font-semibold shadow ring-1 ring-black/20 group-focus-visible:ring-2 group-focus-visible:ring-link group-focus-visible:ring-offset-2 ${LINE_UI[k].tag}`}>
             <GripHorizontal className="h-3.5 w-3.5" aria-hidden="true" />
             {LINE_UI[k].label}
           </span>
@@ -142,7 +142,7 @@ export function CalibrationCanvas({ imageUrl, value, onChange }: Props) {
           className="group absolute z-20 flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 cursor-grab touch-none items-center justify-center focus:outline-none"
           style={{ left: `${x * 100}%`, top: `${y * 100}%` }}
         >
-          <span className="h-4 w-4 rounded-full border-[3px] border-[#1677FF] bg-white shadow group-focus-visible:ring-2 group-focus-visible:ring-[#1677FF] group-focus-visible:ring-offset-2" />
+          <span className="h-4 w-4 rounded-full border-[3px] border-action bg-surface shadow group-focus-visible:ring-2 group-focus-visible:ring-link group-focus-visible:ring-offset-2" />
         </button>
       ))}
 

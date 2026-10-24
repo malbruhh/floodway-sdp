@@ -32,7 +32,7 @@ interface Props {
 export function MapLegend({ floodColor, bottomOffset = 0 }: Props) {
   const [open, setOpen] = useState(false);
   const items: LegendItem[] = [
-    { key: 'route', swatch: <Line color="#1677FF" />, label: 'Road route', source: 'OpenStreetMap roads' },
+    { key: 'route', swatch: <Line color="#1d5fbf" />, label: 'Road route', source: 'OpenStreetMap roads' },
     { key: 'alt', swatch: <Line color="#64748B" dashed />, label: 'Other route', source: '' },
     { key: 'flood', swatch: <Dot color={floodColor} />, label: 'Flooded area', source: '' },
     { key: 'watch', swatch: <Dot color="#0284C7" dashed />, label: 'Low-lying, on watch', source: '' },
@@ -41,11 +41,11 @@ export function MapLegend({ floodColor, bottomOffset = 0 }: Props) {
   ];
 
   return (
-    <div className="absolute left-3 z-[500] md:bottom-4 md:left-4" style={{ bottom: bottomOffset ? bottomOffset + 8 : undefined }}>
+    <div className="absolute right-3 z-[500] flex flex-col items-end md:bottom-4 md:right-4" style={{ bottom: bottomOffset ? bottomOffset + 8 : undefined }}>
       {open && (
         <div
           id="map-legend"
-          className="mb-1.5 w-52 rounded-xl border border-slate-700/80 bg-slate-900/95 p-2.5 text-white shadow-xl"
+          className="mb-2 w-60 rounded-card bg-surface p-3 text-ink shadow-[0_8px_30px_rgba(0,0,0,.2)] ring-1 ring-line"
         >
           <ul className="space-y-1">
             {items.map((i) => (
@@ -55,7 +55,7 @@ export function MapLegend({ floodColor, bottomOffset = 0 }: Props) {
               </li>
             ))}
           </ul>
-          <p className="mt-2 border-t border-slate-700 pt-1.5 text-xs leading-snug text-slate-300">
+          <p className="mt-2 border-t border-rule pt-2 text-xs leading-snug text-muted">
             Flood areas, shelters and cameras are demo data. Roads &copy; OpenStreetMap contributors.
           </p>
         </div>
@@ -65,7 +65,7 @@ export function MapLegend({ floodColor, bottomOffset = 0 }: Props) {
         aria-expanded={open}
         aria-controls="map-legend"
         onClick={() => setOpen(!open)}
-        className="flex min-h-9 items-center gap-1.5 rounded-lg border border-slate-700/80 bg-slate-900/90 px-2.5 text-xs font-semibold text-white shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+        className="flex min-h-11 items-center gap-1.5 rounded-full bg-surface px-3 text-sm font-medium text-ink shadow-[0_2px_10px_rgba(0,0,0,.2)] ring-1 ring-line"
       >
         <Info className="h-3.5 w-3.5" aria-hidden="true" /> Legend{' '}
         {open ? <ChevronDown className="h-3 w-3" aria-hidden="true" /> : <ChevronUp className="h-3 w-3" aria-hidden="true" />}

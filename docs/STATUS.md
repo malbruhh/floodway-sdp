@@ -15,7 +15,7 @@ Updated 2026-10-21. Sime Darby Property University Hackathon: proposal, prototyp
 | Evacuation map and turn-by-turn | Works; 8 demo shelters, 16 hand-placed flood areas, stored OpenStreetMap routes |
 | Citizen reports and AI photo check | Works; AI check needs `OPENROUTER_API_KEY`, else "not run" |
 | ESP32 sensor ingest, CSV export | Code works; demo shows simulated values |
-| Forecast | A formula, labelled "not a trained model" |
+| Forecast | A formula, labelled "not a trained model"; rain input is the demo rate, or live Open-Meteo when the toggle is on |
 | Home dashboard numbers | Simulated (`frontend/src/config/demoScenario.ts`) |
 
 ## Live JPS Selangor feed: how it fits
@@ -41,9 +41,17 @@ Weights: Impact and sustainability 25%, Innovation 20%, Feasibility 20%, Strateg
 3. **Hand-calibrate 3 to 5 JPS cameras** with a dry reference frame (innovation 20%, feasibility 20%). The only item that turns the demo from generated images into a real reading on a real river. Only counts toward the 23 Oct submission if it works in the prototype by then; otherwise it is a pitch-day demo item.
 4. ~~Township layer~~ done 2026-10-22 (see Done). Feeds item 5.
 5. ~~Estate-manager page and building/basement risk panel~~ done 2026-10-22 (see Done).
-6. **Real rainfall inputs** (feasibility 20%): Open-Meteo and MetMalaysia warnings into the forecast, still labelled a formula.
+6. ~~Real rainfall inputs~~ done 2026-10-23 (see Done).
 
 Done:
+- ~~Frontend makeover~~ (2026-10-23, branch `frontend-makeover`, cut from `feat/merge-camera-pages`): the approved B+C design (`docs/design/04-final-design.md`) is built mobile first. Tokens and Geist in `styles/index.css`; one `AppShell` (top bar, 5-tab bar Home/Map/Report/Cameras/Me, one "Demo · simulated data" chip); Welcome (demo user first, inline errors), Home (risk bar, main action, Now/Next 2 hours/What to do), Map (plain route wording, river-level control folded, legend restyled), Reports (time rail, form in a sheet), Cameras (plain wording, level-lines switch, developer panel folded, JPS explained), Me (family contacts, Advanced folded, sign out), offline banner. `/navigation/:id` now redirects to `/map?to=:id` (the old page had no real route). Tests: Playwright e2e in `frontend/e2e` (`npm run e2e`, 91 pass; needs both dev servers), plus vitest for the new pure logic. Report: `docs/design/mobile-test/REPORT.md` (outside this repo, next to the mockups; copy in `docs/makeover/REPORT.md`). Not done: dark mode, desktop redesign, real-device checks. Blocked on backend: route steps, hysteresis count, `ai_check_available`, contacts CRUD, JPS filter.
+- ~~Depth from photo~~ (2026-10-23): Report modal "Measure depth from the photo" (`components/reports/DepthFromPhoto.tsx`, pure maths in `lib/photoDepth.ts`, tests `__tests__/photoDepth.test.ts`). User picks car, motorbike, person or door, taps two marks above the water and the waterline; gives a 5 cm-step range from assumed object sizes, midpoint goes to the slider. The modal also shows driving and on-foot guidance for the slider depth (general guidance, not an official advisory). Not checked in a browser yet; no sensor comparison, no server change.
+  - **To refine next, ranked by feasibility (most feasible first):**
+    1. **Passability advice.** `passability()` in `lib/photoDepth.ts` already exists; reuse it. Show it on map flood areas and the chosen route, and on Home next to the risk sentence. Pure logic, no new data. Keep the "general guidance, not an official advisory" line.
+    2. **Relief centre.** Occupancy is already in `kl_shelters.json`, `lib/format.ts` and `RefugeAction`. Add a "Full, choose another centre" state, a nearest-open-centre pick and a filter on the Map. No backend; occupancy stays demo data and must say so.
+    3. **Map control.** The flood scenario (Auto/Normal/Warning/Danger) exists. Add simulated closed-underpass barriers: routing skips them, blocked routes are marked "Blocked" and listed last, with copy that no real barrier is connected. Needs a barrier concept in `lib/routing.ts` (only `lib/estate.ts` mentions barriers today) and a test.
+    4. **Family circle on the map, and family quick access on Home.** Least feasible: needs member positions, SOS and check-in activity feed, low-battery state, pause sharing, and a Home card for one-tap call and "I'm safe". Existing: `FamilySafetyBanner`, Telegram SOS and check-in. Everyone except the user would be simulated, so label it a demo circle; real sharing needs a backend and consent flow.
+- ~~Real rain and warnings~~ (2026-10-23): `services/weather_client.py` (Open-Meteo rain and temperature, MetMalaysia warnings via data.gov.my, 5-min cache, null on failure), `GET /api/v1/weather/points` (many lat/lon in one upstream call), `/twin/state?live_rain=true` (default off, so the demo keeps 95 mm/h). Frontend: `WeatherChip` on JPS wall, Live camera cards and Home camera row; Home forecast card has a live-rain toggle and shows active warnings. Rain is modelled on a ~10 km grid, not a gauge; Open-Meteo free tier is non-commercial. Focused camera: `GET /api/v1/weather/detail?lat&lon` (now, next 6 h, wind, humidity, warnings) and `WeatherPanel` on the Live page selected camera, a JPS card ("Weather details") and Home (hovered or focused camera, else the most urgent). Works for a camera anywhere on Earth; MetMalaysia warnings are checked only inside Selangor/KL and the panel says so. Tests: `backend/tests/test_weather.py` (11).
 - ~~Estate page~~ (2026-10-22): `/estate` (`pages/EstatePage.tsx`, `components/estate/*`, pure logic in `lib/estate.ts`, plan in `docs/PLAN-ESTATE.md`). Township selector; water level from that township's cameras; recent alerts; open citizen reports; building/basement risk panel (nearest illustrative flood area vs the camera-driven scenario; a basement raises one level; ground-floor height never lowers it; inputs saved in the browser). No new backend route. Desktop sidebar only, not in the 7-tab mobile nav. `Scenario`, `stateOf` and `radiusOf` moved to `lib/floodScenario.ts` (Leaflet-free); `FloodProneLayer` re-exports them. Risk is a rule-based estimate, not an engineering assessment. Backend contract test: `backend/tests/test_estate_contract.py`.
 - ~~Township layer~~ (2026-10-22): `data/townships.json` (id, name, centre, zoom, bbox; 3 KL townships plus a KL-wide entry), `lib/townships.ts` (`townshipContents` picks origins, flood areas, shelters and cameras inside the bbox, so each kind keeps one list). Map has a Township selector that flies to the area and shows counts; it does not yet filter the markers or routes. Boundaries are rough boxes, not surveyed.
 - ~~JPS camera layer~~: `backend/app/services/jps_client.py` (cache, image proxy, host lock), `/api/v1/jps/*`, `/jps` page, map dots. Map dots were fetched but not seen on screen: zoom the Map out to Selangor and check.
@@ -59,7 +67,7 @@ After submission, if time: Bahasa Malaysia toggle, alert feedback, touch targets
 
 ## Known problems
 
-- Navigation hardcodes "Jalan Raja Muda"; the Home route is a straight-line detour, the Map route is road-based.
+- Home's refuge map draws a straight-line detour; the Map route is road-based.
 - Leaked OpenRouter key and Telegram bot token are still not rotated.
 - `models/ml_pipeline` (GRU, synthetic data) and `models/legacy_ann` are not used by the app.
 
@@ -67,5 +75,5 @@ After submission, if time: Bahasa Malaysia toggle, alert feedback, touch targets
 
 - Backend: `cd backend; python run.py` (Python 3.12, port 8080). Env template: `backend/.env.example`. Never read `backend/.env` into chat.
 - Frontend: `cd frontend; npm install; npm run dev` (port 5173).
-- All checks: `powershell -File scripts/check.ps1`. Last run (2026-10-22, after the Estate page and Resilience removal): backend 149 passed, frontend 149 passed and build passes.
+- All checks: `powershell -File scripts/check.ps1`. Last run (2026-10-22, after the Estate page and Resilience removal): backend 160 passed (2026-10-23), frontend passes and build passes.
 - Demo script and "what is real" table: `docs/ops/DEMO_RUNBOOK.md`.

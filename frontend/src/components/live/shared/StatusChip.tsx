@@ -22,5 +22,5 @@ export function StatusChip({ level, size = 'sm', className = '' }: Props) {
 }
 
 export function OfflineChip({ label = 'OFFLINE', size = 'sm', className = '' }: { label?: string; size?: 'sm' | 'md'; className?: string }) {
-  return <span className={`inline-flex shrink-0 items-center whitespace-nowrap rounded-full border border-slate-300 bg-slate-100 font-semibold tracking-wide text-slate-700 ${SIZE[size]} ${className}`}>{label}</span>;
+  return <span className={`inline-flex shrink-0 items-center whitespace-nowrap rounded-full border border-control bg-raised font-semibold tracking-wide text-muted ${SIZE[size]} ${className}`}>{label}</span>;
 }

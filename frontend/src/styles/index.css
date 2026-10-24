@@ -1,37 +1,67 @@
 @import "tailwindcss";
 
+/* Makeover tokens (docs/design/04-final-design.md): B Clarity First, Geist, ink chrome on a blue-grey ground.
+   Colour means risk and nothing else; the near-black "action" colour is the primary button. */
+@theme {
+  --font-sans: "Geist", Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-heading: "Geist", Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --color-ground: #f2f4f7;
+  --color-surface: #ffffff;
+  --color-raised: #e9ecf0;
+  --color-line: #e3e6eb;
+  --color-rule: #eef0f3;
+  --color-control: #c9ced6;
+  --color-ink: #0a0a0a;
+  --color-muted: #5c6370;
+  --color-action: #141414;
+  --color-link: #1d5fbf;
+  --color-water: #1d5fbf;
+  --color-danger: #b42318;
+  --color-danger-bg: #fdecea;
+  --color-warning: #8a4b00;
+  --color-warning-bg: #fff4e0;
+  --color-advisory: #0b5394;
+  --color-advisory-bg: #e6f0fa;
+  --color-normal: #1e6b3a;
+  --color-normal-bg: #e5f5ea;
+  --radius-card: 16px;
+  --radius-btn: 14px;
+  --radius-ctl: 12px;
+  --radius-media: 12px;
+  --radius-sheet: 24px;
+}
+
 @layer base {
   :root {
-    --primary: #1677FF;
-    --primary-hover: #0958D9;
-    --danger: #DC2626;
-    --warning: #F59E0B;
-    --success: #10B981;
+    --primary: #141414;
+    --primary-hover: #2b2b2b;
+    --danger: #B42318;
+    --warning: #8A4B00;
+    --success: #1E6B3A;
     --dark-navy: #071426;
     --surface-card: #FFFFFF;
-    --border-subtle: #E2E8F0;
-    /* Bottom tab bar: 64px plus the iPhone home-indicator inset (0 elsewhere). Needs viewport-fit=cover. */
+    --border-subtle: #E3E6EB;
+    /* Top bar 52px; bottom tab bar 64px plus the iPhone home-indicator inset (0 elsewhere). Needs viewport-fit=cover. */
+    --top-h: 52px;
     --nav-h: calc(4rem + env(safe-area-inset-bottom, 0px));
   }
 
   body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    color: #0F172A;
-    background-color: #F8FAFC;
+    font-family: var(--font-sans);
+    color: var(--color-ink);
+    background-color: var(--color-ground);
     overflow-x: hidden;
+    font-variant-numeric: tabular-nums;
+    -webkit-text-size-adjust: 100%;
   }
 
-  h1, h2, h3, h4, .font-heading {
-    font-family: 'Outfit', 'Inter', sans-serif;
-  }
+  h1, h2, h3, h4, .font-heading { font-family: var(--font-heading); }
 
-  /* Phones use the system font (SF Pro on iPhone) so the app reads as native; desktop keeps Inter and Outfit. */
-  @media (max-width: 767px) {
-    body, h1, h2, h3, h4, .font-heading {
-      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Inter, sans-serif;
-    }
-    h1, .font-heading { letter-spacing: -0.01em; }
-  }
+  :focus-visible { outline: 3px solid var(--color-link); outline-offset: 2px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
 }
 
 /* Glassmorphic Utilities */

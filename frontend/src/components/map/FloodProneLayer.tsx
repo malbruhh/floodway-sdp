@@ -40,12 +40,12 @@ export function FloodProneLayer({ scenario }: { scenario: Scenario }) {
           >
             <Popup>
               <div className="p-1 text-xs">
-                <b className="block text-slate-900">{a.name}</b>
-                <span className="block font-semibold text-slate-700">
+                <b className="block text-ink">{a.name}</b>
+                <span className="block font-semibold text-muted">
                   {flooded ? `Flooded in this scenario (${scenario})` : 'Low-lying, on watch (dry in this scenario)'}
                 </span>
-                <span className="block text-slate-600">{a.note}</span>
-                <span className="mt-1 block font-semibold text-slate-600">Illustrative demo area, not an official flood map.</span>
+                <span className="block text-muted">{a.note}</span>
+                <span className="mt-1 block font-semibold text-muted">Illustrative demo area, not an official flood map.</span>
               </div>
             </Popup>
           </Circle>

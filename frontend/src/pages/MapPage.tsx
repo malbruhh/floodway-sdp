@@ -1,18 +1,11 @@
 import React from 'react';
-import { DashboardSidebar } from '../components/layout/DashboardSidebar';
-import { Header } from '../components/layout/Header';
-import { BottomNav } from '../components/layout/BottomNav';
+import { AppShell } from '../components/layout/AppShell';
 import { ShelterMapView } from '../components/map/ShelterMapView';
 
 export function MapPage() {
   return (
-    <div className="min-h-screen flex bg-[#F8FAFC]">
-      <DashboardSidebar />
-      <div className="flex-1 flex flex-col min-w-0 pb-[var(--nav-h)] md:pb-0">
-        <Header />
+    <AppShell>
         <ShelterMapView />
-        <BottomNav />
-      </div>
-    </div>
+        </AppShell>
   );
 }

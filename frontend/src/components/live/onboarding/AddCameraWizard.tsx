@@ -20,7 +20,7 @@ interface Props {
   gpsAvailable: boolean;
 }
 
-const STEPS = ['Source', 'Calibrate', 'Test & save'] as const;
+const STEPS = ['Where from', 'Mark the water', 'Test and save'] as const;
 
 function validateSource(f: SourceForm): string | null {
   if (f.name.trim().length < 2) return 'Give the camera a name.';
@@ -155,15 +155,15 @@ export function AddCameraWizard({ open, onClose, onSaved, origin, offlineDemo, g
   const canNext = step === 1 ? linesAreValid(calibration) : true;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-6" role="presentation">
+    <div className="fixed inset-0 z-[900] flex items-end justify-center sm:items-center sm:p-6" role="presentation">
       <div className="absolute inset-0 bg-slate-900/60" onClick={close} aria-hidden="true" />
-      <div ref={dialog} tabIndex={-1} role="dialog" aria-modal="true" aria-labelledby="wiz-title" className="relative flex h-[100dvh] w-full flex-col bg-white shadow-xl focus:outline-none sm:h-auto sm:max-h-[min(92dvh,880px)] sm:max-w-[720px] sm:rounded-2xl">
-        <div className="flex items-center justify-between gap-3 border-b border-slate-100 px-4 py-3 sm:px-6 sm:py-4">
+      <div ref={dialog} tabIndex={-1} role="dialog" aria-modal="true" aria-labelledby="wiz-title" className="relative flex h-[100dvh] w-full flex-col bg-surface shadow-xl focus:outline-none sm:h-auto sm:max-h-[min(92dvh,880px)] sm:max-w-[720px] sm:rounded-card">
+        <div className="flex items-center justify-between gap-3 border-b border-rule px-4 py-3 sm:px-6 sm:py-4">
           <div className="min-w-0">
             <h2 id="wiz-title" className={`${heading} text-lg/7`}>Add my camera</h2>
-            <p className="text-xs/4 text-slate-600">Step {step + 1} of {STEPS.length}: {STEPS[step]}</p>
+            <p className="text-xs/4 text-muted">Step {step + 1} of {STEPS.length}: {STEPS[step]}</p>
           </div>
-          <button type="button" onClick={close} aria-label="Close" className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-slate-600 hover:bg-slate-100 ${focusRing}`}>
+          <button type="button" onClick={close} aria-label="Close" className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-ctl text-muted hover:bg-raised ${focusRing}`}>
             <X className="h-5 w-5" aria-hidden="true" />
           </button>
         </div>
@@ -171,11 +171,11 @@ export function AddCameraWizard({ open, onClose, onSaved, origin, offlineDemo, g
         <ol className="flex items-center gap-2 px-4 pt-4 sm:px-6" aria-label="Progress">
           {STEPS.map((label, i) => (
             <li key={label} className="flex flex-1 items-center gap-2" aria-current={i === step ? 'step' : undefined}>
-              <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${i < step ? 'bg-emerald-700 text-white' : i === step ? 'bg-[#0958D9] text-white' : 'bg-slate-200 text-slate-700'}`}>
+              <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${i < step ? 'bg-normal text-white' : i === step ? 'bg-action text-white' : 'bg-slate-200 text-muted'}`}>
                 {i < step ? <Check className="h-4 w-4" aria-hidden="true" /> : i + 1}
                 <span className="sr-only">{i < step ? ' (done)' : ''}</span>
               </span>
-              <span className={`hidden text-sm font-semibold sm:inline ${i === step ? 'text-slate-900' : 'text-slate-600'}`}>{label}</span>
+              <span className={`hidden text-sm font-semibold sm:inline ${i === step ? 'text-ink' : 'text-muted'}`}>{label}</span>
               {i < STEPS.length - 1 && <span className="h-px flex-1 bg-slate-200" aria-hidden="true" />}
             </li>
           ))}
@@ -187,7 +187,7 @@ export function AddCameraWizard({ open, onClose, onSaved, origin, offlineDemo, g
           {step === 2 && <StepTest loading={testing} error={testError} reading={reading} offlineSample={offlineDemo} onRetry={runTest} />}
         </div>
 
-        <div className="flex items-center justify-between gap-3 border-t border-slate-100 bg-white px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:rounded-b-2xl sm:px-6 sm:py-4">
+        <div className="flex items-center justify-between gap-3 border-t border-rule bg-surface px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:rounded-b-2xl sm:px-6 sm:py-4">
           <button type="button" onClick={() => (step === 0 ? close() : setStep(step - 1))} className={btnSecondary}>
             {step === 0 ? 'Cancel' : 'Back'}
           </button>

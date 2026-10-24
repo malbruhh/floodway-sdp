@@ -31,8 +31,8 @@ interface Props {
   onUseMyLocation: (() => void) | null;
 }
 
-const input = `min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm text-slate-900 placeholder:text-slate-500 ${focusRing}`;
-const label = 'mb-1 block text-sm font-semibold text-slate-800';
+const input = `min-h-11 w-full rounded-ctl border border-control bg-surface px-3 text-sm text-ink placeholder:text-muted ${focusRing}`;
+const label = 'mb-1 block text-sm font-semibold text-ink';
 
 export function StepSource({ form, onChange, error, onUseMyLocation }: Props) {
   const errorRef = useRef<HTMLParagraphElement>(null);
@@ -40,8 +40,8 @@ export function StepSource({ form, onChange, error, onUseMyLocation }: Props) {
   useEffect(() => { if (error) errorRef.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }, [error]);
   const set = <K extends keyof SourceForm>(key: K, value: SourceForm[K]) => onChange({ ...form, [key]: value });
   const types: { id: CameraDraft['source_type']; text: string }[] = [
-    { id: 'stream', text: 'Stream URL (RTSP / HLS)' },
-    { id: 'snapshot', text: 'Snapshot URL' },
+    { id: 'stream', text: 'Live video link' },
+    { id: 'snapshot', text: 'Picture link' },
     { id: 'upload', text: 'Upload a photo' },
   ];
   const isUpload = form.source_type === 'upload';
@@ -60,8 +60,8 @@ export function StepSource({ form, onChange, error, onUseMyLocation }: Props) {
               role="radio"
               aria-checked={form.source_type === t.id}
               onClick={() => onChange({ ...form, source_type: t.id, feed_refresh_s: t.id === 'upload' ? 0 : form.feed_refresh_s })}
-              className={`flex min-h-12 items-center justify-center gap-1.5 rounded-xl border-2 px-3 text-sm font-bold ${focusRing} ${
-                form.source_type === t.id ? 'border-[#1677FF] bg-blue-50 text-[#0958D9]' : 'border-slate-200 text-slate-700 hover:border-slate-300'
+              className={`flex min-h-12 items-center justify-center gap-1.5 rounded-ctl border-2 px-3 text-sm font-bold ${focusRing} ${
+                form.source_type === t.id ? 'border-action bg-advisory-bg text-link' : 'border-line text-muted hover:border-control'
               }`}
             >
               {t.text}
@@ -78,55 +78,55 @@ export function StepSource({ form, onChange, error, onUseMyLocation }: Props) {
       {isUpload ? (
         <div>
           <span className={label} id="cam-photo-label">Photo of the water</span>
-          <label htmlFor="cam-photo" className={`flex min-h-32 cursor-pointer flex-col items-center justify-center gap-2 overflow-hidden rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 p-3 text-center text-sm font-semibold text-slate-700 hover:border-[#1677FF] hover:bg-blue-50/40 focus-within:ring-2 focus-within:ring-[#1677FF] ${photoUrl ? 'p-0' : ''}`}>
+          <label htmlFor="cam-photo" className={`flex min-h-32 cursor-pointer flex-col items-center justify-center gap-2 overflow-hidden rounded-card border-2 border-dashed border-control bg-slate-50 p-3 text-center text-sm font-semibold text-muted hover:border-action hover:bg-advisory-bg focus-within:ring-2 focus-within:ring-[#1677FF] ${photoUrl ? 'p-0' : ''}`}>
             {photoUrl ? (
               <img src={photoUrl} alt="The photo you chose" className="max-h-56 w-full object-contain" />
             ) : (
               <>
-                <ImagePlus className="h-6 w-6 text-[#0958D9]" aria-hidden="true" />
+                <ImagePlus className="h-6 w-6 text-link" aria-hidden="true" />
                 Choose a photo or take one
-                <span className="text-xs font-normal text-slate-600">JPEG or PNG, up to 5 MB</span>
+                <span className="text-xs font-normal text-muted">JPEG or PNG, up to 5 MB</span>
               </>
             )}
             <input id="cam-photo" type="file" accept="image/jpeg,image/png" className="sr-only" aria-labelledby="cam-photo-label" onChange={(e) => set('photo', e.target.files?.[0] ?? null)} />
           </label>
-          {form.photo && <p className="mt-1 truncate text-xs text-slate-600">{form.photo.name} · tap the photo to change it</p>}
-          <p className="mt-1 text-xs text-slate-600">A photo does not change, so the reading repeats. Use it to try calibration, or add a stream or snapshot URL to watch live water.</p>
+          {form.photo && <p className="mt-1 truncate text-xs text-muted">{form.photo.name} · tap the photo to change it</p>}
+          <p className="mt-1 text-xs text-muted">A photo does not change, so the reading repeats. Use it to try calibration, or add a stream or snapshot URL to watch live water.</p>
         </div>
       ) : (
         <>
           <div>
-            <label htmlFor="cam-url" className={label}>{form.source_type === 'stream' ? 'Stream URL' : 'Snapshot image URL'}</label>
+            <label htmlFor="cam-url" className={label}>{form.source_type === 'stream' ? 'Link to the live video' : 'Link to the picture'}</label>
             <input id="cam-url" className={input} value={form.source_url} onChange={(e) => set('source_url', e.target.value)} placeholder={form.source_type === 'stream' ? 'rtsp://camera.example.com/stream1' : 'https://camera.example.com/snapshot.jpg'} inputMode="url" autoCapitalize="none" autoCorrect="off" spellCheck={false} autoComplete="off" />
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2">
           <div>
-            <label htmlFor="cam-user" className={label}>Username <span className="font-normal text-slate-600">(optional)</span></label>
+            <label htmlFor="cam-user" className={label}>Username <span className="font-normal text-muted">(optional)</span></label>
             <input id="cam-user" className={input} value={form.username} onChange={(e) => set('username', e.target.value)} autoComplete="off" />
           </div>
           <div>
-            <label htmlFor="cam-pass" className={label}>Password <span className="font-normal text-slate-600">(optional)</span></label>
+            <label htmlFor="cam-pass" className={label}>Password <span className="font-normal text-muted">(optional)</span></label>
             <input id="cam-pass" type="password" className={input} value={form.password} onChange={(e) => set('password', e.target.value)} autoComplete="new-password" />
           </div>
         </div>
-        <p className="-mt-2 text-xs text-slate-600">Credentials are sent to the FloodWay server over HTTPS and are never stored in your browser or saved to disk.</p>
+        <p className="-mt-2 text-xs text-muted">Credentials are sent to the FloodWay server over HTTPS and are never stored in your browser or saved to disk.</p>
         </>
       )}
 
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
-          <label htmlFor="cam-lat" className={label}>Latitude</label>
+          <label htmlFor="cam-lat" className={label}>North-south position (latitude)</label>
           <input id="cam-lat" className={`${input} font-mono`} value={form.lat} onChange={(e) => set('lat', e.target.value)} inputMode="decimal" />
         </div>
         <div>
-          <label htmlFor="cam-lon" className={label}>Longitude</label>
+          <label htmlFor="cam-lon" className={label}>East-west position (longitude)</label>
           <input id="cam-lon" className={`${input} font-mono`} value={form.lon} onChange={(e) => set('lon', e.target.value)} inputMode="decimal" />
         </div>
       </div>
       {onUseMyLocation && (
-        <button type="button" onClick={onUseMyLocation} className={`-mt-1 min-h-10 rounded-lg px-2 text-sm font-bold text-[#0958D9] hover:bg-blue-50 ${focusRing}`}>
-          Use my current location
+        <button type="button" onClick={onUseMyLocation} className={`-mt-1 min-h-10 rounded-lg px-2 text-sm font-bold text-link hover:bg-advisory-bg ${focusRing}`}>
+          Use my location
         </button>
       )}
 
@@ -134,17 +134,17 @@ export function StepSource({ form, onChange, error, onUseMyLocation }: Props) {
         <div>
           <label htmlFor="cam-refresh" className={label}>How often does the source refresh?</label>
           <select id="cam-refresh" className={input} value={form.feed_refresh_s} onChange={(e) => set('feed_refresh_s', Number(e.target.value))}>
-            <option value={0}>Continuous (live stream or fast snapshot)</option>
+            <option value={0}>All the time (live video or fast pictures)</option>
             <option value={60}>Every minute</option>
             <option value={300}>Every 5 minutes</option>
             <option value={900}>Every 15 minutes</option>
           </select>
-          <p className="mt-1 text-xs text-slate-600">Slow public feeds can only be analysed as often as they update. We flag them as stale if they stop.</p>
+          <p className="mt-1 text-xs text-muted">Slow public feeds can only be analysed as often as they update. We flag them as stale if they stop.</p>
         </div>
       )}
 
       {error && (
-        <p ref={errorRef} role="alert" className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm/5 font-semibold text-red-800">
+        <p ref={errorRef} role="alert" className="rounded-ctl border border-transparent bg-danger-bg px-3 py-2 text-sm/5 font-semibold text-danger">
           {error}
         </p>
       )}

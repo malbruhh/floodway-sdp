@@ -33,10 +33,10 @@ export function CameraChips({ items, selectedId, onSelect, onAdd }: Props) {
             role="option"
             aria-selected={selected}
             onClick={() => onSelect(camera.id)}
-            className={`min-h-14 w-44 shrink-0 snap-start rounded-xl border px-3 py-2 text-left ${interactive} ${selected ? 'border-[#1677FF]/70 bg-blue-50/60 shadow-sm' : 'border-slate-200/70 bg-white shadow-sm'}`}
+            className={`min-h-14 w-44 shrink-0 snap-start rounded-ctl border px-3 py-2 text-left ${interactive} ${selected ? 'border-action/70 bg-advisory-bg shadow-sm' : 'border-line/70 bg-surface shadow-sm'}`}
           >
-            <span className="block truncate text-sm/5 font-semibold text-slate-900">{camera.name}</span>
-            <span className="mt-0.5 flex items-center gap-1.5 text-xs/4 text-slate-600">
+            <span className="block truncate text-sm/5 font-semibold text-ink">{camera.name}</span>
+            <span className="mt-0.5 flex items-center gap-1.5 text-xs/4 text-muted">
               {Icon ? <Icon className={`h-3.5 w-3.5 shrink-0 ${meta.text}`} aria-hidden="true" /> : <span className="h-2 w-2 shrink-0 rounded-full bg-slate-400" aria-hidden="true" />}
               <span className={meta ? `font-semibold ${meta.text}` : ''}>{camera.online ? (meta ? meta.label : 'Waiting') : 'Offline'}</span>
               <span aria-hidden="true">·</span>
@@ -45,7 +45,7 @@ export function CameraChips({ items, selectedId, onSelect, onAdd }: Props) {
           </button>
         );
       })}
-      <button type="button" onClick={onAdd} aria-label="Add my camera" className={`flex min-h-14 w-14 shrink-0 snap-start items-center justify-center rounded-xl border border-dashed border-[#1677FF]/50 bg-blue-50/40 text-[#0958D9] hover:bg-blue-50 ${interactive}`}>
+      <button type="button" onClick={onAdd} aria-label="Add my camera" className={`flex min-h-14 w-14 shrink-0 snap-start items-center justify-center rounded-ctl border border-dashed border-action/50 bg-advisory-bg text-link hover:bg-advisory-bg ${interactive}`}>
         <Plus className="h-5 w-5" aria-hidden="true" />
       </button>
     </div>

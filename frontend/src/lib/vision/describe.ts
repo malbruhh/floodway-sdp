@@ -3,7 +3,7 @@ import { pct } from './format';
 
 /** One plain-language sentence for the analysis panel. */
 export function describeReading(reading: Reading): string {
-  const where = `${pct(reading.water_ratio)} of bank height`;
+  const where = `${pct(reading.water_ratio)} up the bank`;
   const crossed = reading.lines_crossed;
   const trend = reading.trend === 'rising' ? ' and rising' : reading.trend === 'falling' ? ' and falling' : '';
   if (reading.level === 'DANGER') return `Water is at the danger line (${where})${trend}. Move away from the water.`;

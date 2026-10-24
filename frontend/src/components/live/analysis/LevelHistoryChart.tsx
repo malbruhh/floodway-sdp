@@ -31,8 +31,8 @@ export function LevelHistoryChart({ history, calibration }: Props) {
   return (
     <figure>
       <figcaption className="mb-2 flex items-center justify-between text-sm/5">
-        <span className="font-semibold text-slate-900">Level history</span>
-        <span className="text-xs/4 text-slate-600">{data.length ? `last ${data.length} readings` : 'Collecting…'}</span>
+        <span className="font-semibold text-ink">Level history</span>
+        <span className="text-xs/4 text-muted">{data.length ? `last ${data.length} readings` : 'Collecting…'}</span>
       </figcaption>
       <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" className="h-28 w-full rounded-lg bg-slate-50" role="img" aria-label={`Water level over the last ${data.length} readings against the normal, warning and danger lines`}>
         {LINES.map((l) => (
@@ -40,7 +40,7 @@ export function LevelHistoryChart({ history, calibration }: Props) {
         ))}
         {data.length > 1 && <polyline points={points} fill="none" stroke={color} strokeWidth={2.5} strokeLinejoin="round" strokeLinecap="round" vectorEffect="non-scaling-stroke" />}
       </svg>
-      <div className="mt-2 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-xs/4 text-slate-600">
+      <div className="mt-2 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-xs/4 text-muted">
         <span className="flex items-center gap-3">
           {LINES.map((l) => (
             <span key={l.key} className="inline-flex items-center gap-1.5">

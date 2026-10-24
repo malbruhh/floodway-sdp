@@ -1,9 +1,7 @@
 import { ChevronDown, Search, SlidersHorizontal, Video } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { DashboardSidebar } from '../components/layout/DashboardSidebar';
-import { Header } from '../components/layout/Header';
-import { BottomNav } from '../components/layout/BottomNav';
+import { AppShell } from '../components/layout/AppShell';
 import { AlertToast } from '../components/live/alerts/AlertToast';
 import { RecentAlerts } from '../components/live/alerts/RecentAlerts';
 import { AnalysisColumn } from '../components/live/analysis/AnalysisColumn';
@@ -21,6 +19,7 @@ import { DEFAULT_OVERLAYS, OverlayToggles } from '../components/live/feed/Overla
 import type { OverlayState } from '../components/live/feed/OverlayToggles';
 import { ViewToggle } from '../components/live/feed/ViewToggle';
 import type { ViewMode } from '../components/live/feed/ViewToggle';
+import { WeatherPanel } from '../components/weather/WeatherPanel';
 import { JpsCameraWall } from '../components/live/jps/JpsCameraWall';
 import { AddCameraWizard } from '../components/live/onboarding/AddCameraWizard';
 import { ConnectionChip, OfflineNotice } from '../components/live/shared/ConnectionStatus';
@@ -64,7 +63,7 @@ export default function LiveVisionPage() {
 
   const items = useNearbyCameras(state.cameras, { origin, radiusKm, tab, query });
   const visible = useMemo(() => items.map((i) => i.camera), [items]);
-  const { selected, selectedId, setSelectedId } = useSelectedCamera(visible);
+  const { selected, selectedId, setSelectedId } = useSelectedCamera(visible, params.get('camera'));
   const selectedDistance = selected ? haversineKm(origin.lat, origin.lon, selected.lat, selected.lon) : 0;
   const selectedLevel = selected?.online ? selected.reading?.level : undefined;
 
@@ -91,31 +90,28 @@ export default function LiveVisionPage() {
     <EmptyState
       icon={Video}
       title={tab === 'mine' ? 'No cameras of your own yet' : 'No cameras in this radius'}
-      hint={tab === 'mine' ? 'Add a stream or snapshot URL, draw the water zone, and the AI starts watching it.' : 'Try a larger radius or the City tab.'}
+      hint={tab === 'mine' ? 'Add a picture link or a photo, mark the water area, and the AI starts watching it.' : 'Try a larger radius or the City tab.'}
       action={tab === 'mine' ? { label: 'Add your first camera', onClick: openWizard } : undefined}
     />
   );
 
   return (
-    <div className="flex min-h-dvh bg-[#F8FAFC]">
-      <DashboardSidebar defaultCollapsed={compactSidebar} />
-      <div className="flex h-dvh min-w-0 flex-1 flex-col overflow-hidden pb-[var(--nav-h)] md:pb-0">
-        <Header />
-        <main className="@container/main flex-1 overflow-y-auto overscroll-contain" aria-label="Live Vision">
+    <>
+    <AppShell compactSidebar={compactSidebar}>
+        <main className="@container/main flex-1" aria-label="Live Vision">
           <div className="mx-auto w-full max-w-[1600px] p-4 @min-[640px]/main:p-6 @min-[1280px]/main:p-8">
             <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
               <div className="min-w-0">
                 <h1 className={`${pageTitle} flex items-center gap-2`}>
-                  <Video className="h-5 w-5 shrink-0 text-[#1677FF] @min-[640px]/main:h-6 @min-[640px]/main:w-6" aria-hidden="true" />
-                  Live Vision
+                  Cameras
                 </h1>
-                <p className="mt-0.5 hidden text-sm/5 text-slate-600 @min-[640px]/main:block">AI reads the water level from nearby river cameras every few seconds.</p>
+                <p className="mt-0.5 hidden text-sm/5 text-muted @min-[640px]/main:block">River cameras near you. The AI reads the water level from the ones FloodWay has calibrated.</p>
               </div>
               {source === 'ai' && !loading && <ConnectionChip usingMock={state.usingMock} connected={state.connected} online={onlineCount} total={state.cameras.length} />}
             </div>
-            <div className="mt-3 inline-flex rounded-xl border border-slate-200 bg-white p-1" role="group" aria-label="Camera source">
-              {([['ai', 'Live Vision (AI)'], ['jps', 'JPS Selangor snapshots']] as const).map(([id, label]) => (
-                <button key={id} type="button" aria-pressed={source === id} onClick={() => setParams(id === 'jps' ? { source: 'jps' } : {}, { replace: true })} className={`min-h-11 rounded-lg px-3 text-sm/5 font-semibold @min-[760px]/main:min-h-9 ${interactive} ${source === id ? 'bg-[#0958D9] text-white' : 'text-slate-700 hover:bg-slate-100'}`}>{label}</button>
+            <div className="mt-3 inline-flex rounded-ctl border border-line bg-surface p-1" role="group" aria-label="Camera source">
+              {([['ai', 'FloodWay cameras'], ['jps', 'JPS photos']] as const).map(([id, label]) => (
+                <button key={id} type="button" aria-pressed={source === id} onClick={() => setParams(id === 'jps' ? { source: 'jps' } : {}, { replace: true })} className={`min-h-11 rounded-lg px-3 text-sm/5 font-semibold @min-[760px]/main:min-h-9 ${interactive} ${source === id ? 'bg-[#0958D9] text-white' : 'text-muted hover:bg-raised'}`}>{label}</button>
               ))}
             </div>
             {source === 'ai' && !loading && state.usingMock && <div className="mt-3"><OfflineNotice forcedMock={FORCE_MOCK} error={state.error} /></div>}
@@ -129,7 +125,7 @@ export default function LiveVisionPage() {
                 {/* LEFT: cameras near you (2- and 3-column layouts). A sticky panel whose list scrolls on its own,
                     so a long list never stretches the page under the feed. */}
                 <aside className={`${card} sticky top-6 hidden max-h-[calc(100dvh-8rem)] min-h-0 flex-col self-start @min-[760px]/main:row-span-3 @min-[760px]/main:flex @min-[1260px]/main:row-span-2`} aria-labelledby="cams-title">
-                  <div className="border-b border-slate-100 p-5 pb-4">
+                  <div className="border-b border-rule p-5 pb-4">
                     <h2 id="cams-title" className={`${cardTitle} mb-4`}>Cameras near you</h2>
                     {filters}
                   </div>
@@ -140,12 +136,12 @@ export default function LiveVisionPage() {
 
                 {/* PHONE: filter summary + camera chips */}
                 <div className="min-w-0 space-y-3 @min-[760px]/main:hidden">
-                  <button type="button" aria-expanded={filtersOpen} aria-controls="phone-filters" onClick={() => setFiltersOpen(!filtersOpen)} className={`${card} flex min-h-12 w-full items-center justify-between gap-3 px-4 text-left text-sm font-semibold text-slate-900 ${interactive}`}>
+                  <button type="button" aria-expanded={filtersOpen} aria-controls="phone-filters" onClick={() => setFiltersOpen(!filtersOpen)} className={`${card} flex min-h-12 w-full items-center justify-between gap-3 px-4 text-left text-sm font-semibold text-ink ${interactive}`}>
                     <span className="flex min-w-0 items-center gap-2">
-                      <SlidersHorizontal className="h-4 w-4 shrink-0 text-slate-600" aria-hidden="true" />
+                      <SlidersHorizontal className="h-4 w-4 shrink-0 text-muted" aria-hidden="true" />
                       <span className="truncate">{origin.label.split(',')[0]} · {radiusKm} km · {TAB_LABEL[tab]}</span>
                     </span>
-                    <ChevronDown className={`h-4 w-4 shrink-0 text-slate-500 transition-transform duration-200 motion-reduce:transition-none ${filtersOpen ? 'rotate-180' : ''}`} aria-hidden="true" />
+                    <ChevronDown className={`h-4 w-4 shrink-0 text-muted transition-transform duration-200 motion-reduce:transition-none ${filtersOpen ? 'rotate-180' : ''}`} aria-hidden="true" />
                   </button>
                   {filtersOpen && <div id="phone-filters" className={`${card} p-4`}>{filters}</div>}
                   {items.length > 0 ? <CameraChips items={items} selectedId={selectedId} onSelect={setSelectedId} onAdd={openWizard} /> : emptyList}
@@ -162,6 +158,7 @@ export default function LiveVisionPage() {
                       {view === 'focus' ? (
                         <>
                           <FeedHeader camera={selected} distanceKm={selectedDistance} />
+                          <WeatherPanel lat={selected.lat} lon={selected.lon} name={selected.name} />
                           <div className={`${card} p-2`}>
                             <FeedViewer camera={selected} tag={camTag(state.cameras, selected.id)} useScene={state.usingMock} overlays={overlays} onRetry={() => void visionActions.analyzeNow(selected.id).catch(() => undefined)} />
                           </div>
@@ -210,11 +207,9 @@ export default function LiveVisionPage() {
             )}
           </div>
         </main>
-        <BottomNav />
-      </div>
-
+        </AppShell>
       <AlertToast alert={state.unseen[0]} onOpen={openAlert} onDismiss={dismissAlert} />
       <AddCameraWizard open={wizardOpen} onClose={() => setWizardOpen(false)} onSaved={(id) => { setTab('mine'); setSelectedId(id); }} origin={origin} offlineDemo={state.usingMock} gpsAvailable={Boolean(gps)} />
-    </div>
+    </>
   );
 }

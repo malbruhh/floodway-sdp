@@ -49,3 +49,19 @@ describe('report status model', () => {
     expect(countReports([ran, notRun]).aiAssessed).toBe(1);
   });
 });
+
+import { reportAgeMin, reportGroup } from '../lib/reportStatus';
+
+describe('report time groups', () => {
+  it('reads ages from the text', () => {
+    expect(reportAgeMin('Just now')).toBe(0);
+    expect(reportAgeMin('12 min ago')).toBe(12);
+    expect(reportAgeMin('2 hours ago')).toBe(120);
+    expect(reportAgeMin('yesterday')).toBe(Infinity);
+  });
+  it('groups them for the time rail', () => {
+    expect(reportGroup('Just now')).toBe('Last 30 minutes');
+    expect(reportGroup('45 min ago')).toBe('Last hour');
+    expect(reportGroup('3 hours ago')).toBe('Earlier today');
+  });
+});
