@@ -111,7 +111,7 @@ export default function LiveVisionPage() {
             </div>
             <div className="mt-3 inline-flex rounded-ctl border border-line bg-surface p-1" role="group" aria-label="Camera source">
               {([['ai', 'FloodWay cameras'], ['jps', 'JPS photos']] as const).map(([id, label]) => (
-                <button key={id} type="button" aria-pressed={source === id} onClick={() => setParams(id === 'jps' ? { source: 'jps' } : {}, { replace: true })} className={`min-h-11 rounded-lg px-3 text-sm/5 font-semibold @min-[760px]/main:min-h-9 ${interactive} ${source === id ? 'bg-[#0958D9] text-white' : 'text-muted hover:bg-raised'}`}>{label}</button>
+                <button key={id} type="button" aria-pressed={source === id} onClick={() => setParams(id === 'jps' ? { source: 'jps' } : {}, { replace: true })} className={`min-h-11 rounded-lg px-3 text-sm/5 font-semibold @min-[760px]/main:min-h-9 ${interactive} ${source === id ? 'bg-action text-white' : 'text-muted hover:bg-raised'}`}>{label}</button>
               ))}
             </div>
             {source === 'ai' && !loading && state.usingMock && <div className="mt-3"><OfflineNotice forcedMock={FORCE_MOCK} error={state.error} /></div>}

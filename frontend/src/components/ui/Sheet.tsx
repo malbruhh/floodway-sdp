@@ -1,5 +1,6 @@
 import React, { useEffect, useId, useRef } from 'react';
 import { X } from 'lucide-react';
+import { useExit } from '../../hooks/useExit';
 
 interface Props {
   open: boolean;
@@ -14,6 +15,7 @@ interface Props {
 export function Sheet({ open, onClose, title, footer, children }: Props) {
   const titleId = useId();
   const panel = useRef<HTMLDivElement>(null);
+  const { mounted, closing } = useExit(open, 220);
 
   useEffect(() => {
     if (!open) return;
@@ -30,9 +32,9 @@ export function Sheet({ open, onClose, title, footer, children }: Props) {
     };
   }, [open, onClose]);
 
-  if (!open) return null;
+  if (!mounted) return null;
   return (
-    <div className="fixed inset-0 z-[900] flex items-end justify-center bg-ink/55 md:items-center md:p-4" onClick={onClose}>
+    <div className={`fixed inset-0 z-[900] flex items-end justify-center bg-ink/55 md:items-center md:p-4 ${closing ? 'animate-fade-out' : 'animate-fade-in'}`} onClick={onClose}>
       <div
         ref={panel}
         role="dialog"
@@ -40,7 +42,7 @@ export function Sheet({ open, onClose, title, footer, children }: Props) {
         aria-labelledby={titleId}
         tabIndex={-1}
         onClick={(e) => e.stopPropagation()}
-        className="flex max-h-[92dvh] w-full max-w-lg flex-col rounded-t-sheet bg-surface shadow-[0_-8px_30px_rgba(0,0,0,.2)] outline-none md:rounded-sheet"
+        className={`flex max-h-[92dvh] w-full max-w-lg flex-col rounded-t-sheet bg-surface shadow-[0_-8px_30px_rgba(0,0,0,.2)] outline-none md:rounded-sheet ${closing ? 'animate-sheet-out md:animate-pop-out' : 'animate-sheet-in md:animate-pop-in'}`}
       >
         <div className="flex shrink-0 items-center gap-2 px-4 pb-1 pt-3">
           <h2 id={titleId} className="flex-1 text-lg font-bold">{title}</h2>

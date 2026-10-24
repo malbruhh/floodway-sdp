@@ -1,5 +1,5 @@
 export function Skeleton({ className = '' }: { className?: string }) {
-  return <div className={`rounded-ctl bg-slate-200/80 motion-safe:animate-pulse ${className}`} aria-hidden="true" />;
+  return <div className={`rounded-ctl bg-raised bg-[linear-gradient(100deg,transparent_30%,rgba(255,255,255,.75)_50%,transparent_70%)] bg-[length:200%_100%] motion-safe:animate-shimmer ${className}`} aria-hidden="true" />;
 }
 
 /** Same grid as the real page, so nothing jumps when the cameras arrive. */

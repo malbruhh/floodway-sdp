@@ -27,7 +27,7 @@ export function ForecastTimeline() {
       {state.status === 'loading' && <Skeleton className="h-48 w-full" />}
 
       {state.status === 'error' && (
-        <div className="grid gap-3" role="alert">
+        <div className="grid animate-shake gap-3" role="alert">
           <p className="text-sm">The forecast could not be loaded, so none is shown. We never show numbers the server did not produce.</p>
           <button type="button" onClick={retry} className={`${btnSecondary} justify-self-start`}><RefreshCw className="h-4 w-4" aria-hidden="true" /> Try again</button>
         </div>

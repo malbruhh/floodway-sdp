@@ -23,7 +23,7 @@ interface Props {
  *  Must sit inside an `@container/toolbar`. */
 export function OverlayToggles({ value, onChange }: Props) {
   return (
-    <div className="inline-flex shrink-0 rounded-ctl border border-line bg-surface p-1" role="group" aria-label="Feed overlays">
+    <div className="inline-flex shrink-0 rounded-ctl bg-raised p-1" role="group" aria-label="Feed overlays">
       {ITEMS.map(({ key, label, hint, icon: Icon }) => {
         const on = value[key];
         return (
@@ -35,7 +35,7 @@ export function OverlayToggles({ value, onChange }: Props) {
             title={`${on ? 'Hide' : 'Show'}: ${hint}`}
             onClick={() => onChange({ ...value, lines: !on, waterline: !on })}
             className={`inline-flex min-h-11 min-w-11 items-center @min-[760px]/main:min-h-9 @min-[760px]/main:min-w-9 justify-center gap-1.5 rounded-lg px-2 text-sm/5 font-medium ${interactive} ${
-              on ? 'bg-advisory-bg text-link' : 'text-muted hover:bg-slate-50 hover:text-ink'
+              on ? 'bg-action text-white' : 'text-muted hover:bg-raised hover:text-ink'
             }`}
           >
             <Icon className="h-4 w-4" aria-hidden="true" />

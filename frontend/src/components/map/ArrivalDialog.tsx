@@ -24,7 +24,7 @@ export function ArrivalDialog({ shelterName, capacity, when, telegram, onClose, 
   return (
     <div role="dialog" aria-modal="true" aria-label="Arrived" className="absolute inset-0 z-[800] flex items-center justify-center bg-slate-950/60 p-4">
       <div className="w-full max-w-md space-y-4 rounded-3xl border border-emerald-500/80 bg-slate-900 p-5 text-center text-white shadow-2xl">
-        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-card border border-emerald-400 bg-normal-bg0/20 text-emerald-400">
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-card border border-emerald-400 bg-normal/20 text-emerald-400">
           <CheckCircle2 className="h-8 w-8" aria-hidden="true" />
         </div>
         <div>

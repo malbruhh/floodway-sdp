@@ -14,9 +14,9 @@ import { card } from '../styles/tokens';
 import { highestRisk, newestReadingAt, nearestOpenShelter, overallLevel, primaryAction, whatToDo } from '../lib/home';
 
 /** A stop on the timeline rail: a dot, a title, then the card. */
-function Stop({ title, hint, first = false, children }: { title: string; hint?: string; first?: boolean; children: React.ReactNode }) {
+function Stop({ title, hint, first = false, delay = 0, children }: { title: string; hint?: string; first?: boolean; delay?: number; children: React.ReactNode }) {
   return (
-    <section className="relative grid gap-2 pb-[18px] pl-7 last:pb-0 [&:not(:last-child)]:before:absolute [&:not(:last-child)]:before:bottom-0 [&:not(:last-child)]:before:left-[7px] [&:not(:last-child)]:before:top-5 [&:not(:last-child)]:before:w-0.5 [&:not(:last-child)]:before:bg-control">
+    <section style={{ animationDelay: `${delay}ms` }} className="relative grid animate-rise gap-2 pb-[18px] pl-7 last:pb-0 [&:not(:last-child)]:before:absolute [&:not(:last-child)]:before:bottom-0 [&:not(:last-child)]:before:left-[7px] [&:not(:last-child)]:before:top-5 [&:not(:last-child)]:before:w-0.5 [&:not(:last-child)]:before:bg-control">
       <span className={`absolute left-0 top-[3px] h-4 w-4 rounded-full shadow-[inset_0_0_0_3px_var(--color-ink)] ${first ? 'bg-ink' : 'bg-ground'}`} aria-hidden="true" />
       <h2 className="text-sm font-semibold">{title} {hint && <span className="font-normal text-muted">{hint}</span>}</h2>
       {children}
@@ -60,10 +60,10 @@ export function HomePage() {
             <Stop title="Now" first>
               {loading ? <Skeleton className="h-64 w-full rounded-card" /> : <NowCard camera={top} useScene={vision.usingMock} />}
             </Stop>
-            <Stop title="Next 2 hours" hint="a simulated estimate">
+            <Stop title="Next 2 hours" hint="a simulated estimate" delay={80}>
               <ForecastTimeline />
             </Stop>
-            <Stop title="What to do">
+            <Stop title="What to do" delay={160}>
               <div className={`${card} p-4`}>
                 <ol className="grid list-decimal gap-1.5 pl-5 text-[15px] marker:font-semibold marker:text-muted">
                   {whatToDo(level).map((s) => <li key={s}>{s}</li>)}

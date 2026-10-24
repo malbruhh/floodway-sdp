@@ -20,6 +20,7 @@ export function Field({ label, value, onChange, error, help, type = 'text', auto
     <div className="grid gap-1">
       <label htmlFor={id} className="text-sm font-medium">{label}</label>
       <input
+        key={error ?? 'ok'}
         id={id}
         type={type}
         value={value}
@@ -29,9 +30,9 @@ export function Field({ label, value, onChange, error, help, type = 'text', auto
         aria-invalid={error ? true : undefined}
         aria-describedby={note}
         onChange={(e) => onChange(e.target.value)}
-        className={`min-h-12 w-full rounded-ctl bg-surface px-3 text-base text-ink placeholder:text-muted ring-1 ${error ? 'ring-2 ring-danger' : 'ring-control'}`}
+        className={`min-h-12 w-full rounded-ctl bg-surface px-3 text-base text-ink placeholder:text-muted ring-1 transition-shadow duration-200 focus:ring-2 focus:ring-link ${error ? 'animate-shake ring-2 ring-danger focus:ring-danger' : 'ring-control'}`}
       />
-      {error ? <p id={`${id}-err`} role="alert" className="text-sm font-medium text-danger">{error}</p> : help ? <p id={`${id}-help`} className="text-sm text-muted">{help}</p> : null}
+      {error ? <p id={`${id}-err`} role="alert" className="animate-rise text-sm font-medium text-danger">{error}</p> : help ? <p id={`${id}-help`} className="text-sm text-muted">{help}</p> : null}
     </div>
   );
 }

@@ -15,7 +15,7 @@ const LINE_ORDER: LineKey[] = ['danger', 'warning', 'normal']; // top to bottom
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
 const LINE_UI: Record<LineKey, { label: string; stroke: string; tag: string }> = {
   danger: { label: 'Danger', stroke: '#EF4444', tag: 'bg-danger text-white' },
-  warning: { label: 'Warning', stroke: '#F59E0B', tag: 'bg-warning-bg0 text-ink' },
+  warning: { label: 'Warning', stroke: '#F59E0B', tag: 'bg-warning text-ink' },
   normal: { label: 'Normal', stroke: '#10B981', tag: 'bg-emerald-700 text-white' },
 };
 

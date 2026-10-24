@@ -37,7 +37,7 @@ export function RecentAlerts({ alerts }: { alerts: AlertEvent[] }) {
             const meta = LEVEL_META[clear ? 'NORMAL' : a.level]; // all-clear rows use the green style
             const Icon = meta.icon;
             return (
-              <li key={a.id} className="flex gap-3 py-3 first:pt-1 last:pb-0">
+              <li key={a.id} className="flex animate-rise gap-3 py-3 first:pt-1 last:pb-0">
                 <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${meta.solid}`}>
                   <Icon className="h-4 w-4" aria-hidden="true" />
                 </span>

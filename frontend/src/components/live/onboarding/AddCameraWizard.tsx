@@ -1,5 +1,7 @@
 import { Check, X } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useExit } from '../../../hooks/useExit';
+import { Spinner } from '../../ui/Spinner';
 import { visionActions } from '../../../hooks/vision/useVisionStore';
 import { linesAreValid } from '../../../lib/vision/thresholds';
 import { ApiError, previewFrame, testCamera, uploadPhoto } from '../../../services/vision/visionApi';
@@ -151,13 +153,14 @@ export function AddCameraWizard({ open, onClose, onSaved, origin, offlineDemo, g
     }
   };
 
-  if (!open) return null;
+  const { mounted, closing } = useExit(open, 220);
+  if (!mounted) return null;
   const canNext = step === 1 ? linesAreValid(calibration) : true;
 
   return (
     <div className="fixed inset-0 z-[900] flex items-end justify-center sm:items-center sm:p-6" role="presentation">
-      <div className="absolute inset-0 bg-slate-900/60" onClick={close} aria-hidden="true" />
-      <div ref={dialog} tabIndex={-1} role="dialog" aria-modal="true" aria-labelledby="wiz-title" className="relative flex h-[100dvh] w-full flex-col bg-surface shadow-xl focus:outline-none sm:h-auto sm:max-h-[min(92dvh,880px)] sm:max-w-[720px] sm:rounded-card">
+      <div className={`absolute inset-0 bg-ink/60 ${closing ? 'animate-fade-out' : 'animate-fade-in'}`} onClick={close} aria-hidden="true" />
+      <div ref={dialog} tabIndex={-1} role="dialog" aria-modal="true" aria-labelledby="wiz-title" className={`relative flex h-[100dvh] w-full flex-col bg-surface shadow-xl focus:outline-none ${closing ? 'animate-sheet-out sm:animate-pop-out' : 'animate-sheet-in sm:animate-pop-in'} sm:h-auto sm:max-h-[min(92dvh,880px)] sm:max-w-[720px] sm:rounded-card`}>
         <div className="flex items-center justify-between gap-3 border-b border-rule px-4 py-3 sm:px-6 sm:py-4">
           <div className="min-w-0">
             <h2 id="wiz-title" className={`${heading} text-lg/7`}>Add my camera</h2>
@@ -193,11 +196,11 @@ export function AddCameraWizard({ open, onClose, onSaved, origin, offlineDemo, g
           </button>
           {step < 2 ? (
             <button type="button" onClick={next} disabled={busy || !canNext} className={btnPrimary}>
-              {busy ? 'Checking camera…' : 'Next'}
+              {busy && <Spinner />} {busy ? 'Checking camera…' : 'Next'}
             </button>
           ) : (
             <button type="button" onClick={save} disabled={busy || testing || !reading} className={btnPrimary}>
-              {busy ? 'Saving…' : 'Save camera'}
+              {busy && <Spinner />} {busy ? 'Saving…' : 'Save camera'}
             </button>
           )}
         </div>

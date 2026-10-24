@@ -50,7 +50,7 @@ export function DepthFromPhoto({ imageUrl, onApply }: Props) {
             role="radio"
             aria-checked={o.id === objId}
             onClick={() => { setObjId(o.id); setPts([]); }}
-            className={`text-xs py-1.5 rounded-lg border font-semibold cursor-pointer ${o.id === objId ? 'bg-advisory-bg border-advisory text-blue-800' : 'bg-surface border-line text-muted hover:bg-raised'}`}
+            className={`text-xs py-1.5 rounded-lg border font-semibold cursor-pointer ${o.id === objId ? 'bg-advisory-bg border-advisory text-advisory' : 'bg-surface border-line text-muted hover:bg-raised'}`}
           >
             {o.label}
           </button>
@@ -77,7 +77,7 @@ export function DepthFromPhoto({ imageUrl, onApply }: Props) {
         {pts.map((p, i) => (
           <span
             key={i}
-            className={`absolute w-4 h-4 -ml-2 -mt-2 rounded-full border-2 border-white shadow ${i === 2 ? 'bg-sky-500' : 'bg-danger-bg0'}`}
+            className={`absolute w-4 h-4 -ml-2 -mt-2 rounded-full border-2 border-white shadow ${i === 2 ? 'bg-sky-500' : 'bg-danger'}`}
             style={{ left: `${p.x * 100}%`, top: `${p.y * 100}%` }}
             aria-hidden="true"
           />

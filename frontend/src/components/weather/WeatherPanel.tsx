@@ -26,7 +26,7 @@ export function WeatherPanel({ lat, lon, name }: { lat: number; lon: number; nam
               {w.next_hours.map((h) => (
                 <li key={h.time} className="flex min-w-0 flex-1 flex-col items-center gap-0.5 text-xs/4 text-muted">
                   <span className="tabular-nums">{h.mm.toFixed(1)}</span>
-                  <span className="w-full rounded bg-sky-600/70" style={{ height: `${Math.max(3, (h.mm / max) * 32)}px` }} aria-hidden="true" />
+                  <span className="w-full rounded bg-water/70" style={{ height: `${Math.max(3, (h.mm / max) * 32)}px` }} aria-hidden="true" />
                   <span className="tabular-nums">{hour(h.time)}</span>
                   {h.chance_pct !== null && <span className="tabular-nums text-muted">{h.chance_pct}%</span>}
                 </li>

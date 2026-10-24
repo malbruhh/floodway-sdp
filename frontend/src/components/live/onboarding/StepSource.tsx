@@ -78,7 +78,7 @@ export function StepSource({ form, onChange, error, onUseMyLocation }: Props) {
       {isUpload ? (
         <div>
           <span className={label} id="cam-photo-label">Photo of the water</span>
-          <label htmlFor="cam-photo" className={`flex min-h-32 cursor-pointer flex-col items-center justify-center gap-2 overflow-hidden rounded-card border-2 border-dashed border-control bg-slate-50 p-3 text-center text-sm font-semibold text-muted hover:border-action hover:bg-advisory-bg focus-within:ring-2 focus-within:ring-[#1677FF] ${photoUrl ? 'p-0' : ''}`}>
+          <label htmlFor="cam-photo" className={`flex min-h-32 cursor-pointer flex-col items-center justify-center gap-2 overflow-hidden rounded-card border-2 border-dashed border-control bg-slate-50 p-3 text-center text-sm font-semibold text-muted hover:border-action hover:bg-advisory-bg focus-within:ring-2 focus-within:ring-action ${photoUrl ? 'p-0' : ''}`}>
             {photoUrl ? (
               <img src={photoUrl} alt="The photo you chose" className="max-h-56 w-full object-contain" />
             ) : (

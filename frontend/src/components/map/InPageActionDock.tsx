@@ -31,7 +31,7 @@ export function InPageActionDock() {
         className="px-3 py-1.5 rounded-ctl bg-raised hover:bg-slate-200 text-muted text-xs font-bold flex items-center gap-1.5 transition-colors"
         title="Open Live Vision CCTV"
       >
-        <Video className="w-3.5 h-3.5 text-blue-600" />
+        <Video className="w-3.5 h-3.5 text-link" />
         <span>Live Vision</span>
       </button>
     </div>

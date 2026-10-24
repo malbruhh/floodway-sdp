@@ -27,7 +27,7 @@ import { useVisionStore } from '../../hooks/vision/useVisionStore';
 import { useVisionHazards } from '../../hooks/vision/useVisionHazards';
 import { useDriveSim } from '../../hooks/useDriveSim';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
-import { DEFAULT_TOWNSHIP_ID, TOWNSHIPS, townshipById, townshipContents } from '../../lib/townships';
+import { DEFAULT_TOWNSHIP_ID, townshipById } from '../../lib/townships';
 
 type RoutesDb = Record<string, Parameters<typeof toRoadRoute>[0][]>;
 
@@ -75,9 +75,7 @@ export function ShelterMapView() {
   const [selectedId, setSelectedId] = useState(params.get('to') ?? 'shelter-01');
   // The flood areas follow the cameras unless the user picks a scenario by hand.
   const { cameras } = useVisionStore();
-  const [townshipId, setTownshipId] = useState(DEFAULT_TOWNSHIP_ID);
-  const township = townshipById(townshipId);
-  const inArea = useMemo(() => townshipContents(township, shelters, cameras), [township, shelters, cameras]);
+  const township = townshipById(DEFAULT_TOWNSHIP_ID);
   const auto = scenarioFromLevel(overallLevel(cameras));
   const [override, setOverride] = useState<Scenario | null>(null);
   const scenario = override ?? auto;
@@ -233,17 +231,6 @@ export function ShelterMapView() {
     <div className="relative flex h-[calc(100dvh-8rem)] w-full flex-col overflow-hidden bg-raised md:h-[calc(100vh-64px)] md:flex-row">
       <div className="relative min-h-[350px] flex-1">
         <InPageActionDock />
-        <label className="absolute left-3 top-3 z-[500] flex max-w-[calc(100%-1.5rem)] flex-col gap-0.5 rounded-ctl bg-surface/95 px-3 py-2 text-xs font-semibold text-muted shadow-md">
-          Township
-          <select
-            value={townshipId}
-            onChange={(e) => setTownshipId(e.target.value)}
-            className="min-h-11 rounded-ctl border border-control bg-surface text-base font-medium text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-link"
-          >
-            {TOWNSHIPS.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
-          </select>
-          <span className="font-medium">{inArea.shelters.length} shelters · {inArea.floodAreas.length} flood areas · {inArea.cameras.length} cameras</span>
-        </label>
         <MapContainer center={KL_CENTER} zoom={12} scrollWheelZoom preferCanvas className="z-0 h-full w-full">
           <TileLayer attribution={BASEMAP_ATTRIBUTION} url={BASEMAP_URL} maxZoom={BASEMAP_MAX_ZOOM} />
           <FlyToTownship center={township.center} zoom={township.zoom} />

@@ -11,7 +11,7 @@ interface Props {
 
 /** Title-row status: how many cameras are up, and whether the page is on live data. */
 export function ConnectionChip({ usingMock, connected, online, total }: Omit<Props, 'forcedMock'>) {
-  const dot = usingMock ? 'bg-warning-bg0' : connected ? 'bg-normal-bg0' : 'bg-warning-bg0 motion-safe:animate-pulse';
+  const dot = usingMock ? 'bg-warning' : connected ? 'bg-normal' : 'bg-warning motion-safe:animate-pulse';
   const word = usingMock ? 'Sample data' : connected ? 'Live' : 'Reconnecting';
   return (
     <span className={pill} role="status">

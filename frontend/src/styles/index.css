@@ -29,6 +29,38 @@
   --radius-ctl: 12px;
   --radius-media: 12px;
   --radius-sheet: 24px;
+
+  /* Motion tokens. One easing family and three durations, reused everywhere (see docs/makeover/MOTION.md). */
+  --ease-out-soft: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-in-soft: cubic-bezier(0.4, 0, 1, 1);
+  --animate-fade-in: fade-in 200ms var(--ease-out-soft) backwards;
+  --animate-fade-out: fade-out 160ms var(--ease-in-soft) forwards;
+  --animate-rise: rise 260ms var(--ease-out-soft) backwards;
+  --animate-pop-in: pop-in 180ms var(--ease-out-soft) backwards;
+  --animate-pop-out: pop-out 140ms var(--ease-in-soft) forwards;
+  --animate-sheet-in: sheet-in 300ms var(--ease-out-soft) backwards;
+  --animate-sheet-out: sheet-out 220ms var(--ease-in-soft) forwards;
+  --animate-banner-in: banner-in 260ms var(--ease-out-soft) backwards;
+  --animate-shake: shake 360ms ease-in-out;
+  --animate-flash: flash 900ms ease-out;
+  --animate-check: check-pop 420ms var(--ease-out-soft) backwards;
+  --animate-shimmer: shimmer 1.4s ease-in-out infinite;
+  --animate-spin-soft: spin 800ms linear infinite;
+  --animate-indeterminate: indeterminate 1.2s ease-in-out infinite;
+
+  @keyframes fade-in { from { opacity: 0; } }
+  @keyframes fade-out { to { opacity: 0; } }
+  @keyframes rise { from { opacity: 0; transform: translateY(10px); } }
+  @keyframes pop-in { from { opacity: 0; transform: scale(0.96) translateY(-4px); } }
+  @keyframes pop-out { to { opacity: 0; transform: scale(0.96) translateY(-4px); } }
+  @keyframes sheet-in { from { transform: translateY(100%); } }
+  @keyframes sheet-out { to { transform: translateY(100%); } }
+  @keyframes banner-in { from { opacity: 0; transform: translateY(-8px); } }
+  @keyframes shake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-6px); } 40% { transform: translateX(5px); } 60% { transform: translateX(-3px); } 80% { transform: translateX(2px); } }
+  @keyframes flash { 0% { background-color: color-mix(in srgb, var(--color-link) 22%, transparent); } 100% { background-color: transparent; } }
+  @keyframes check-pop { 0% { opacity: 0; transform: scale(0.4); } 60% { transform: scale(1.12); } 100% { opacity: 1; transform: scale(1); } }
+  @keyframes shimmer { 0% { background-position: 150% 0; } 100% { background-position: -50% 0; } }
+  @keyframes indeterminate { 0% { transform: translateX(-100%); } 100% { transform: translateX(250%); } }
 }
 
 @layer base {
@@ -58,6 +90,18 @@
   h1, h2, h3, h4, .font-heading { font-family: var(--font-heading); }
 
   :focus-visible { outline: 3px solid var(--color-link); outline-offset: 2px; }
+
+  /* Every control gets a soft press and colour transition for free; utilities can still override. Map canvas excluded. */
+  :where(button, a[href], [role='button'], [role='tab'], summary, select, label[for]):not(.leaflet-container *) {
+    transition: background-color 150ms var(--ease-out-soft), color 150ms var(--ease-out-soft), box-shadow 150ms var(--ease-out-soft), opacity 150ms var(--ease-out-soft), transform 120ms var(--ease-out-soft), border-color 150ms var(--ease-out-soft);
+  }
+  :where(button, a[href], [role='button'], [role='tab']):not(:disabled, .leaflet-container *, [aria-disabled='true']):active {
+    transform: scale(0.97);
+  }
+  button:disabled { cursor: not-allowed; }
+
+  /* Folded sections open with a short rise instead of jumping. */
+  details[open] > :not(summary) { animation: rise 240ms var(--ease-out-soft) backwards; }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -20,8 +20,10 @@ export function BottomNav() {
           to={tab.path}
           className={({ isActive }) => `flex min-h-11 flex-col items-center justify-center gap-0.5 text-xs ${isActive ? 'font-bold text-ink' : 'text-muted'}`}
         >
-          <tab.icon className="h-[22px] w-[22px]" strokeWidth={1.75} aria-hidden="true" />
+          {({ isActive }) => (<>
+          <tab.icon className={`h-[22px] w-[22px] transition-transform duration-200 ${isActive ? '-translate-y-0.5 scale-110' : ''}`} strokeWidth={isActive ? 2.25 : 1.75} aria-hidden="true" />
           {tab.label}
+          </>)}
         </NavLink>
       ))}
     </nav>
