@@ -17,7 +17,7 @@ test('home shows skeletons, not an empty flash, while data loads', async ({ page
   await page.route('**/api/**', async (r) => { await new Promise((x) => setTimeout(x, 2500)); await r.continue(); });
   await page.goto('/home');
   await page.waitForTimeout(400);
-  expect(await page.locator('[aria-hidden="true"].animate-pulse, [aria-hidden="true"][class*="animate-pulse"]').count()).toBeGreaterThan(0);
+  expect(await page.locator('[aria-hidden="true"][class*="animate-shimmer"]').count()).toBeGreaterThan(0);
   await expect(page.getByText(/No cameras yet|No camera is reporting/)).toHaveCount(0);
 });
 
