@@ -126,7 +126,7 @@ export function FeedViewer({ camera, tag, useScene, overlays, compact = false, o
 
       {live && overlays.waterline && waterY !== null && reading && !compact && (
         <>
-          <span className={`pointer-events-none absolute left-2 top-10 whitespace-nowrap rounded-lg bg-[#0958D9] px-2.5 py-1 text-xs/4 font-semibold text-white ${onFrame}`}>
+          <span className={`pointer-events-none absolute left-2 top-10 whitespace-nowrap rounded-lg bg-action px-2.5 py-1 text-xs/4 font-semibold text-white ${onFrame}`}>
             Water at <span className={num}>{pct(reading.water_ratio)}</span> up the bank
           </span>
           <span className="pointer-events-none absolute h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-[3px] border-action bg-surface shadow" style={{ left: `${((xMin + xMax) / 2) * 100}%`, top: `${waterY * 100}%` }} aria-hidden="true" />
@@ -162,7 +162,7 @@ export function FeedViewer({ camera, tag, useScene, overlays, compact = false, o
           <p className="text-base/6 font-bold text-white">Camera offline</p>
           {!compact && <p className="text-sm/5 text-slate-300">{camera.last_frame_at ? `No signal. Last frame ${timeAgo(camera.last_frame_at)}.` : 'No frame received yet. We keep retrying.'}</p>}
           {onRetry && !compact && (
-            <button type="button" onClick={onRetry} className={`mt-1 inline-flex min-h-11 items-center gap-1.5 rounded-ctl bg-[#0958D9] px-4 text-sm font-semibold text-white hover:bg-[#003EB3] ${interactive}`}>
+            <button type="button" onClick={onRetry} className={`mt-1 inline-flex min-h-11 items-center gap-1.5 rounded-ctl bg-action px-4 text-sm font-semibold text-white hover:bg-[#2b2b2b] ${interactive}`}>
               <RotateCw className="h-4 w-4" aria-hidden="true" /> Try now
             </button>
           )}

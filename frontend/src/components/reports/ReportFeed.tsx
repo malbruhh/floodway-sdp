@@ -20,13 +20,13 @@ const PILL: Record<string, string> = {
   unverified: 'bg-warning-bg text-warning',
 };
 
-function ReportCard({ report, review }: { report: CitizenReport; review: boolean }) {
+function ReportCard({ report, review, index }: { report: CitizenReport; review: boolean; index: number }) {
   const { upvoteReport, approveReport, rejectReport } = useApp();
   const info = reportStatusInfo(report.status);
   const Icon = info.kind === 'reviewed' ? CheckCircle2 : info.kind === 'ai' ? ShieldCheck : Clock;
   const deep = report.waterDepthCm >= 35;
   return (
-    <article className="grid gap-2.5 rounded-card border border-line bg-surface p-3.5">
+    <article className="grid animate-rise gap-2.5 rounded-card border border-line bg-surface p-3.5" style={{ animationDelay: `${Math.min(index, 8) * 45}ms` }}>
       <div className="flex flex-wrap items-center gap-2">
         <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold ${PILL[info.kind] ?? PILL.unverified}`}>
           <Icon className="h-3.5 w-3.5" aria-hidden="true" /> {info.tile}
@@ -68,7 +68,7 @@ export function ReportFeed({ filter, viewMode = 'public', onReport }: Props) {
 
   if (shown.length === 0) {
     return (
-      <div className="grid justify-items-center gap-3 rounded-card border border-dashed border-control bg-surface p-8 text-center">
+      <div className="grid animate-rise justify-items-center gap-3 rounded-card border border-dashed border-control bg-surface p-8 text-center">
         <CheckCircle2 className="h-8 w-8 text-normal" aria-hidden="true" />
         <p className="text-base font-semibold">{review ? 'Nothing waiting for review' : 'No reports here yet'}</p>
         <p className="max-w-[36ch] text-sm text-muted">{review ? 'Every report has been looked at.' : 'If you see flooding, tell others. It takes a minute.'}</p>
@@ -86,7 +86,7 @@ export function ReportFeed({ filter, viewMode = 'public', onReport }: Props) {
           <section key={g} aria-label={g} className="relative grid gap-2 pb-[18px] pl-7 last:pb-0 [&:not(:last-child)]:before:absolute [&:not(:last-child)]:before:bottom-0 [&:not(:last-child)]:before:left-[7px] [&:not(:last-child)]:before:top-5 [&:not(:last-child)]:before:w-0.5 [&:not(:last-child)]:before:bg-control">
             <span className="absolute left-0 top-[3px] h-4 w-4 rounded-full bg-ground shadow-[inset_0_0_0_3px_var(--color-ink)]" aria-hidden="true" />
             <h2 className="text-sm font-semibold">{g}</h2>
-            <div className="grid gap-3 lg:grid-cols-2">{items.map((r) => <ReportCard key={r.id} report={r} review={review} />)}</div>
+            <div className="grid gap-3 lg:grid-cols-2">{items.map((r, i) => <ReportCard key={r.id} report={r} review={review} index={i} />)}</div>
           </section>
         );
       })}

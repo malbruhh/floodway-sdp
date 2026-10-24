@@ -26,7 +26,7 @@ export const cardTitle = 'font-heading text-base/6 font-bold text-ink';
 export const label = 'text-xs/4 font-medium text-muted';
 export const muted = 'text-muted';
 /** Numbers, timestamps, coordinates and JSON: monospace with fixed-width digits so values never jitter. */
-export const num = "font-['JetBrains_Mono',ui-monospace,monospace] tabular-nums";
+export const num = 'tabular-nums';
 export const hero = 'font-heading text-[44px]/[48px] font-extrabold tracking-tight tabular-nums text-ink @min-[640px]/main:text-5xl/[52px]';
 
 /** Small rounded pill used for counts and meta. */

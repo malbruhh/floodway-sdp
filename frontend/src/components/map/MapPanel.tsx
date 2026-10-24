@@ -243,7 +243,7 @@ export function MapPanel(p: Props) {
                         <span className="font-bold text-ink">{formatCapacity(s.currentCapacity, s.maxCapacity)}</span>
                       </div>
                       <div className="h-1.5 overflow-hidden rounded-full bg-raised" aria-hidden="true">
-                        <div className={`h-full rounded-full ${(pct ?? 0) >= 100 ? 'bg-danger' : (pct ?? 0) > 80 ? 'bg-warning-bg0' : 'bg-normal-bg0'}`} style={{ width: `${pct ?? 0}%` }} />
+                        <div className={`h-full rounded-full ${(pct ?? 0) >= 100 ? 'bg-danger' : (pct ?? 0) > 80 ? 'bg-warning' : 'bg-normal'}`} style={{ width: `${pct ?? 0}%` }} />
                       </div>
                     </div>
                     {unavailable && <p className="mt-2 text-xs font-semibold text-warning">Full. Choose another centre.</p>}

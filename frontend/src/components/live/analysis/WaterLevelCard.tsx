@@ -1,4 +1,5 @@
 import { AlertTriangle, ArrowDownRight, ArrowRight, ArrowUpRight, Waves } from 'lucide-react';
+import { useFlash } from '../../../hooks/useFlash';
 import { describeReading } from '../../../lib/vision/describe';
 import { clockTime, pct, timeAgo } from '../../../lib/vision/format';
 import { levelSince } from '../../../lib/vision/history';
@@ -10,7 +11,7 @@ import { card, cardPad, cardTitle, hero, label, num } from '../shared/ui';
 
 const REF = [
   { key: 'danger', label: 'Danger line', note: 'up the bank: the top', dot: 'bg-danger' },
-  { key: 'warning', label: 'Warning line', note: 'up the bank: high water', dot: 'bg-warning-bg0' },
+  { key: 'warning', label: 'Warning line', note: 'up the bank: high water', dot: 'bg-warning' },
   { key: 'normal', label: 'Normal line', note: 'up the bank: usual level', dot: 'bg-emerald-600' },
 ] as const;
 
@@ -30,6 +31,7 @@ function Title() {
 
 export function WaterLevelCard({ camera, history }: { camera: Camera; history: Reading[] }) {
   const reading = camera.reading;
+  const flash = useFlash(reading ? Math.round(reading.water_ratio * 100) : null);
   const t = thresholdsFromCalibration(camera.calibration);
 
   if (!camera.online || !reading) {
@@ -58,7 +60,7 @@ export function WaterLevelCard({ camera, history }: { camera: Camera; history: R
 
       <div className="mt-3 flex items-end justify-between gap-3">
         <p className="flex items-baseline gap-2">
-          <span className={hero}>{pct(reading.water_ratio)}</span>
+          <span className={`${hero} rounded-ctl px-1 -mx-1 ${flash ? 'animate-flash' : ''}`}>{pct(reading.water_ratio)}</span>
           <span className="text-sm/5 text-muted">of the way up the river bank</span>
         </p>
         <p className={`flex items-center gap-1 pb-1.5 text-sm/5 font-semibold ${trend.cls}`}>

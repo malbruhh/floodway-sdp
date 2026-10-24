@@ -9,6 +9,7 @@ import { AiVerificationResult, CitizenReport } from '../../types';
 import { depthWords, validateReport, type ReportFormErrors } from '../../lib/reportForm';
 import { passability, type DepthRange } from '../../lib/photoDepth';
 import { Field } from '../ui/Field';
+import { Spinner } from '../ui/Spinner';
 import { Sheet } from '../ui/Sheet';
 import { DepthFromPhoto } from './DepthFromPhoto';
 
@@ -105,7 +106,7 @@ export function ReportModal({ isOpen, onClose }: Props) {
     return (
       <Sheet open={isOpen} onClose={onClose} title="Report sent" footer={<button type="button" onClick={onClose} className="min-h-12 w-full rounded-btn bg-action font-medium text-white">Done</button>}>
         <div className="grid gap-3 py-2" role="status">
-          <CheckCircle2 className="h-10 w-10 text-normal" aria-hidden="true" />
+          <CheckCircle2 className="h-10 w-10 animate-check text-normal" aria-hidden="true" />
           <p className="text-base">Thank you. Your report is in the list as <b>{sent.aiAssessed ? 'AI assessed' : 'not verified'}</b>.</p>
           {!sent.savedOnServer && <p className="rounded-ctl bg-warning-bg p-3 text-sm text-warning">Saved on this device only: the server did not accept it.</p>}
           <p className="text-sm text-muted">In this demo no agency reviews reports. If you or someone is in danger, call 999.</p>
@@ -121,7 +122,7 @@ export function ReportModal({ isOpen, onClose }: Props) {
       title="Report flooding"
       footer={
         <button type="submit" form="report-form" disabled={submitting} className="flex min-h-12 w-full items-center justify-center gap-2 rounded-btn bg-action font-medium text-white disabled:opacity-60">
-          <Send className="h-5 w-5" aria-hidden="true" /> {submitting ? 'Sending…' : 'Send report'}
+          {submitting ? <Spinner className="h-5 w-5" /> : <Send className="h-5 w-5" aria-hidden="true" />} {submitting ? 'Sending…' : 'Send report'}
         </button>
       }
     >
@@ -135,7 +136,7 @@ export function ReportModal({ isOpen, onClose }: Props) {
             <span className="text-sm"><b>{depthCm} cm</b>, <span className="text-muted">{depthWords(depthCm)}</span></span>
           </div>
           <input id="depth" type="range" min={5} max={150} value={depthCm} onChange={(e) => setDepthCm(Number(e.target.value))} className="h-11 w-full accent-action" />
-          <div role="status" className={`rounded-ctl p-3 text-sm ${pass.tone === 'stop' ? 'bg-danger-bg text-danger' : pass.tone === 'care' ? 'bg-warning-bg text-warning' : 'bg-normal-bg text-normal'}`}>
+          <div role="status" className={`rounded-ctl p-3 text-sm transition-colors duration-300 ${pass.tone === 'stop' ? 'bg-danger-bg text-danger' : pass.tone === 'care' ? 'bg-warning-bg text-warning' : 'bg-normal-bg text-normal'}`}>
             <p><b>Driving:</b> {pass.drive}</p>
             <p><b>On foot:</b> {pass.walk}</p>
             <p className="mt-1 text-xs">General guidance at {depthCm} cm, not an official advisory.</p>
@@ -183,14 +184,14 @@ export function ReportModal({ isOpen, onClose }: Props) {
         </div>
 
         {image && (
-          <div className="grid gap-2 rounded-card bg-raised p-3">
+          <div className="grid animate-rise gap-2 rounded-card bg-raised p-3">
             <p className="flex items-center gap-1.5 text-sm font-medium"><ShieldCheck className="h-4 w-4" aria-hidden="true" /> Photo check (optional)</p>
             <p className="text-sm text-muted">An AI model looks at the photo and gives its opinion. It is not proof and no agency sees it.</p>
             <button type="button" onClick={runAi} disabled={analyzing} className="flex min-h-11 items-center justify-center gap-2 rounded-btn bg-surface font-medium ring-1 ring-line disabled:opacity-60">
-              <Sparkles className="h-4 w-4" aria-hidden="true" /> {analyzing ? 'Checking the photo…' : 'Check the photo'}
+              {analyzing ? <Spinner /> : <Sparkles className="h-4 w-4" aria-hidden="true" />} {analyzing ? 'Checking the photo…' : 'Check the photo'}
             </button>
             {aiResult && (
-              <div role="status" className="grid gap-1 text-sm">
+              <div role="status" className="grid animate-rise gap-1 text-sm">
                 {aiResult.ran ? (
                   <>
                     <p className="font-medium">{aiResult.verified ? 'AI opinion: looks like flooding' : 'AI opinion: could not confirm flooding'} (about {Math.round(aiResult.confidenceScore * 100)}% sure, ~{aiResult.estimatedDepthCm} cm)</p>

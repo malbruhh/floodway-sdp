@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronDown, ChevronUp, Info } from 'lucide-react';
+import { useExit } from '../../hooks/useExit';
 
 export interface LegendItem {
   key: string;
@@ -31,6 +32,7 @@ interface Props {
 /** Collapsed to a small button by default on every screen size, so it never hides the map. Opens a compact one-line-per-layer panel. */
 export function MapLegend({ floodColor, bottomOffset = 0 }: Props) {
   const [open, setOpen] = useState(false);
+  const panel = useExit(open, 140);
   const items: LegendItem[] = [
     { key: 'route', swatch: <Line color="#1d5fbf" />, label: 'Road route', source: 'OpenStreetMap roads' },
     { key: 'alt', swatch: <Line color="#64748B" dashed />, label: 'Other route', source: '' },
@@ -42,10 +44,10 @@ export function MapLegend({ floodColor, bottomOffset = 0 }: Props) {
 
   return (
     <div className="absolute right-3 z-[500] flex flex-col items-end md:bottom-4 md:right-4" style={{ bottom: bottomOffset ? bottomOffset + 8 : undefined }}>
-      {open && (
+      {panel.mounted && (
         <div
           id="map-legend"
-          className="mb-2 w-60 rounded-card bg-surface p-3 text-ink shadow-[0_8px_30px_rgba(0,0,0,.2)] ring-1 ring-line"
+          className={`mb-2 w-60 origin-bottom-right ${panel.closing ? 'animate-pop-out' : 'animate-pop-in'} rounded-card bg-surface p-3 text-ink shadow-[0_8px_30px_rgba(0,0,0,.2)] ring-1 ring-line`}
         >
           <ul className="space-y-1">
             {items.map((i) => (

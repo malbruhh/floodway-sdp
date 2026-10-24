@@ -1,5 +1,6 @@
 import React from 'react';
 import { CircleHelp } from 'lucide-react';
+import { useFlash } from '../../hooks/useFlash';
 import { useNow } from '../../hooks/useNow';
 import { causeLine, dataAge } from '../../lib/home';
 import { LEVEL_META, LEVEL_PALETTE } from '../../lib/vision/levels';
@@ -16,6 +17,7 @@ interface Props {
 /** The answer to "am I safe": one word, one sentence, how old the data is. Icon + word + colour, never colour alone. */
 export function RiskBar({ loading, level, camera, updatedAt }: Props) {
   const now = useNow(1000);
+  const flash = useFlash(level);
   if (loading) return <Skeleton className="h-[90px] w-full rounded-card" />;
   const meta = level ? LEVEL_META[level] : null;
   const pal = level ? LEVEL_PALETTE[level] : null;
@@ -24,7 +26,7 @@ export function RiskBar({ loading, level, camera, updatedAt }: Props) {
   return (
     <section
       aria-label="Flood risk now"
-      className="grid gap-1 rounded-card px-3.5 py-3"
+      className={`grid gap-1 rounded-card px-3.5 py-3 transition-colors duration-500 ${flash ? 'animate-pop-in' : ''}`}
       style={{ backgroundColor: pal?.tint ?? '#e9ecf0', boxShadow: `inset 4px 0 0 ${color}` }}
     >
       <div className="flex items-center gap-2" style={{ color }}>

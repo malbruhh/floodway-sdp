@@ -6,12 +6,14 @@ import { useApp } from '../../contexts/AppContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { ORIGINS } from '../../data/klDemo';
 import { DemoChip } from '../ui/DemoChip';
+import { useExit } from '../../hooks/useExit';
 
 /** Top bar: the mark, the area you are watching, and the one "demo" note for the whole app. */
 export function Header({ showLocation = true }: { showLocation?: boolean }) {
   const { selectedLocation, setSelectedLocation } = useApp();
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
+  const menu = useExit(open, 140);
   const shortLocation = selectedLocation.split(',')[0].trim();
 
   return (
@@ -31,10 +33,10 @@ export function Header({ showLocation = true }: { showLocation?: boolean }) {
           >
             <MapPin className="h-[18px] w-[18px] shrink-0" aria-hidden="true" />
             <b className="truncate font-medium text-ink">{shortLocation}</b>
-            <ChevronDown className="h-4 w-4 shrink-0" aria-hidden="true" />
+            <ChevronDown className={`h-4 w-4 shrink-0 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} aria-hidden="true" />
           </button>
-          {open && (
-            <ul role="listbox" aria-label="Choose area" className="absolute left-0 top-full z-50 mt-1 w-72 max-w-[calc(100vw-2rem)] rounded-card bg-surface p-1.5 shadow-[0_8px_30px_rgba(0,0,0,.15)] ring-1 ring-line">
+          {menu.mounted && (
+            <ul role="listbox" aria-label="Choose area" className={`absolute left-0 top-full z-50 mt-1 w-72 max-w-[calc(100vw-2rem)] origin-top-left rounded-card bg-surface p-1.5 shadow-[0_8px_30px_rgba(0,0,0,.15)] ring-1 ring-line ${menu.closing ? 'animate-pop-out' : 'animate-pop-in'}`}>
               <li className="px-3 pb-1 pt-2 text-xs font-semibold text-muted">Areas we watch</li>
               {ORIGINS.map((o) => (
                 <li key={o.location}>

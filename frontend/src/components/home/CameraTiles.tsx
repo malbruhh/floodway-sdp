@@ -26,10 +26,10 @@ export function CameraTiles({ loading, cameras, useScene }: Props) {
         <p className="rounded-card bg-surface p-4 text-sm text-muted ring-1 ring-line">No cameras yet. Add one on the Cameras page and it shows up here.</p>
       ) : (
         <ul className="grid grid-cols-2 gap-2.5">
-          {sorted.slice(0, 6).map((c) => {
+          {sorted.slice(0, 6).map((c, i) => {
             const r = c.online ? c.reading : null;
             return (
-              <li key={c.id}>
+              <li key={c.id} className="animate-rise" style={{ animationDelay: `${i * 50}ms` }}>
                 <Link to={`/live?camera=${encodeURIComponent(c.id)}`} className="grid gap-1 text-left text-sm">
                   <span className="relative block">
                     <FeedThumb camera={c} useScene={useScene} className="aspect-[4/3] w-full rounded-media" />

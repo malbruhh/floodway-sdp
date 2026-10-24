@@ -1,5 +1,6 @@
 import { ChevronRight, X } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
+import { useExit } from '../../../hooks/useExit';
 import { LEVEL_META } from '../../../lib/vision/levels';
 import type { AlertEvent } from '../../../types/vision';
 import { interactive, num } from '../shared/ui';
@@ -14,20 +15,25 @@ const AUTO_DISMISS_MS = 12000;
 
 /** One per new WARNING/DANGER. Top-right on desktop; full width just under the app header on phones,
  *  so it never covers the sticky action bar at the bottom. */
-export function AlertToast({ alert, onOpen, onDismiss }: Props) {
+export function AlertToast({ alert: current, onOpen, onDismiss }: Props) {
+  // Keep the last alert on screen while the toast slides out.
+  const last = useRef<AlertEvent | undefined>(undefined);
+  if (current) last.current = current;
+  const alert = current ?? last.current;
+  const { mounted, closing } = useExit(Boolean(current), 200);
   useEffect(() => {
-    if (!alert) return;
-    const t = setTimeout(() => onDismiss(alert), AUTO_DISMISS_MS);
+    if (!current) return;
+    const t = setTimeout(() => onDismiss(current), AUTO_DISMISS_MS);
     return () => clearTimeout(t);
-  }, [alert, onDismiss]);
+  }, [current, onDismiss]);
 
-  if (!alert) return null;
+  if (!alert || !mounted) return null;
   const clear = alert.kind === 'all_clear';
   const meta = LEVEL_META[clear ? 'NORMAL' : alert.level];
   const Icon = meta.icon;
 
   return (
-    <div role="alert" className="fixed inset-x-3 top-[calc(var(--top-h)+0.5rem+env(safe-area-inset-top,0px))] z-[800] motion-safe:animate-[live-toast-in_200ms_ease-out] sm:left-auto sm:right-6 sm:top-20 sm:w-[400px]">
+    <div role="alert" className={`fixed inset-x-3 top-[calc(var(--top-h)+0.5rem+env(safe-area-inset-top,0px))] z-[800] ${closing ? 'animate-fade-out' : 'animate-banner-in'} sm:left-auto sm:right-6 sm:top-20 sm:w-[400px]`}>
       <div className={`flex items-start gap-3 rounded-card border bg-surface p-3 shadow-lg shadow-slate-900/10 ${meta.border}`}>
         <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${meta.solid}`}>
           <Icon className="h-5 w-5" aria-hidden="true" />
