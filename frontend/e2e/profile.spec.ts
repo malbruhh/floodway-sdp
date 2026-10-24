@@ -34,6 +34,16 @@ test.describe('signed in', () => {
     await expect(page.getByText(/· example/)).toHaveCount(0); // real contact replaced the examples
   });
 
+  test('Estate is reachable from Me on a phone', async ({ page }) => {
+    const errors = watchErrors(page);
+    await page.goto('/profile');
+    await settle(page, 500);
+    await page.getByRole('link', { name: /Estate view/ }).click();
+    await expect(page).toHaveURL(/\/estate/);
+    await expect(page.getByRole('heading', { name: 'Estate', exact: true })).toBeVisible();
+    noErrors(errors);
+  });
+
   test('remove a contact', async ({ page }) => {
     await page.goto('/profile');
     await settle(page, 500);

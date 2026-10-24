@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { CheckCircle2, ChevronDown, LogOut, Phone, Plus, Trash2 } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Building2, CheckCircle2, ChevronDown, ChevronRight, LogOut, Phone, Plus, Trash2 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { sendTelegramMessage } from '../../services/telegramService';
 import { hasWriteToken, setWriteToken } from '../../services/auth';
@@ -57,6 +57,15 @@ export function ProfileSettings() {
           {user?.isDemo && <p className="text-xs text-muted">Demo account</p>}
         </div>
       </div>
+
+      <Link to="/estate" className="flex min-h-14 items-center gap-3 rounded-card border border-line bg-surface p-4">
+        <Building2 className="h-6 w-6 shrink-0" aria-hidden="true" />
+        <span className="min-w-0 flex-1">
+          <b className="block font-semibold">Estate view</b>
+          <span className="text-sm text-muted">Water, alerts, reports and building risk for one township.</span>
+        </span>
+        <ChevronRight className="h-5 w-5 shrink-0 text-muted" aria-hidden="true" />
+      </Link>
 
       <section className={section} aria-labelledby="family-title">
         <h2 id="family-title" className="text-base font-semibold">Family contacts</h2>
